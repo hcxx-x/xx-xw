@@ -2,8 +2,19 @@ server:
   port: 6606
 
 logging:
+  level:
+    com.xx: info
   file:
-    # logging.file.path好像没有什么用，至少在我这次测试中是没有起到作用的，无论配置是D:/weblogs 还是 ../weblogs
+    # logging.file.path好像没有什么用，至少在我这次测试中是没有起到作用的，无论配置是D:/weblogs 还是 ../weblogs (不生效的原因：path和file二者不能同时使用，如若同时使用，则只有logging.file生效)
     # path: D:/weblogs
     # logging.file.name 可以是一个文件名称，也可以是一个路径，路径以“/"开头则表示根路径，路径不以“/"开头则表示相对路径（在windows环境中，非jar包运行时，会从最上一层的父级目录开始生成对应的文件夹以及文件）
-    name: /logs1/web.log
+    name: wxlogs/web.log
+  logback:
+    rollingpolicy:
+      clean-history-on-start: false
+      # 滚动日志历史文件命名规则 默认：${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz，注意：日期中不能出现“:” 否则会使配置失效，如果出现时分秒，可以使用其他符号连接，而不要使用“:”
+      file-name-pattern: wxlogs/web.%d{yyyy-MM-dd-HH-mm-ss}.%i.log
+      # 日志保留最大期限，该配置和 file-name-pattern配置有关，如果file-name-pattern精确到天，则max-history则为日志保留的最大天数，如果file-name-pattern精确到秒，则max-history则为日志保留的最大秒数
+      max-history: 7
+      max-file-size: 10KB
+      total-size-cap: 1GB

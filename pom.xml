@@ -37,7 +37,7 @@
         <velocity.version>1.7</velocity.version>
         <jwt.version>0.9.0</jwt.version>
         <forest.version>1.5.16</forest.version>
-        <lombok.version>1.18.16</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <reflectasm.version>1.11.9</reflectasm.version>
         <hutool.version>5.7.22</hutool.version>
         <zxing.version>3.3.3</zxing.version>

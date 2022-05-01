@@ -2,6 +2,7 @@ server:
   port: 6606
 
 logging:
+  # 日志级别，可以为每个包配置不同的日志输出级别，当代码中的日志输出级别大于这个配置时，对应的日志才会被输出（eg: com.xx包的日志打印级别为waring,则该包下所有代码中的debug和info级别的日志不会被打印，而error和fatal级别的日志则会被打印）
   level:
     com.xx: info
   file:

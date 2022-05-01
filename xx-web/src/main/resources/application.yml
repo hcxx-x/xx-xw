@@ -1,2 +1,9 @@
 server:
   port: 6606
+
+logging:
+  file:
+    # logging.file.path好像没有什么用，至少在我这次测试中是没有起到作用的，无论配置是D:/weblogs 还是 ../weblogs
+    # path: D:/weblogs
+    # logging.file.name 可以是一个文件名称，也可以是一个路径，路径以“/"开头则表示根路径，路径不以“/"开头则表示相对路径（在windows环境中，非jar包运行时，会从最上一层的父级目录开始生成对应的文件夹以及文件）
+    name: /logs1/web.log

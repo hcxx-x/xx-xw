@@ -7,12 +7,11 @@
 <configuration debug="false" scan="false" scanPeriod="60 seconds">
     <!-- 设置变量。定义变量后，可以使“${}”来使用变量。 -->
     <property name="LOG_HOME" value="./logs/logback"/>
-    <property name="appName" value="lzy-logDemo"/>
     <property name="sql_log_level" value="info"/>
 
 
     <!--从springboot 配置文件中读取属性值 scope表示作用域， name为变量名称，source指定springboot配置文件中的某个配置项，defaultValue表示没有读取到对应配置时的默认值-->
-    <springProperty scope="context" name="fluentHost" source="myapp.fluentd.host"   defaultValue="localhost"/>
+    <springProperty scope="context" name="appName" source="spring.application.name"  defaultValue="app"/>
 
     <!-- 设置 logger context 名称,一旦设置不可改变，默认为default -->
     <contextName>myAppName</contextName>
@@ -23,7 +22,9 @@
         <!-- encoder class为空时, 默认也为 ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--格式化输出，并美化日（加颜色） 其中%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
-            <pattern>%red(%date{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %red([%thread]) %boldMagenta(%logger{50}) %cyan(%msg%n)</pattern>
+            <!--支持的颜色字符编码 %black 黑色、 %red 红色、 %green 绿色、 %yellow 黄色、 %blue 蓝色、 %magenta 洋红色、 %cyan 青色、 %white 白色、 %gray 灰色
+            以下为对应加粗的颜色代码 %boldRed、 %boldGreen、 %boldYellow、 %boldBlue、 %boldMagenta、 %boldCyan、 %boldWhite、 %highlight 高亮色-->
+            <pattern>%boldGreen(${appName})-%red(%date{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %red([%thread]) %boldMagenta(%logger{50}) %cyan(%msg%n)</pattern>
             <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%juc.thread] - %-5level - %logger{50} - %msg%n</pattern>-->
             <!--<pattern>%d{HH:mm:ss.SSS} [%juc.thread] %-5level %logger{36} - %msg%n</pattern>-->
         </encoder>
@@ -216,7 +217,7 @@
 
 
     <!--root也是<logger>元素，但是它是根logger，是所有logger的祖先，所有包下面的日志都会被记录。可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger。-->
-    <root level="DEBUG" additivity="false">
+    <root level="info" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="ASYNC_LOG_FILE_INFO_APPENDER"/>
         <appender-ref ref="ASYNC_LOG_FILE_WARN_APPENDER"/>

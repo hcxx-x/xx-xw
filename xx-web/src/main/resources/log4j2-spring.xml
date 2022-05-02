@@ -11,7 +11,8 @@
         <!-- %logger{36} 表示 Logger 名字最长36个字符 -->
         <!--%highlight{}表示将{}中的内容高亮显示，但是自log4j 2.10版本以后该功能默认是关闭的，若要开启需要在 VM options 中添加 -Dlog4j.skipJansi=false即可-->
         <!--<property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} %highlight{[%thread]} %-5level %logger{36} - %msg%n" />-->
-        <property name="LOG_PATTERN" value="%clr{%date{yyyy-MM-dd HH:mm:ss}}{red} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
+        <!--可以通过%style, %highlight,%clr 对日志的输出格式进行个性化 具体配置方式可以查看官方文档，如果官方文档中没有找到，可以参考这个链接（有可能会被删除）https://www.jianshu.com/p/b6409b3042e2-->
+        <property name="LOG_PATTERN" value="%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright,BG_Yellow} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
         <!-- 定义日志存储的路径 -->
         <property name="FILE_PATH" value="./logs/log4j2" />
         <property name="FILE_NAME" value="lzy-log4j2-demo" />
@@ -20,7 +21,7 @@
     <appenders>
         <console name="Console" target="SYSTEM_OUT">
             <!--输出日志的格式-->
-            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <PatternLayout disableAnsi="false" pattern="${LOG_PATTERN}"/>
             <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
         </console>

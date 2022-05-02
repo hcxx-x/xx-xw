@@ -42,6 +42,6 @@ logging:
     # 配置日志文件输出的字符集编码
     file: UTF-8
   # 在yml文件中只能对日志进行简单的配置.如果需要更加细致的配置则需要使用特定的日志配置文件，logging.config 指定配置文件的名称 (spring官方推荐使用带-spring后缀的文件)，下面的配置值没有经过验证！
-  # 这项配置可以不配置，springboot 会自动去查找classpath下的logback.xml,logback-spring.xml,logback-spring.groovy、 logback.groovy、 log4j2-spring.xml、log4j2.xml、logging.properties文件
+  # 这项配置可以不配置，springboot 会自动去查找classpath下的 logback配置（logback.xml,logback-spring.xml,logback-spring.groovy、 logback.groovy); log4j2配置 (log4j2-spring.xml、log4j2.xml); Java Util Logging 配置（logging.properties）
   config: classpath:logback-spring.xml
 

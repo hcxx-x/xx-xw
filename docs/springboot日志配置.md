@@ -1,4 +1,78 @@
-# 一、在yaml配置文件中配置日志
+# 一、写在前面
+
+## 1、关于springboot集成logback或log4j2的问题
+
+建议有什么问题先看这一章
+
+	### 1.1、springboot 默认框架
+
+springboot默认集成的日志框架是logback，如果选择使用logback，则无需额外引入logback的依赖，一般在引入spring-boot-start相关依赖的时候就会默认的将logback的依赖引入到项目中
+
+### 1.2、springboot中使用log4j2需要处理的问题
+
+logback和log4j2不能同时使用，如果项目需要使用log4j2作为日志框架，则需要将logback的相关依赖排除，并引入log4j2相关的依赖
+
+1. 排除依赖
+
+   ```xml
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <!-- 去掉springboot默认配置（logback）,若使用logback 日志处理方式则这里不用排除该默认设置 -->
+        <exclusions>
+            <exclusion>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+            </exclusion>
+        </exclusions>
+   </dependency>
+   ```
+
+2. 引入依赖
+
+   ```xml
+    <!-- 引入log4j2依赖，若使用log4j进行日志处理，则需要排除上面所描述的springboot的默认日志依赖，否则不会生效-->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-log4j2</artifactId>
+    </dependency>
+   ```
+
+### 1.3 log4j2的异步输出问题
+
+如果需要使用log4j2的异步日志输出则需要额外再引入一个依赖，并且需要注意版本问题（注意：以下版本匹配问题并没有经过自己的实际验证，只是看到有博客这些写）
+
+
+> Log4j-2.9及更高版本在类路径上需要disruptor-3.3.4.jar或更高版本。在Log4j-2.9之前，需要disruptor-3.0.0.jar或更高版本。
+
+
+```xml
+ <!-- 用于支持log4j2的异步日志输出 -->
+ <dependency>
+     <groupId>com.lmax</groupId>
+     <artifactId>disruptor</artifactId>
+ </dependency>
+```
+
+### 1.4 关于log4j2的高亮显示
+
+注意：关于log4j2的高亮显示问题，这一次并没有遇到，不知道是这次测试的时候使用的springboot版本比较高还是什么（本次测试的springboot版本为2.6.7），但是这里还是把之前的解决方案放在这里，如果遇到类似的问题，可以参考解决
+
+
+
+新版的log4j2不能向logback一样直接进行高亮显示，需要进行一定的配置，配置方式有两种
+
+1、在 VM options 中添加 -Dlog4j.skipJansi=false
+
+2、在resource 目录下创建 log4j2.component.properties 文件，并在文件中添加以下配置
+
+```
+LOG4J_SKIP_JANSI=false
+```
+
+# 二、logback
+
+## 1、在yaml配置文件中配置日志
 
 springboot 默认使用的日志框架是logback，在yml配置文件中也可以对logback进行简单的配置，可配置内容如下：
 
@@ -50,42 +124,408 @@ logging:
 
 ```
 
+##  2、在配置文件中配置logback
 
-# 从以前的文档中复制过来的内容
-1、依赖说明
+springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `logback-spring.grovvy` `loback.grovy`，推荐使用`logback-spring.xml` 或者 `logback-spring.grovy` 命名的配置文件（官方推荐）
 
-如果要使用log4j2进行日志的打印需要排除logback的相关依赖spring-boot-starter-logging ，并引入log4j2的相关依赖spring-boot-starter-log4j2
+> When possible, we recommend that you use the `-spring` variants for your logging configuration (for example, `logback-spring.xml` rather than `logback.xml`). If you use standard configuration locations, Spring cannot completely control log initialization.
+
+
+
+### 2.1 一个可以拿过来就用的logback-spring.xml文件内容
 
 ```xml
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-web</artifactId>
-    <!-- 去掉springboot默认配置（logback）,若使用logback 日志处理方式则这里不用排除该默认设置 -->
-    <!--<exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-       </exclusions>-->
-</dependency>
+<!--debug="true" : 打印 logback 内部状态（默认当 logback 运行出错时才会打印内部状态 ）, 配置该属性后打印条件如下（同时满足）：
+    1、找到配置文件 2、配置文件是一个格式正确的xml文件 也可编程实现打印内部状态, 例如： LoggerContext lc = (LoggerContext)
+    LoggerFactory.getILoggerFactory(); StatusPrinter.print(lc); -->
+<!-- scan="true" ： 自动扫描该配置文件，若有修改则重新加载该配置文件 -->
+<!-- scanPeriod="30 seconds" : 配置自动扫面时间间隔（单位可以是：milliseconds, seconds, minutes
+    or hours，默认为：milliseconds）， 默认为1分钟，scan="true"时该配置才会生效 -->
+<configuration debug="false" scan="false" scanPeriod="60 seconds">
+    <!-- 设置变量。定义变量后，可以使“${}”来使用变量。 -->
+    <property name="LOG_HOME" value="./logs/logback"/>
+    <property name="sql_log_level" value="info"/>
 
-        <!-- 引入log4j2依赖，若使用log4j进行日志处理，则需要排除上面所描述的springboot的默认日志依赖，
-            否则不会生效
+
+    <!--从springboot 配置文件中读取属性值 scope表示作用域， name为变量名称，source指定springboot配置文件中的某个配置项，defaultValue表示没有读取到对应配置时的默认值-->
+    <springProperty scope="context" name="appName" source="spring.application.name"  defaultValue="app"/>
+
+    <!-- 设置 logger context 名称,一旦设置不可改变，默认为default -->
+    <contextName>myAppName</contextName>
+
+    <!-- 定义控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--encoder 和 layout 选用一个即可，不过自0.9.19版本之后，极力推荐使用encoder-->
+        <!-- encoder class为空时, 默认也为 ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出，并美化日（加颜色） 其中%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <!--支持的颜色字符编码 %black 黑色、 %red 红色、 %green 绿色、 %yellow 黄色、 %blue 蓝色、 %magenta 洋红色、 %cyan 青色、 %white 白色、 %gray 灰色
+            以下为对应加粗的颜色代码 %boldRed、 %boldGreen、 %boldYellow、 %boldBlue、 %boldMagenta、 %boldCyan、 %boldWhite、 %highlight 高亮色-->
+            <pattern>%boldGreen(${appName})-%red(%date{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %red([%thread]) %boldMagenta(%logger{50}) %cyan(%msg%n)</pattern>
+            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - [%juc.thread] - %-5level - %logger{50} - %msg%n</pattern>-->
+            <!--<pattern>%d{HH:mm:ss.SSS} [%juc.thread] %-5level %logger{36} - %msg%n</pattern>-->
+        </encoder>
+
+        <!--<layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%clr(%d{yyyy-MM-dd HH:mm:ss.SSS} - [%juc.thread] - %-5level - %logger{50} - %msg%n)</pattern>
+        </layout>-->
+    </appender>
+
+    <!--日志按照时间滚动生成滚动生成info级别的日志-->
+    <appender name="LOG_FILE_INFO_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 指定当前活跃的日志文件的名称 -->
+        <file>${LOG_HOME}/${appName}-info.log</file>
+
+        <!--过滤器，以当前配置为例，level配置的是info, onMatch配置的是ACCEPT则表示如果日志级别时info就打印，onMismatch配置的事DENY 则表示日志级别非info就不打印-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <!--日志滚动策略，按照时间进行滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--达到要求后将当前活跃的日志文件以下面的格式进行重命名, %i 表示序号，从0开始依次递增，
+            具体含义是如果当天内日志文件达到最大size，则根据当前日期以及序号重名老的日志文件，
+            注意若是不配置下面的timeBasedFileNamingAndTriggeringPolicy
+            或者 不将上面的 TimeBasedRollingPolicy 换成 SizeAndTimeBasedRollingPolicy 则 ‘%i’ 可能会出现解析错误问题-->
+            <!--若文件格式是zip或者gz则会自动压缩，如果不是则不会自动压缩-->
+            <fileNamePattern>${LOG_HOME}/${appName}-info-%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!-- 日志总保存量为10GB -->
+            <totalSizeCap>10GB</totalSizeCap>
+            <!--在根据日期来滚动生成的基础上配置每个日志文件的最大size,如果超出这个size，则重新开启一个新的日志文件，之前老的文件将会被按照上面的命名规则重命名保存下来-->
+            <!--
+                除了这种配置方式以外，还可以将上面的 rollingPolicy 标签中的class的属性值设置为ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy
+                这样的话，就不需要下面的timeBasedFileNamingAndTriggeringPolicy标签了，但是需要在rollingPolicy标签中设置子标签 MaxFileSize
+             -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>10MB</MaxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [ %thread ] - [ %-5level ] [ %logger{50} : %line ] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!--日志按照时间滚动生成滚动生成warn级别的日志-->
+    <appender name="LOG_FILE_WARN_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 指定当前活跃的日志文件的名称 -->
+        <file>${LOG_HOME}/${appName}-warn.log</file>
+
+        <!--过滤器，以当前配置为例，level配置的是info, onMatch配置的是ACCEPT则表示如果日志级别时info就打印，onMismatch配置的事DENY 则表示日志级别非info就不打印-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <!--日志滚动策略，按照时间进行滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--达到要求后将当前活跃的日志文件以下面的格式进行重命名, %i 表示序号，从0开始依次递增，
+            具体含义是如果当天内日志文件达到最大size，则根据当前日期以及序号重名老的日志文件，
+            注意若是不配置下面的timeBasedFileNamingAndTriggeringPolicy
+            或者 不将上面的 TimeBasedRollingPolicy 换成 SizeAndTimeBasedRollingPolicy 则 ‘%i’ 可能会出现解析错误问题-->
+            <!--若文件格式是zip或者gz则会自动压缩，如果不是则不会自动压缩-->
+            <fileNamePattern>${LOG_HOME}/${appName}-warn-%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!-- 日志总保存量为10GB -->
+            <totalSizeCap>10GB</totalSizeCap>
+            <!--在根据日期来滚动生成的基础上配置每个日志文件的最大size,如果超出这个size，则重新开启一个新的日志文件，之前老的文件将会被按照上面的命名规则重命名保存下来-->
+            <!--
+                除了这种配置方式以外，还可以将上面的 rollingPolicy 标签中的class的属性值设置为ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy
+                这样的话，就不需要下面的timeBasedFileNamingAndTriggeringPolicy标签了，但是需要在rollingPolicy标签中设置子标签 MaxFileSize
+             -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>10MB</MaxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [ %thread ] - [ %-5level ] [ %logger{50} : %line ] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+
+    <!--日志按照时间滚动生成滚动生成error级别的日志-->
+    <appender name="LOG_FILE_ERROR_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 指定当前活跃的日志文件的名称 -->
+        <file>${LOG_HOME}/${appName}-error.log</file>
+
+        <!--过滤器，以当前配置为例，level配置的是info, onMatch配置的是ACCEPT则表示如果日志级别时info就打印，onMismatch配置的事DENY 则表示日志级别非info就不打印-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <!--日志滚动策略，按照时间进行滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--达到要求后将当前活跃的日志文件以下面的格式进行重命名, %i 表示序号，从0开始依次递增，
+            具体含义是如果当天内日志文件达到最大size，则根据当前日期以及序号重名老的日志文件，
+            注意若是不配置下面的timeBasedFileNamingAndTriggeringPolicy
+            或者 不将上面的 TimeBasedRollingPolicy 换成 SizeAndTimeBasedRollingPolicy 则 ‘%i’ 可能会出现解析错误问题-->
+            <!--若文件格式是zip或者gz则会自动压缩，如果不是则不会自动压缩-->
+            <fileNamePattern>${LOG_HOME}/${appName}-error-%d{yyyy-MM-dd}-%i.log.zip</fileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!-- 日志总保存量为10GB -->
+            <totalSizeCap>10GB</totalSizeCap>
+            <!--在根据日期来滚动生成的基础上配置每个日志文件的最大size,如果超出这个size，则重新开启一个新的日志文件，之前老的文件将会被按照上面的命名规则重命名保存下来-->
+            <!--
+                除了这种配置方式以外，还可以将上面的 rollingPolicy 标签中的class的属性值设置为ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy
+                这样的话，就不需要下面的timeBasedFileNamingAndTriggeringPolicy标签了，但是需要在rollingPolicy标签中设置子标签 MaxFileSize
+             -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <MaxFileSize>10MB</MaxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [ %thread ] - [ %-5level ] [ %logger{50} : %line ] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 异步输出info级别的日志 -->
+    <appender name="ASYNC_LOG_FILE_INFO_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志  默认情况下如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>256</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="LOG_FILE_INFO_APPENDER"/>
+    </appender>
+
+    <appender name="ASYNC_LOG_FILE_WARN_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>256</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="LOG_FILE_WARN_APPENDER"/>
+    </appender>
+
+    <appender name="ASYNC_LOG_FILE_ERROR_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>256</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="LOG_FILE_ERROR_APPENDER"/>
+    </appender>
+
+
+    <!--
+        name: 用来指定受此 logger 约束的某一个包或者具体的某一个类
+        level:用来设置打印级别（日志级别），大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
+              还有一个特俗值INHERITED或者同义词NULL，代表强制执行上级的级别。
+              如果未设置此属性，则继承最近的父 logger（该logger需显示定义level,直到rootLogger）的日志级别。
+        addtivity: logger 的 appender 默认具有累加性（默认日志输出到当前logger的appender和所有祖先logger的appender中,
+                   如果在当前logger 和root中同时配置同一个appender，则日志会打印两遍），
+                   可通过配置 “additivity”属性修改默认行为是否向上级loger传递打印信息。默认是true。
+
+        logger的祖先和父子级关系，根据定义循序，上面一个定义的logger是下面一个logger的父级，
+        logger的name也可以提现出logger的父子级或者祖先关系，如 name 为x 的logger 是name为x.y的logger和 name为 x.y.z的祖先，同理x.y也是x.y.z的祖先
+    -->
+    <logger name="org.springframework" level="info"  additivity="false">
+        <!--由于additivity="false" 所以对于org.springframework中的日志输出只会在名称为stdout 的appender 中出现，在本文件的配置就是只输出到控制台-->
+        <!--<appender-ref ref="STDOUT"/>-->
+    </logger>
+
+    <!--使用p6spy打印完整的sql日志-->
+    <logger name="com.p6spy.engine.spy.appender.Slf4JLogger" level="debug" additivity="false">
+        <!--dditivity="false"，所以没有从祖先或者父级那里继承任何appender，如果不单独引用appender则com.p6spy.engine.spy.appender.Slf4JLogger类下面的日志不会被打印-->
+        <!--单独定义了appender-ref,所以即使dditivity="false"  com.p6spy.engine.spy.appender.Slf4JLogger类相关的日志也会输出到  STDOUT appender中-->
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <!-- 更多常用的三方框架logger配置如下 -->
+    <!-- 需要覆盖日志级别,减少不关注的日志输出 -->
+    <logger name="sun.rmi" level="error"/>
+    <logger name="sun.net" level="error"/>
+    <logger name="javax.management" level="error"/>
+    <logger name="org.redisson" level="warn"/>
+    <logger name="com.zaxxer" level="warn"/>
+
+
+    <!--root也是<logger>元素，但是它是根logger，是所有logger的祖先，所有包下面的日志都会被记录。可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger。-->
+    <root level="info" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ASYNC_LOG_FILE_INFO_APPENDER"/>
+        <appender-ref ref="ASYNC_LOG_FILE_WARN_APPENDER"/>
+        <appender-ref ref="ASYNC_LOG_FILE_ERROR_APPENDER"/>
+    </root>
+
+</configuration>
+
+```
+
+
+
+# 三、log4j2
+
+## 1.1 一个可以拿过来就用的log4j2-spring.xml的文件内容
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!--这个配置文件好像不区分大小写，然后还会吧中划线专驼峰？这个配置文件中各种命名格式都有，居然没有报错，使用的时候还需要注意下-->
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出-->
+<!--monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数-->
+<configuration status="WARN" monitorInterval="60">
+
+    <!--变量配置-->
+    <Properties>
+        <!-- 格式化输出：%date表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %msg：日志消息，%n是换行符-->
+        <!-- %logger{36} 表示 Logger 名字最长36个字符 -->
+        <!--%highlight{}表示将{}中的内容高亮显示，但是自log4j 2.10版本以后该功能默认是关闭的，若要开启需要在 VM options 中添加 -Dlog4j.skipJansi=false即可-->
+        <!--<property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} %highlight{[%thread]} %-5level %logger{36} - %msg%n" />-->
+        <!--可以通过%style, %highlight,%clr 对日志的输出格式进行个性化 具体配置方式可以查看官方文档，如果官方文档中没有找到，可以参考这个链接（有可能会被删除）https://www.jianshu.com/p/b6409b3042e2-->
+        <property name="LOG_PATTERN" value="%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright,BG_Yellow} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
+        <!-- 定义日志存储的路径 -->
+        <property name="FILE_PATH" value="./logs/log4j2" />
+        <property name="FILE_NAME" value="lzy-log4j2-demo" />
+    </Properties>
+
+    <appenders>
+        <console name="Console" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+            <PatternLayout  pattern="${LOG_PATTERN}"/>
+            <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </console>
+
+        <!--文件会打印出所有信息，append表示是已追加模式添加日志，如果是true则表示追加，如果是false则每次启动程序以前的日志会被清空，默认true-->
+        <File name="Filelog" fileName="${FILE_PATH}/test.log" append="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+
+        <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!--interval属性用来指定多久滚动一次，默认是1 hour-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- 这个会打印出所有的warn及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!-- Policies:指定滚动日志的策略，就是什么时候进行新建日志文件输出日志.
+                TimeBasedTriggeringPolicy:Policies子节点，基于时间的滚动策略，interval属性用来指定多久滚动一次，默认是1 hour。modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am.
+                SizeBasedTriggeringPolicy:Policies子节点，基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小.-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- 这个会打印出所有的error及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/error.log" filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!--interval属性用来指定多久滚动一次，默认是1 hour-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+
+        <!--异步AsyncAppender进行配置直接引用上面的Console的name-->
+        <Async name="Async">
+            <AppenderRef ref="Console"/>
+        </Async>
+    </appenders>
+
+    <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
+    <!--然后定义loggers，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <!--若是additivity设为false，则 子Logger 只会在自己的appender里输出，而不会在 父Logger 的appender里输出。-->
+        <logger name="org.mybatis" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </logger>
+
+        <root level="info">
+            <!--此处如果引用异步AsyncAppender的name就是异步输出日志-->
+            <!--需要注意的是这种配置方式 采用了ArrayBlockingQueue来保存需要异步输出的日志事件，效率并没有另外一种配置方式高-->
+           <!-- <Appender-Ref ref="Async"/>-->
+            <!--此处如果引用Appenders标签中Console的name就是同步输出日志-->
+            <appender-ref ref="Console"/>
+            <appender-ref ref="Filelog"/>
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="RollingFileWarn"/>
+            <appender-ref ref="RollingFileError"/>
+        </root>
+
+        <!--异步日志输出 需要在pom文件中引入disruptor的依赖（Log4j-2.9及更高版本在类路径上需要disruptor-3.3.4.jar或更高版本。在Log4j-2.9之前，需要disruptor-3.0.0.jar或更高版本。）-->
+        <!--  <AsyncLogger name="org.springframework" level="info" additivity="false">
+              <AppenderRef ref="Console"/>
+          </AsyncLogger>-->
+        <!--可以通过以下方法配置所有的appender为异步输出-->
+        <!-- <asyncRoot level="info">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="Filelog"/>
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="RollingFileWarn"/>
+            <appender-ref ref="RollingFileError"/>
+        </asyncRoot>-->
+
+        <!--
+            关于异步日志的多一点说明： 上面的AsyncLogger和 asyncRoot标签，可以用来将日志的异步记录和同步记录进行混用
+            除此之外还有一种完全异步的使用方式，推荐使用这种方式进行异步日志打印（不知道为什么推荐，难道性能更高？），配置方式如下
+            将系统属性log4j2.contextSelector设置 为org.apache.logging.log4j.core.async.AsyncLoggerContextSelector将会使所有的记录器异步
+            设置方式：
+            1、在resource目录下创建log4j2.component.properties，并添加以下内容
+                # 设置异步日志系统属性
+                log4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+            2、如果使用的事springboot项目，则可以在启动的main方法中添加如下代码（是不是放在第一行需要再测试）
+                System.setProperty("log4j2.contextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+
+            当配置AsyncLoggerContextSelector作为异步日志时，请确保在配置中使用普通的 <root>和<logger>元素。
+            AsyncLoggerContextSelector将确保所有记录器都是异步的，使用的机制与配置<asyncRoot> 或<asyncLogger>时的机制不同。
+
+            通过log.info(“是否为异步日志：{}”, AsyncLoggerContextSelector.isSelected());可以查看是否为异步日志。
+
+            sync：同步打印日志，日志输出与业务逻辑在同一线程内，当日志输出完毕，才能进行后续业务逻辑操作
+            Async Appender：异步打印日志，内部采用ArrayBlockingQueue，对每个AsyncAppender创建一个线程用于处理日志输出。
+            Async Logger：异步打印日志，采用了高性能并发框架Disruptor，创建一个线程用于处理日志输出。
         -->
-       <!-- <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>-->
-```
+    </loggers>
 
-2、高亮显示
+</configuration>
 
-新版的log4j2不能向logback一样直接进行高亮显示，需要进行一定的配置，配置方式有两种
-
-1、在 VM options 中添加 -Dlog4j.skipJansi=false
-
-2、在resource 目录下创建 log4j2.component.properties 文件，并在文件中添加以下配置
 
 ```
-LOG4J_SKIP_JANSI=false
-```
+
+## 2、关于log4j2的异步日志输出
+
+log4j2的日志输出可以有几种方案来供选择，同步输出、同步异步混用输出、异步输出（推荐，效率高）
+
+### 2.1 同步输出
+
+不加任何异步配置的方式就是同步输出，没有什么好说的
+
+### 2.2 混用输出
+
+
+

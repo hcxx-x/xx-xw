@@ -4,6 +4,7 @@ server:
 logging:
   # 日志级别，可以为每个包配置不同的日志输出级别，当代码中的日志输出级别大于这个配置时，对应的日志才会被输出（eg: com.xx包的日志打印级别为waring,则该包下所有代码中的debug和info级别的日志不会被打印，而error和fatal级别的日志则会被打印）
   level:
+    root: warn
     com.xx: info
   file:
     # logging.file.path好像没有什么用，至少在我这次测试中是没有起到作用的，无论配置是D:/weblogs 还是 ../weblogs (不生效的原因：path和file二者不能同时使用，如若同时使用，则只有logging.file生效)
@@ -19,3 +20,8 @@ logging:
       max-history: 7
       max-file-size: 10KB
       total-size-cap: 1GB
+
+  # group 可以对代码以包的形式或者类的形式进行分组，如下 xxxw: com.xx 表示的含义就是为com.xx这个包单独封一个组，xxxw就是这个组名，分完组之后对于logging.level的配置就可以不指定包名，直接指定组名就可以了 如：logging.level.xxxw: debug
+  # springboot 预定义了一些组 可以在官方文档中查询  地址：https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.logging
+  group:
+    xxxw: com.xx

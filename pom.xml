@@ -40,6 +40,8 @@
         <lombok.version>1.18.24</lombok.version>
         <reflectasm.version>1.11.9</reflectasm.version>
         <hutool.version>5.7.22</hutool.version>
+        <!-- 用于支持log4j2的异步日志输出 -->
+        <disruptor.version>3.4.4</disruptor.version>
         <zxing.version>3.3.3</zxing.version>
         <mybatis-plus.version>3.4.0</mybatis-plus.version>
         <vertx.version>4.0.0</vertx.version>
@@ -114,6 +116,13 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- 用于支持log4j2的异步日志输出 -->
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>${disruptor.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

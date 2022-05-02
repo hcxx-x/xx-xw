@@ -1,4 +1,4 @@
-一、在springboot的yml 配置文件中对日志输出进行简单配置
+# 一、在yaml配置文件中配置日志
 
 springboot 默认使用的日志框架是logback，在yml配置文件中也可以对logback进行简单的配置，可配置内容如下：
 

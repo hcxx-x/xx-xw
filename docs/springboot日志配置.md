@@ -50,3 +50,42 @@ logging:
 
 ```
 
+
+# 从以前的文档中复制过来的内容
+1、依赖说明
+
+如果要使用log4j2进行日志的打印需要排除logback的相关依赖spring-boot-starter-logging ，并引入log4j2的相关依赖spring-boot-starter-log4j2
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <!-- 去掉springboot默认配置（logback）,若使用logback 日志处理方式则这里不用排除该默认设置 -->
+    <!--<exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+       </exclusions>-->
+</dependency>
+
+        <!-- 引入log4j2依赖，若使用log4j进行日志处理，则需要排除上面所描述的springboot的默认日志依赖，
+            否则不会生效
+        -->
+       <!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>-->
+```
+
+2、高亮显示
+
+新版的log4j2不能向logback一样直接进行高亮显示，需要进行一定的配置，配置方式有两种
+
+1、在 VM options 中添加 -Dlog4j.skipJansi=false
+
+2、在resource 目录下创建 log4j2.component.properties 文件，并在文件中添加以下配置
+
+```
+LOG4J_SKIP_JANSI=false
+```

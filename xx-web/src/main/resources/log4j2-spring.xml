@@ -20,8 +20,8 @@
 
     <appenders>
         <console name="Console" target="SYSTEM_OUT">
-            <!--输出日志的格式-->
-            <PatternLayout disableAnsi="false" pattern="${LOG_PATTERN}"/>
+            <!--输出日志的格式（彩色: 指定 disableAnsi、noConsoleNoAnsi 为 false 即可）-->
+            <PatternLayout disableAnsi="false" noConsoleNoAnsi="false" charset="UTF-8" pattern="${LOG_PATTERN}"/>
             <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
         </console>

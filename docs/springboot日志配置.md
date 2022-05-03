@@ -1,3 +1,7 @@
+[TOC]
+
+
+
 # 一、写在前面
 
 ## 1、关于springboot集成logback或log4j2的问题
@@ -527,5 +531,151 @@ log4j2的日志输出可以有几种方案来供选择，同步输出、同步�
 
 ### 2.2 混用输出
 
+#### 2.2.1 使用Async Appender实现日志的异步打印
+
+内部使用的一个队列（ArrayBlockingQueue）和一个后台线程（对每个AsyncAppender创建一个线程用于处理日志输出），日志先存入队列，后台线程从队列中取出日志。阻塞队列容易受到锁竞争的影响，当更多线程同时记录时性能可能会变差。
+
+使用方式：
+
+​	 在appenders标签内创建子标签Async，并在Async标签中引用一个已经定义好的appender，然后再logger标签中 使用刚刚定义的AsyncAppender即可（注意，如果引用的不是AsyncAppender则会使用同步的方式进行日志打印，所以说这种方式是混用，当然也可以通过配置的方式来实现完全的异步输出），具体配置方式如下
+
+```xml
+    <appenders>
+        <!--文件会打印出所有信息，append表示是已追加模式添加日志，如果是true则表示追加，如果是false则每次启动程序以前的日志会被清空，默认true-->
+        <File name="Filelog" fileName="${FILE_PATH}/test.log" append="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+
+        <!--异步AsyncAppender进行配置直接引用上面的Console的name-->
+        <Async name="Async">
+            <AppenderRef ref="Filelog"/>
+        </Async>
+    </appenders>
 
 
+    <loggers>
+        <logger name="org.mybatis" level="info" additivity="false">
+            <AppenderRef ref="Async"/>
+        </logger>
+    </loggers>
+
+
+```
+
+
+
+#### 2.2.2 使用Async Logger实现日志的异步打印
+
+​	Async Logger。内部使用的是LMAX Disruptor技术，Disruptor是一个无锁的线程间通信库，它不是一个队列，不需要排队，从而产生更高的吞吐量和更低的延迟。
+
+​	此种方式下异步日志的输出依赖于AsyncRoot、AsyncLogger标签。以上两个标签可以单独使用实现日志的纯异步输出（如果要实现日志的纯异步输出可以使另外一种方式，后面会说），也可以和Root、Logger混合配置，从而实现同步异步混合。但是需要注意，配置中只能有一个root元素，也就是只能使用AsyncRoot或Root中的一个。
+
+使用步骤：
+
+1、引入Disruptor依赖
+
+​	注意，Log4j-2.9+需要disruptor-3.3.4.jar或更高版本。在Log4j-2.9之前，需要disruptor-3.0.0.jar或更高版本。
+
+```xml
+<!-- 用于支持log4j2的异步日志输出 -->
+ <dependency>
+     <groupId>com.lmax</groupId>
+     <artifactId>disruptor</artifactId>
+ </dependency>
+```
+
+2、使用AsyncRoot、AsyncLogger标签实现异步打印
+
+```
+ <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
+    <!--然后定义loggers，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+        <!--异步日志输出 需要在pom文件中引入disruptor的依赖（Log4j-2.9及更高版本在类路径上需要disruptor-3.3.4.jar或更高版本。在Log4j-2.9之前，需要disruptor-3.0.0.jar或更高版本。）-->
+         <AsyncLogger name="org.springframework" level="info" additivity="false">
+              <AppenderRef ref="Console"/>
+          </AsyncLogger>
+          
+          
+        <!--可以通过以下方法配置所有的appender为异步输出-->
+        <asyncRoot level="info">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="Filelog"/>
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="RollingFileWarn"/>
+            <appender-ref ref="RollingFileError"/>
+        </asyncRoot>
+    </loggers>
+```
+
+
+
+### 2.3、纯异步输出
+
+无论是 `Async Appender`还是 `Async Logger` 理论上来说都可以通过配置来实现日志的纯异步输出。但是不推荐，推荐使用下面这种方式
+
+注意：以下说明建立在2.2.2章的基础上
+
+#### 2.3.1 设置系统属性
+
+将系统属性log4j2.contextSelector设置 为org.apache.logging.log4j.core.async.AsyncLoggerContextSelector将会使所有的记录器异步
+   	设置方式(以下两种任选一种)：
+            1、在resource目录下创建log4j2.component.properties，并添加以下内容
+
+                ```properties
+                log4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+                ```
+
+​            2、如果使用的事springboot项目，则可以在启动的main方法中添加如下代码（是不是放在第一行需要再测试）
+
+```java
+  System.setProperty("log4j2.contextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+```
+
+#### 2.3.2 修改标签
+
+将2.2.2中的`AsyncRoot`、`AsyncLogger` 标签换成对应的 `Root`、`Logger` 标签
+
+开启全异步时，日志配置中需要使用普通的Root和Logger元素。如果使用了AsyncRoot或AsyncLogger，将产生不必要的开销。
+
+当配置AsyncLoggerContextSelector作为异步日志时，请确保在配置中使用普通的 <root>和<logger>元素。AsyncLoggerContextSelector将确保所有记录器都是异步的，使用的机制与配置<asyncRoot> 或<asyncLogger>时的机制不同。
+
+## 3、log4j2日志的彩色输出
+
+在log4j2中可以通过配置，实现在支持ANSI 输出的控制台中输出彩色日志
+
+可以实现彩色输出的语法有 
+
+1、%highlight{内容}{具体颜色，可以根据不同的日志级别指定不同的颜色输出}、
+
+2、%style{内容}{样式（多个样式以逗号隔开）}、
+
+3、%clr{内容}{具体颜色，可以根据不同的日志级别指定不同的颜色输出}   注意：这个在log4j2的文档中没有找到对应的配置方式，但是我在测试中使用到了这个，也确实是高亮输出了，使用时需要注意
+
+具体的配置方式可以查看官方文档   [Log4j – Log4j 2 Layouts (apache.org)](https://logging.apache.org/log4j/2.x/manual/layouts.html#enable-jansi)
+
+
+
+启用彩色日志输出还需要对PatternLayout标签中的`disableAnsi `和`noConsoleNoAnsi`属性进行配置，如果不配置有可能打印不出来彩色日志，有关官方的说明可以看 3.2章节
+
+```
+ <!--输出日志的格式（彩色: 指定 disableAnsi、noConsoleNoAnsi 为 false 即可）-->
+<PatternLayout disableAnsi="false" noConsoleNoAnsi="false" charset="UTF-8" pattern="${LOG_PATTERN}"/>
+```
+
+
+
+
+
+### 3.2 彩色输出可能存在的问题
+
+官方说明：
+
+> ANSI escape sequences are supported natively on many platforms but are not by default on Windows. To enable ANSI support add the [Jansi](https://jansi.fusesource.org/) jar to your application and set property to . This allows Log4j to use Jansi to add ANSI escape codes when writing to the console. `log4j.skipJansi``false`
+>
+> NOTE: Prior to Log4j 2.10, Jansi was enabled by default. The fact that Jansi requires native code means that Jansi can only be loaded by a single class loader. For web applications this means the Jansi jar has to be in the web container's classpath. To avoid causing problems for web applications, Log4j will no longer automatically try to load Jansi without explicit configuration from Log4j 2.10 onward.
+
+翻译：
+
+许多平台本机支持 ANSI 转义序列，但 Windows 默认不支持。要启用 ANSI 支持，请将 Jansi jar 添加到您的应用程序并将属性设置为 .这允许 Log4j 在写入控制台时使用 Jansi 添加 ANSI 转义码。 log4j.skipJansifalse
+
+注意：在 Log4j 2.10 之前，Jansi 默认启用。 Jansi 需要本地代码这一事实意味着 Jansi 只能由单个类加载器加载。对于 Web 应用程序，这意味着 Jansi jar 必须位于 Web 容器的类路径中。为了避免给 Web 应用程序带来问题，Log4j 将不再自动尝试加载 Jansi，而无需从 Log4j 2.10 开始进行显式配置。

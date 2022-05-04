@@ -44,7 +44,7 @@
         <!-- 用于支持log4j2的异步日志输出 -->
         <disruptor.version>3.4.4</disruptor.version>
         <zxing.version>3.3.3</zxing.version>
-        <mybatis-plus.version>3.4.0</mybatis-plus.version>
+        <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <vertx.version>4.0.0</vertx.version>
         <netty-version>4.1.49.Final</netty-version>
         <jaxb.version>2.3.1</jaxb.version>

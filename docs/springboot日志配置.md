@@ -393,7 +393,45 @@ springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `lo
 
 # 三、log4j2
 
-## 1.1 一个可以拿过来就用的log4j2-spring.xml的文件内容
+## 1、配置依赖
+
+在springboot项目中如果想要使用log4j2则需要先进行依赖的配置，配置内容如下，可以根据自己实际需要的功能进行删减
+
+注意：由于springboot默认集成logback，所以如果想要使用log4j2，则需要先排除掉springboot对logback的依赖
+
+```xml
+ 		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <!-- 去掉springboot默认配置（logback）,若使用logback 日志处理方式则这里不用排除该默认设置 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- 引入log4j2依赖，若使用log4j进行日志处理，则需要排除上面所描述的springboot的默认日志依赖，否则不会生效-->
+         <dependency>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-starter-log4j2</artifactId>
+         </dependency>
+        <!-- 用于支持log4j2的异步日志输出 -->
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+        </dependency>
+        <!-- Log4j SpringBoot |- 解决引入 SpringBoot 配置文件参数问题的依赖-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-spring-boot</artifactId>
+        </dependency>
+```
+
+
+
+## 2、 一个可以拿过来就用的log4j2-spring.xml的文件内容
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -411,26 +449,31 @@ springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `lo
         <!--<property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} %highlight{[%thread]} %-5level %logger{36} - %msg%n" />-->
         <!--可以通过%style, %highlight,%clr 对日志的输出格式进行个性化 具体配置方式可以查看官方文档，如果官方文档中没有找到，可以参考这个链接（有可能会被删除）https://www.jianshu.com/p/b6409b3042e2-->
         <property name="LOG_PATTERN" value="%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright,BG_Yellow} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
+
+        <!--读取 SprigBoot 中的 spring.application.name 参数,spring.application.name后面的“:-”后面的内容表示在没有读取到对应配置时的默认值-->
+        <!--注意，使用下面这个配置读取springboot配置文件的属性的时候需要引入一个依赖：log4j-spring-boot-->
+        <property name="appName" value="${spring:spring.application.name:-defaultAppName}"/>
+
         <!-- 定义日志存储的路径 -->
         <property name="FILE_PATH" value="./logs/log4j2" />
-        <property name="FILE_NAME" value="lzy-log4j2-demo" />
+        <property name="FILE_NAME" value="${appName}" />
     </Properties>
 
     <appenders>
         <console name="Console" target="SYSTEM_OUT">
-            <!--输出日志的格式-->
-            <PatternLayout  pattern="${LOG_PATTERN}"/>
+            <!--输出日志的格式（彩色: 指定 disableAnsi、noConsoleNoAnsi 为 false 即可）-->
+            <PatternLayout disableAnsi="false" noConsoleNoAnsi="false" charset="UTF-8" pattern="${LOG_PATTERN}"/>
             <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
         </console>
 
         <!--文件会打印出所有信息，append表示是已追加模式添加日志，如果是true则表示追加，如果是false则每次启动程序以前的日志会被清空，默认true-->
-        <File name="Filelog" fileName="${FILE_PATH}/test.log" append="true">
+        <File name="Filelog" fileName="${FILE_PATH}/${appName}.log" append="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </File>
 
         <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${appName}-info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -444,7 +487,7 @@ springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `lo
         </RollingFile>
 
         <!-- 这个会打印出所有的warn及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/${appName}-warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -460,7 +503,7 @@ springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `lo
         </RollingFile>
 
         <!-- 这个会打印出所有的error及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/error.log" filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/${appName}-error.log" filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -533,6 +576,9 @@ springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `lo
             sync：同步打印日志，日志输出与业务逻辑在同一线程内，当日志输出完毕，才能进行后续业务逻辑操作
             Async Appender：异步打印日志，内部采用ArrayBlockingQueue，对每个AsyncAppender创建一个线程用于处理日志输出。
             Async Logger：异步打印日志，采用了高性能并发框架Disruptor，创建一个线程用于处理日志输出。
+
+
+
         -->
     </loggers>
 
@@ -541,17 +587,17 @@ springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `lo
 
 ```
 
-## 2、关于log4j2的异步日志输出
+## 3、关于log4j2的异步日志输出
 
 log4j2的日志输出可以有几种方案来供选择，同步输出、同步异步混用输出、异步输出（推荐，效率高）
 
-### 2.1 同步输出
+### 3.1 同步输出
 
 不加任何异步配置的方式就是同步输出，没有什么好说的
 
-### 2.2 混用输出
+### 3.2 混用输出
 
-#### 2.2.1 使用Async Appender实现日志的异步打印
+#### 3.2.1 使用Async Appender实现日志的异步打印
 
 内部使用的一个队列（ArrayBlockingQueue）和一个后台线程（对每个AsyncAppender创建一个线程用于处理日志输出），日志先存入队列，后台线程从队列中取出日志。阻塞队列容易受到锁竞争的影响，当更多线程同时记录时性能可能会变差。
 
@@ -629,13 +675,13 @@ log4j2的日志输出可以有几种方案来供选择，同步输出、同步�
 
 
 
-### 2.3、纯异步输出
+### 3.3、纯异步输出
 
 无论是 `Async Appender`还是 `Async Logger` 理论上来说都可以通过配置来实现日志的纯异步输出。但是不推荐，推荐使用下面这种方式
 
 注意：以下说明建立在2.2.2章的基础上
 
-#### 2.3.1 设置系统属性
+#### 3.3.1 设置系统属性
 
 将系统属性log4j2.contextSelector设置 为org.apache.logging.log4j.core.async.AsyncLoggerContextSelector将会使所有的记录器异步
    	设置方式(以下两种任选一种)：
@@ -651,7 +697,7 @@ log4j2的日志输出可以有几种方案来供选择，同步输出、同步�
   System.setProperty("log4j2.contextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
 ```
 
-#### 2.3.2 修改标签
+#### 3.3.2 修改标签
 
 将2.2.2中的`AsyncRoot`、`AsyncLogger` 标签换成对应的 `Root`、`Logger` 标签
 
@@ -659,7 +705,7 @@ log4j2的日志输出可以有几种方案来供选择，同步输出、同步�
 
 当配置AsyncLoggerContextSelector作为异步日志时，请确保在配置中使用普通的 <root>和<logger>元素。AsyncLoggerContextSelector将确保所有记录器都是异步的，使用的机制与配置<asyncRoot> 或<asyncLogger>时的机制不同。
 
-## 3、log4j2日志的彩色输出
+## 4、log4j2日志的彩色输出
 
 在log4j2中可以通过配置，实现在支持ANSI 输出的控制台中输出彩色日志
 
@@ -686,7 +732,7 @@ log4j2的日志输出可以有几种方案来供选择，同步输出、同步�
 
 
 
-### 3.2 彩色输出可能存在的问题
+### 4.2 彩色输出可能存在的问题
 
 官方说明：
 

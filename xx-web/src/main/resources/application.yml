@@ -1,2 +1,5 @@
 server:
   port: 6606
+spring:
+  application:
+    name: xx-xw

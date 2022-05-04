@@ -13,9 +13,14 @@
         <!--<property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} %highlight{[%thread]} %-5level %logger{36} - %msg%n" />-->
         <!--可以通过%style, %highlight,%clr 对日志的输出格式进行个性化 具体配置方式可以查看官方文档，如果官方文档中没有找到，可以参考这个链接（有可能会被删除）https://www.jianshu.com/p/b6409b3042e2-->
         <property name="LOG_PATTERN" value="%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright,BG_Yellow} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
+
+        <!--读取 SprigBoot 中的 spring.application.name 参数,spring.application.name后面的“:-”后面的内容表示在没有读取到对应配置时的默认值-->
+        <!--注意，使用下面这个配置读取springboot配置文件的属性的时候需要引入一个依赖：log4j-spring-boot-->
+        <property name="appName" value="${spring:spring.application.name:-defaultAppName}"/>
+
         <!-- 定义日志存储的路径 -->
         <property name="FILE_PATH" value="./logs/log4j2" />
-        <property name="FILE_NAME" value="lzy-log4j2-demo" />
+        <property name="FILE_NAME" value="${appName}" />
     </Properties>
 
     <appenders>
@@ -27,12 +32,12 @@
         </console>
 
         <!--文件会打印出所有信息，append表示是已追加模式添加日志，如果是true则表示追加，如果是false则每次启动程序以前的日志会被清空，默认true-->
-        <File name="Filelog" fileName="${FILE_PATH}/test.log" append="true">
+        <File name="Filelog" fileName="${FILE_PATH}/${appName}.log" append="true">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </File>
 
         <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${appName}-info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -46,7 +51,7 @@
         </RollingFile>
 
         <!-- 这个会打印出所有的warn及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/${appName}-warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -62,7 +67,7 @@
         </RollingFile>
 
         <!-- 这个会打印出所有的error及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
-        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/error.log" filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/${appName}-error.log" filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
             <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
             <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>

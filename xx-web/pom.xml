@@ -40,6 +40,11 @@
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
         </dependency>
+        <!-- Log4j SpringBoot |- 解决引入 SpringBoot 配置文件参数问题的依赖-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-spring-boot</artifactId>
+        </dependency>
 
     </dependencies>
 

@@ -22,25 +22,25 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <!-- 去掉springboot默认配置（logback）,若使用logback 日志处理方式则这里不用排除该默认设置 -->
-            <exclusions>
+            <!--<exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
 
-        <!-- 引入log4j2依赖，若使用log4j进行日志处理，则需要排除上面所描述的springboot的默认日志依赖，否则不会生效-->
+       <!-- &lt;!&ndash; 引入log4j2依赖，若使用log4j进行日志处理，则需要排除上面所描述的springboot的默认日志依赖，否则不会生效&ndash;&gt;
          <dependency>
              <groupId>org.springframework.boot</groupId>
              <artifactId>spring-boot-starter-log4j2</artifactId>
          </dependency>
-        <!-- 用于支持log4j2的异步日志输出 -->
+        &lt;!&ndash; 用于支持log4j2的异步日志输出 &ndash;&gt;
         <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
         </dependency>
-        <!-- Log4j SpringBoot |- 解决引入 SpringBoot 配置文件参数问题的依赖-->
+        &lt;!&ndash; Log4j SpringBoot |- 解决引入 SpringBoot 配置文件参数问题的依赖&ndash;&gt;
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-spring-boot</artifactId>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>

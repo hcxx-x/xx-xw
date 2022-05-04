@@ -18,6 +18,7 @@
 
     <!-- 定义控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
         <!--encoder 和 layout 选用一个即可，不过自0.9.19版本之后，极力推荐使用encoder-->
         <!-- encoder class为空时, 默认也为 ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

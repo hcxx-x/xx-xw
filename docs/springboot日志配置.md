@@ -92,6 +92,22 @@ LOG4J_SKIP_JANSI=false
 
 我也不知道，以后有空再研究吧！
 
+以上问题的测试都是在idea的控制台中测试的，所以不需要引入jansi就可以高亮显示的问题有可能是idea控制台本身就支持高亮显示吧（坑爹的windows不支持）！所以对待这个问题还具有不确定性，然后我也不想在这个问题上深究了，毕竟高亮输出也只是好玩，不会真有人生产环境高亮输出吧 
+
+在logback的文档上看到的一端描述
+
+> Note that Unix-based operating systems such as Linux and Mac OS X support ANSI color codes natively and usually do not require enabling the Jansi library
+
+翻译过来就是：
+
+> 基于 Unix 的操作系统（如 Linux 和 Mac OS X）本机支持 ANSI 颜色代码，通常不需要启用 Jansi 库，
+
+
+
+看到另外一篇文档
+
+> 　`Intellij IDEA`默认支持`Ansi Color`，即可以正常识别`Ansi`字符对应的颜色，但不支持斜体、双下划线、闪烁等特效；而`Eclipse`控制台默认无法识别`Ansi`颜色字符，它需要通过安装一个插件来实现，插件的地址为：`http://www.mihai-nita.net/eclipse`，安装方式可以参考：[Eclipse安装AnsiInConsole插件](https://mihai-nita.net/2013/06/03/eclipse-plugin-ansi-in-console/) 中的`Installation`说明（实际上`Eclipse`安装了该插件仅仅是支持了`Ansi`颜色字符的识别，依然不支持特效）。
+
 
 
 # 二、logback
@@ -761,3 +777,16 @@ log4j2的日志输出可以有几种方案来供选择，同步输出、同步�
 啥玩意？你问我上面那三个东西是啥？
 
 我也不知道，以后有空再研究吧！
+
+
+
+以上问题的测试都是在idea的控制台中测试的，所以不需要引入jansi就可以高亮显示的问题有可能是idea控制台本身就支持高亮显示吧（坑爹的windows不支持）！所以对待这个问题还具有不确定性，然后我也不想在这个问题上深究了，毕竟高亮输出也只是好玩，不会真有人生产环境高亮输出吧 
+
+在logback的文档上看到的一端描述
+
+> Note that Unix-based operating systems such as Linux and Mac OS X support ANSI color codes natively and usually do not require enabling the Jansi library
+
+翻译过来就是：
+
+> 基于 Unix 的操作系统（如 Linux 和 Mac OS X）本机支持 ANSI 颜色代码，通常不需要启用 Jansi 库，
+

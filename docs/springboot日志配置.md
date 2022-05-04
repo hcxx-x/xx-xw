@@ -195,6 +195,8 @@ springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `lo
 
     <!-- 定义控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--withJansi好像没有用啊，配置不配置都不影响-->
+        <withJansi>true</withJansi>
         <!--encoder 和 layout 选用一个即可，不过自0.9.19版本之后，极力推荐使用encoder-->
         <!-- encoder class为空时, 默认也为 ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -376,6 +378,26 @@ springboot 默认会扫描类路径下的 `logback.xml` `logback-spring.xml` `lo
     <logger name="org.springframework" level="info"  additivity="false">
         <!--由于additivity="false" 所以对于org.springframework中的日志输出只会在名称为stdout 的appender 中出现，在本文件的配置就是只输出到控制台-->
         <!--<appender-ref ref="STDOUT"/>-->
+    </logger>
+
+    <!--打印mybatis的sql执行日志，使用这种方式打印要求不配置configuration.logImple，或者配置成Slf4jImpl，这样这里的配置才能生效-->
+    <!--如果配置成StoutImpl，则底层采用的事System.out.print 方式输出的，只会在控制台打印，不会输出到日志文件中-->
+    <!--logger的那么需要配置成mapper接口所在的包，level配置成debug才能打印-->
+    <!--配置好之后会在控制台中打印出mybatis当前使用的日志实现 eg: Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.-->
+    <!--mybatis中的loggingFactory会根据顺序依次判断Slf4j、commonLoggind、log4j2、log4j、jdklog、和不使用log， 然后org/apache/ibatis/session/Configuration.java
+    在根据logImpl的配置判断是否要重新设置使用的日志实现，并调用LoggerFactory的对应的useXXXLogImpl方法，设置最后确定要使用的日志实现
+    ,所以mybatis选择日志的优先级是：logImpl配置>(logImpl不配置时自动根据项目引入的日志框架进行自行判断，判断代码在LoggerFactory的一个static代码块中)
+    有一个疑问：在LoggerFactory判断使用那个日志框架的时候，时启动多个线程异步判断的，虽然静态方法上加了synchronized, 但是在setImplementation方法中并没有再次判断logConstructor是否为空，
+    这就可能导致项目中引入多个日志框架时（虽然不会这么搞），无法确定具体使用哪一个日志框架，出现这种问题的时候应该手动配置logImpl进行设置确定日志实现（以上是看源码时的想法，也不知道对不对）
+    -->
+    <logger name="com.xx.web.mapper" level="debug"  additivity="false">
+        <!--由于additivity="false" 所以对于org.mybatis中的日志输出只会在名称为stdout 的appender 中出现，在本文件的配置就是只输出到控制台-->
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.apache.ibatis.logging" level="debug"  additivity="false">
+        <!--由于additivity="false" 所以对于org.springframework中的日志输出只会在名称为stdout 的appender 中出现，在本文件的配置就是只输出到控制台-->
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <!--使用p6spy打印完整的sql日志-->

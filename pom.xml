@@ -55,6 +55,7 @@
         <!--解决window老版cmd终端不支持ansi显示问题（window terminal已默认支持）-->
         <jansi.version>2.4.0</jansi.version>
         <mybatis-enhance-actable.version>1.5.0.RELEASE</mybatis-enhance-actable.version>
+        <p6spy.version>3.9.1</p6spy.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -141,6 +142,13 @@
                 <artifactId>mybatis-enhance-actable</artifactId>
                 <version>${mybatis-enhance-actable.version}</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/p6spy/p6spy -->
+            <dependency>
+                <groupId>p6spy</groupId>
+                <artifactId>p6spy</artifactId>
+                <version>${p6spy.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

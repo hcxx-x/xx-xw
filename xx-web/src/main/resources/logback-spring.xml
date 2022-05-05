@@ -197,7 +197,7 @@
         logger的祖先和父子级关系，根据定义循序，上面一个定义的logger是下面一个logger的父级，
         logger的name也可以提现出logger的父子级或者祖先关系，如 name 为x 的logger 是name为x.y的logger和 name为 x.y.z的祖先，同理x.y也是x.y.z的祖先
     -->
-    <logger name="org.springframework" level="info"  additivity="false">
+    <logger name="org.springframework" level="error"  additivity="false">
         <!--由于additivity="false" 所以对于org.springframework中的日志输出只会在名称为stdout 的appender 中出现，在本文件的配置就是只输出到控制台-->
         <!--<appender-ref ref="STDOUT"/>-->
     </logger>
@@ -238,7 +238,7 @@
 
 
     <!--root也是<logger>元素，但是它是根logger，是所有logger的祖先，所有包下面的日志都会被记录。可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger。-->
-    <root level="info" additivity="false">
+    <root level="DEBUG" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="ASYNC_LOG_FILE_INFO_APPENDER"/>
         <appender-ref ref="ASYNC_LOG_FILE_WARN_APPENDER"/>

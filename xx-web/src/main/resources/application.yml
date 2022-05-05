@@ -6,23 +6,23 @@ spring:
     name: xx-xw
   config:
     # spring.profiles.active 在springboot 2.4.0版本开始别标志位过时的，并在3.0移除，下面这个是替代品
-    import: application-db_mysql.yml, application-mybatisplus.yml
+    import: application-db_mysql.yml, application-mybatisplus.yml, application-actable.properties
 
-  jpa:
-    properties:
-      hibernate:
-        #        用MySQL5InnoDBDialect生成的表的引擎才是InnoDB
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-    hibernate:
-      naming:
-        #        物理名称命名策略，表名，字段为小写，当有大写字母的时候会添加下划线分隔符号，这是默认策略
-        #        如果是org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl，直接映射，不会做过多的处理
-        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-      #      update： 每次运行，没有表会新建表，表内有数据不会清空，只会更新
-      #      create： 先删除表，在重新生成表
-      #      create-drop：每次程序结束的时候会清空表
-      #      validate：运行程序会校验数据与数据库的字段类型是否相同，不同会报错
-      #      none: 什么也不做
-      ddl-auto: update
-    #      控制台数据sql语句
-    show-sql: true
+#  jpa:
+#    properties:
+#      hibernate:
+#        #        用MySQL5InnoDBDialect生成的表的引擎才是InnoDB
+#        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+#    hibernate:
+#      naming:
+#        #        物理名称命名策略，表名，字段为小写，当有大写字母的时候会添加下划线分隔符号，这是默认策略
+#        #        如果是org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl，直接映射，不会做过多的处理
+#        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+#      #      update： 每次运行，没有表会新建表，表内有数据不会清空，只会更新
+#      #      create： 先删除表，在重新生成表
+#      #      create-drop：每次程序结束的时候会清空表
+#      #      validate：运行程序会校验数据与数据库的字段类型是否相同，不同会报错
+#      #      none: 什么也不做
+#      ddl-auto: update
+#    #      控制台数据sql语句
+#    show-sql: true

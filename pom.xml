@@ -54,6 +54,7 @@
         <log4j2.version>2.16.0</log4j2.version>
         <!--解决window老版cmd终端不支持ansi显示问题（window terminal已默认支持）-->
         <jansi.version>2.4.0</jansi.version>
+        <mybatis-enhance-actable.version>1.5.0.RELEASE</mybatis-enhance-actable.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -133,6 +134,12 @@
                 <groupId>org.fusesource.jansi</groupId>
                 <artifactId>jansi</artifactId>
                 <version>${jansi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.gitee.sunchenbin.mybatis.actable</groupId>
+                <artifactId>mybatis-enhance-actable</artifactId>
+                <version>${mybatis-enhance-actable.version}</version>
             </dependency>
 
         </dependencies>

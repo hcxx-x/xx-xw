@@ -1,0 +1,60 @@
+<!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!-- 数据库驱动:选择你的本地硬盘上面的数据库驱动包-->
+    <classPathEntry  location="E:\appdata\maven\repository\mysql\mysql-connector-java\8.0.21\mysql-connector-java-8.0.21.jar"/>
+
+    <context id="DB2Tables"  targetRuntime="MyBatis3">
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--数据库链接URL，用户名、密码
+           1.一般jdbc数据库的版本6.x以上，都是com.mysql.cj.jdbc.Driver  其他的低版本就是com.mysql.cj.jdbc.Driver
+           2、如果您正在使用 Connector/J 的版本8.x，您可能会注意到生成器试图为 MySql 信息模式(sys，information _ schema，performance _ schema 等)中的表生成代码！要禁用此行为，请将属性“ nullCatalogMeansCurrent = true”添加到 JDBC URL。
+           3、如果射生成的代码包含WithBLOBs，可以通过第二条方式进行解决，或者 在table标签中进行一下配置，将text 类型指定为varchar类型
+           <columnOverride column="detail_address" javaType="java.lang.String" jdbcType="VARCHAR" />
+         -->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://192.168.0.216:3306/vending_machine?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Asia/Shanghaijdbc:mysql://localhost:3306/study?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai"
+                        userId="root" password="ucloudant2019">
+
+            <property name="nullCatalogMeansCurrent" value="true" />
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!-- 生成实体的包名和位置-->
+        <javaModelGenerator targetPackage="com.young.mybatis.generator.dao" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!-- 生成mapper.xml映射文件的位置和目录-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!-- 生成mapper接口的包名和位置-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.young.mybatis.generator.mapper" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!-- 要生成的表 tableName是数据库中的表名或视图名 domainObjectName是实体类名-->
+        <!--<table tableName="user" domainObjectName="User"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false">
+
+        </table>-->
+        <!-- 生成数据库中所有表的实体 （标上重点，考试要考：要加上schema=SCOTT（大写），否则会生成所有实体表）-->
+        <table tableName="mini_manager" schema="SCOTT" enableCountByExample="true" enableUpdateByExample="true" enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true" ></table>
+    </context>
+</generatorConfiguration>

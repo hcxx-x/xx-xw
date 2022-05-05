@@ -2,5 +2,5 @@ mybatis-plus:
   configuration:
     # 配置mapper.xml文件的位置，默认："classpath*:/mapper/**/*.xml"
     mapperLocations: classpath*:/mapper/**/*.xml
-    logImpl: org.apache.ibatis.logging.stdout.StdOutImpl
+    logImpl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 

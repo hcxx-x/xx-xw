@@ -12,6 +12,7 @@
         <!--%highlight{}表示将{}中的内容高亮显示，但是自log4j 2.10版本以后该功能默认是关闭的，若要开启需要在 VM options 中添加 -Dlog4j.skipJansi=false即可-->
         <!--<property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} %highlight{[%thread]} %-5level %logger{36} - %msg%n" />-->
         <!--可以通过%style, %highlight,%clr 对日志的输出格式进行个性化 具体配置方式可以查看官方文档，如果官方文档中没有找到，可以参考这个链接（有可能会被删除）https://www.jianshu.com/p/b6409b3042e2-->
+        <!--不在springboot环境中使用log4j时 发现 highlight好像只能以%highlight{内容}{FATAL=red, ERROR=red.....} 指定在什么级别日志下输出什么颜色的日志，而%style则可以直接指定样式，不需要联合日志级别配置-->
         <property name="LOG_PATTERN" value="%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright,BG_Yellow} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
 
         <!--读取 SprigBoot 中的 spring.application.name 参数,spring.application.name后面的“:-”后面的内容表示在没有读取到对应配置时的默认值-->

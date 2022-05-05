@@ -238,7 +238,7 @@
 
 
     <!--root也是<logger>元素，但是它是根logger，是所有logger的祖先，所有包下面的日志都会被记录。可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger。-->
-    <root level="DEBUG" additivity="false">
+    <root level="info" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="ASYNC_LOG_FILE_INFO_APPENDER"/>
         <appender-ref ref="ASYNC_LOG_FILE_WARN_APPENDER"/>

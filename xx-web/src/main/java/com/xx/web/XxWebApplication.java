@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
  *  如果不需要可以将相关配置去掉
  */
 @SpringBootApplication(scanBasePackages = {"com.gitee.sunchenbin.mybatis.actable.manager.*"})
-@MapperScan(basePackages = {"com.gitee.sunchenbin.mybatis.actable.dao"})
+@MapperScan(basePackages = {"com.xx.web.mapper","com.gitee.sunchenbin.mybatis.actable.dao"})
 public class XxWebApplication {
     public static void main(String[] args) {
         try {

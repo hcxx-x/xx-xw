@@ -13,6 +13,8 @@ import lombok.Data;
 /**
  * 该类用于测试AcTable根据实体类生成mysql的表
  * 关于AcTable的相关文档，可以查看 https://www.yuque.com/sunchenbin/actable
+ *
+ * actable 兼容了部分mybatisplus的注解，在不适用actable提供的注解的情况下也可以通过myabtisplus注解生成表，但是功能上来说就没有那么全了
  */
 @Data
 @TableName("test_actable")

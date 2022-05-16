@@ -13,7 +13,7 @@ public class LogTestController {
     @GetMapping("/loop/print")
     public void loopPrintLog(){
         for (int i = 0; i < 1000; i++) {
-            log.error("循环输出日志，第{}次输出",i);
+            //log.error("循环输出日志，第{}次输出",i);
         }
     }
 

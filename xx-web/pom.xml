@@ -12,6 +12,11 @@
     <artifactId>xx-web</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.dtflys.forest</groupId>
+            <artifactId>forest-spring-boot-starter</artifactId>
+        </dependency>
+
         <!-- 打印sql日志，一般配合mybatis使用 -->
         <dependency>
             <groupId>p6spy</groupId>

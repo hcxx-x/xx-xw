@@ -37,7 +37,6 @@
         <poi.version>3.17</poi.version>
         <velocity.version>1.7</velocity.version>
         <jwt.version>0.9.0</jwt.version>
-        <forest.version>1.5.16</forest.version>
         <lombok.version>1.18.24</lombok.version>
         <reflectasm.version>1.11.9</reflectasm.version>
         <hutool.version>5.7.22</hutool.version>
@@ -56,11 +55,17 @@
         <jansi.version>2.4.0</jansi.version>
         <mybatis-enhance-actable.version>1.5.0.RELEASE</mybatis-enhance-actable.version>
         <p6spy.version>3.9.1</p6spy.version>
+        <forest.version>1.5.20</forest.version>
     </properties>
 
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.dtflys.forest</groupId>
+                <artifactId>forest-spring-boot-starter</artifactId>
+                <version>${forest.version}</version>
+            </dependency>
             <!-- SpringBoot的依赖配置-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

@@ -65,7 +65,7 @@
                 这样的话，就不需要下面的timeBasedFileNamingAndTriggeringPolicy标签了，但是需要在rollingPolicy标签中设置子标签 MaxFileSize
              -->
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <MaxFileSize>10MB</MaxFileSize>
+                <MaxFileSize>100MB</MaxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
 

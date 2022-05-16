@@ -4,8 +4,10 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.xx.web.client.ForestTestClient;
 import com.xx.web.context.ForestThreadLocalContext;
+import com.xx.web.event.SimpleEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Random;
@@ -20,6 +22,9 @@ public class ForestTestController {
 
     @Autowired
     private ForestTestClient forestTestClient;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @GetMapping
     public String test(){
@@ -37,5 +42,15 @@ public class ForestTestController {
     @GetMapping("/getValue")
     public String getValue(@RequestParam String value){
         return value;
+    }
+
+
+    @GetMapping("/publish/event")
+    public void publishEvent(){
+        log.info("事件发布，当前线程id:{}", Thread.currentThread().getId());
+        String snowflakeNextIdStr = IdUtil.getSnowflakeNextIdStr();
+        SimpleEvent simpleEvent = new SimpleEvent(snowflakeNextIdStr);
+        //事件发布
+        publisher.publishEvent(simpleEvent);
     }
 }

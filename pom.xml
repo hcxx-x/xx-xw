@@ -12,6 +12,7 @@
         <module>xx-web</module>
         <module>xx-util</module>
         <module>xx-common</module>
+        <module>xx-web-nodb</module>
     </modules>
 
     <name>xx-xw</name>

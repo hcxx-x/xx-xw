@@ -3,4 +3,4 @@ target
 *.log
 logs
 .gradle
-.build
+build

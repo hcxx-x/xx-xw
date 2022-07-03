@@ -1,0 +1,7 @@
+rootProject.name = 'xx-xw'
+include 'xx-util'
+include 'xx-common'
+include 'xx-unweb'
+include 'xx-web'
+include 'xx-web-nodb'
+include 'code-generator'

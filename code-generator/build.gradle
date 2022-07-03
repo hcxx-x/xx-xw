@@ -1,0 +1,5 @@
+dependencies {
+    // https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-generator
+    implementation 'com.baomidou:mybatis-plus-generator:3.5.3'
+
+}

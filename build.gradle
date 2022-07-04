@@ -57,11 +57,12 @@ subprojects {
 
     //依赖的配置:设置通用的依赖
     dependencies {
+        // 解决使用gradle引入lombok后编译失败（不识别相关注解和log等问题）
         compileOnly "org.projectlombok:lombok:$depVersion.lombok"
         annotationProcessor "org.projectlombok:lombok:$depVersion.lombok}"
 
-        testCompileOnly 'org.projectlombok:lombok:1.18.24'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+        testCompileOnly "org.projectlombok:lombok:$depVersion.lombok}"
+        testAnnotationProcessor "org.projectlombok:lombok:$depVersion.lombok}"
     }
     test {
         useJUnitPlatform()

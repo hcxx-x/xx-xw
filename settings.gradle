@@ -5,3 +5,5 @@ include 'xx-unweb'
 include 'xx-web'
 include 'xx-web-nodb'
 include 'code-generator'
+include 'xx-dbp-druid'
+

@@ -1,3 +1,5 @@
+import org.gradle.platform.base.internal.ToolSearchBuildAbility
+
 // buildScript是用来加载Gradle脚本自身需要使用的资源，可以声明的资源包括依赖项、第三方插件、maven仓库地址等。
 buildscript {
     ext {
@@ -29,7 +31,9 @@ ext{
             jansi:"2.4.0",
             commonsLang3: "3.12.0",
             hutool: "5.8.4",
-            "mybatis-enhance-actable":"1.5.0.RELEASE"
+            "mybatis-enhance-actable":"1.5.0.RELEASE",
+            mysql:"8.0.29",
+            druidSpringBootStart:"1.2.11"
     ]
 }
 
@@ -80,7 +84,7 @@ subprojects {
 
 project("code-generator"){
     dependencies {
-        implementation "com.baomidou:mybatis-plus-generator:${depVersion["mybatisPlus"]}"
+        implementation "com.baomidou:mybatis-plus-boot-starter:${depVersion["mybatisPlus"]}"
         testImplementation "com.baomidou:mybatis-plus-generator:${depVersion["mybatisPlus"]}"
     }
 }
@@ -110,5 +114,23 @@ project("xx-web-nodb"){
     dependencies {
         implementation "org.springframework.boot:spring-boot-starter-web"
         testImplementation "org.springframework.boot:spring-boot-starter-test"
+    }
+}
+
+project("xx-dbp-druid"){
+    dependencies {
+        implementation "org.springframework.boot:spring-boot-starter-web"
+        implementation "org.springframework.boot:spring-boot-starter-aop"
+        testImplementation "org.springframework.boot:spring-boot-starter-test"
+        runtimeOnly "mysql:mysql-connector-java:$depVersion.mysql"
+        implementation ("com.alibaba:druid-spring-boot-starter:$depVersion.druidSpringBootStart"){
+            exclude group: "com.sun",module: "tools"
+            exclude group: "com.sun",module: "jconsole"
+        }
+        implementation ("com.baomidou:mybatis-plus-boot-starter:${depVersion["mybatisPlus"]}") {
+            exclude group: 'com.zaxxer', module: 'HikariCP'
+        }
+
+
     }
 }

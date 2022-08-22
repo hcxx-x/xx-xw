@@ -3,7 +3,7 @@ import org.gradle.platform.base.internal.ToolSearchBuildAbility
 // buildScript是用来加载Gradle脚本自身需要使用的资源，可以声明的资源包括依赖项、第三方插件、maven仓库地址等。
 buildscript {
     ext {
-        springBootVersion = "2.7.1"
+        springBootVersion = "2.2.5.RELEASE"
 
     }
     // 配置仓库
@@ -20,20 +20,20 @@ buildscript {
 }
 
 // 通过扩展属性统一依赖的管理，扩展属性还可以定义任何你可能会使用到的属性
-ext{
-    depVersion= [
-            lombok: "1.18.24",
+ext {
+    depVersion = [
+            lombok                      : "1.18.24",
             // gradle 或者说 groovy对中划线的解析不是很好，这里如果不加引号会报错，使用的时候也要使用map[key]形式使用，否则还是会报错
             //建议转成驼峰写法
-            "forest-spring-boot-starter":"1.5.24",
-            mybatisPlus: "3.5.2",
-            log4j:"2.18.0",
-            jansi:"2.4.0",
-            commonsLang3: "3.12.0",
-            hutool: "5.8.4",
-            "mybatis-enhance-actable":"1.5.0.RELEASE",
-            mysql:"8.0.29",
-            druidSpringBootStart:"1.2.11"
+            "forest-spring-boot-starter": "1.5.24",
+            mybatisPlus                 : "3.5.2",
+            log4j                       : "2.18.0",
+            jansi                       : "2.4.0",
+            commonsLang3                : "3.12.0",
+            hutool                      : "5.8.4",
+            "mybatis-enhance-actable"   : "1.5.0.RELEASE",
+            mysql                       : "8.0.29",
+            druidSpringBootStart        : "1.2.11"
     ]
 }
 
@@ -61,10 +61,10 @@ subprojects {
 
     repositories {
         mavenLocal()
-        maven {url "https://maven.aliyun.com/repository/public"}
-        maven {url "https://maven.aliyun.com/repository/central"}
-        maven {url "https://maven.aliyun.com/repository/google"}
-        maven {url "https://maven.aliyun.com/repository/spring"}
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/spring" }
         mavenCentral()
     }
 
@@ -82,7 +82,7 @@ subprojects {
     }
 }
 
-project("code-generator"){
+project("code-generator") {
     dependencies {
         implementation "com.baomidou:mybatis-plus-boot-starter:${depVersion["mybatisPlus"]}"
         testImplementation "com.baomidou:mybatis-plus-generator:${depVersion["mybatisPlus"]}"
@@ -90,14 +90,14 @@ project("code-generator"){
 }
 
 
-project("xx-unweb"){
+project("xx-unweb") {
     dependencies {
         implementation "org.apache.logging.log4j:log4j-core:$depVersion.log4j"
         implementation "org.fusesource.jansi:jansi:$depVersion.jansi"
     }
 }
 
-project("xx-web"){
+project("xx-web") {
     dependencies {
         implementation "org.springframework.boot:spring-boot-starter-web"
         implementation "com.dtflys.forest:forest-spring-boot-starter:${depVersion['forest-spring-boot-starter']}"
@@ -106,28 +106,34 @@ project("xx-web"){
         implementation "com.baomidou:mybatis-plus-boot-starter:$depVersion.mybatisPlus"
         implementation "com.gitee.sunchenbin.mybatis.actable:mybatis-enhance-actable:${depVersion['mybatis-enhance-actable']}"
         implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+        implementation "org.springframework.boot:spring-boot-starter-data-redis"
+        // https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2
+        //implementation 'com.alibaba.fastjson2:fastjson2:2.0.11'
+// https://mvnrepository.com/artifact/com.alibaba/fastjson
+        implementation 'com.alibaba:fastjson:2.0.11'
+
         testImplementation "org.springframework.boot:spring-boot-starter-test"
     }
 }
 
-project("xx-web-nodb"){
+project("xx-web-nodb") {
     dependencies {
         implementation "org.springframework.boot:spring-boot-starter-web"
         testImplementation "org.springframework.boot:spring-boot-starter-test"
     }
 }
 
-project("xx-dbp-druid"){
+project("xx-dbp-druid") {
     dependencies {
         implementation "org.springframework.boot:spring-boot-starter-web"
         implementation "org.springframework.boot:spring-boot-starter-aop"
         testImplementation "org.springframework.boot:spring-boot-starter-test"
         runtimeOnly "mysql:mysql-connector-java:$depVersion.mysql"
-        implementation ("com.alibaba:druid-spring-boot-starter:$depVersion.druidSpringBootStart"){
-            exclude group: "com.sun",module: "tools"
-            exclude group: "com.sun",module: "jconsole"
+        implementation("com.alibaba:druid-spring-boot-starter:$depVersion.druidSpringBootStart") {
+            exclude group: "com.sun", module: "tools"
+            exclude group: "com.sun", module: "jconsole"
         }
-        implementation ("com.baomidou:mybatis-plus-boot-starter:${depVersion["mybatisPlus"]}") {
+        implementation("com.baomidou:mybatis-plus-boot-starter:${depVersion["mybatisPlus"]}") {
             exclude group: 'com.zaxxer', module: 'HikariCP'
         }
 
@@ -135,7 +141,7 @@ project("xx-dbp-druid"){
     }
 }
 
-project("xx-security"){
+project("xx-security") {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-security'
         implementation 'org.springframework.boot:spring-boot-starter-web'

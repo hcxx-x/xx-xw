@@ -7,4 +7,5 @@ include 'xx-web-nodb'
 include 'code-generator'
 include 'xx-dbp-druid'
 include 'xx-security'
+include 'xx-web-test'
 

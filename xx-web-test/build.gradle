@@ -1,0 +1,53 @@
+buildscript {
+    ext {
+        springBootVersion = "2.2.5.RELEASE"
+
+    }
+    // 配置仓库
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public" }
+        mavenCentral()
+    }
+    //此处引入插件
+    dependencies {
+        // 由于这个插件并没有在gradle 官方插件库（https://plugins.gradle.org/）中托管，所以需要引入依赖，如果已经托管到gradle官方插件库中则可以直接通过plugins DSL的方式应用
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+//java 插件时gradle内部自带的插件，不需要引入依赖
+apply plugin: "java"
+//社区插件，需要事先引入,才能应用，由于配置了spring-boot-gradle-plugin,所以这里不需要写版本号
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+
+group 'com.xx'
+version '1.0'
+
+repositories {
+    mavenLocal()
+    maven { url "https://maven.aliyun.com/repository/public" }
+    maven { url "https://maven.aliyun.com/repository/central" }
+    maven { url "https://maven.aliyun.com/repository/google" }
+    maven { url "https://maven.aliyun.com/repository/spring" }
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.alibaba:fastjson:2.0.10'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'org.apache.commons:commons-pool2:2.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation "org.springframework.boot:spring-boot-starter-data-redis"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    // https://mvnrepository.com/artifact/com.xuxueli/xxl-job-core
+    implementation 'com.xuxueli:xxl-job-core:2.3.1'
+
+}
+
+test {
+    useJUnitPlatform()
+}

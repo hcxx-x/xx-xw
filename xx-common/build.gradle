@@ -1,0 +1,25 @@
+//java 插件时gradle内部自带的插件，不需要引入依赖
+apply plugin: "java"
+
+
+group 'com.xx'
+version '1.0'
+
+repositories {
+    mavenLocal()
+    maven { url "https://maven.aliyun.com/repository/public" }
+    maven { url "https://maven.aliyun.com/repository/central" }
+    maven { url "https://maven.aliyun.com/repository/google" }
+    maven { url "https://maven.aliyun.com/repository/spring" }
+    mavenCentral()
+}
+
+dependencies {
+    implementation "cn.hutool:hutool-all:$depVersion.hutool"
+    implementation "org.apache.commons:commons-lang3:$depVersion.commonsLang3"
+    implementation 'com.google.guava:guava:31.1-jre'
+}
+
+test {
+    useJUnitPlatform()
+}

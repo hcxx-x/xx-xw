@@ -38,6 +38,8 @@ ext {
 }
 
 
+
+
 subprojects {
     //java 插件时gradle内部自带的插件，不需要引入依赖
     apply plugin: "java"

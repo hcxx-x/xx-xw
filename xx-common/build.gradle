@@ -5,15 +5,6 @@ apply plugin: "java"
 group 'com.xx'
 version '1.0'
 
-repositories {
-    mavenLocal()
-    maven { url "https://maven.aliyun.com/repository/public" }
-    maven { url "https://maven.aliyun.com/repository/central" }
-    maven { url "https://maven.aliyun.com/repository/google" }
-    maven { url "https://maven.aliyun.com/repository/spring" }
-    mavenCentral()
-}
-
 dependencies {
     implementation "cn.hutool:hutool-all:$depVersion.hutool"
     implementation "org.apache.commons:commons-lang3:$depVersion.commonsLang3"

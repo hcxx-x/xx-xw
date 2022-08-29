@@ -1,0 +1,26 @@
+// buildScript是用来加载Gradle脚本自身需要使用的资源，可以声明的资源包括依赖项、第三方插件、maven仓库地址等。
+buildscript {
+    ext {
+        springBootVersion = "2.7.2"
+    }
+    // 配置仓库
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.aliyun.com/nexus/content/groups/public" }
+        mavenCentral()
+    }
+    //此处引入插件
+    dependencies {
+        // 由于这个插件并没有在gradle 官方插件库（https://plugins.gradle.org/）中托管，所以需要引入依赖，如果已经托管到gradle官方插件库中则可以直接通过plugins DSL的方式应用
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+//社区插件，需要事先引入,才能应用，由于配置了spring-boot-gradle-plugin,所以这里不需要写版本号
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+}

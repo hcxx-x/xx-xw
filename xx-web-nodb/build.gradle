@@ -57,8 +57,3 @@ dependencies {
     }
  */
 
-bootRun {
-    println getArgs()
-    args(['--spring.profiles.active=dev'])
-}
-

@@ -57,17 +57,8 @@ dependencies {
     }
  */
 
-/*
-执行命令：
- ./gradlew :xx-we-nodb:bootRun--args='--spring.profiles.active=dev'
- 或
- ./gradlew :xx-we-nodb:bootRun -Dspring.profiles.active=test
- */
-/*def profiles = 'prod'
 bootRun {
-    *//*systemProperties = System.properties*//*
-    args = ["--spring.profiles.active=" + getProperty("profiles")]
-
-}*/
-
+    println getArgs()
+    args(['--spring.profiles.active=dev'])
+}
 

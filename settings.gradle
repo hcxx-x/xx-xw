@@ -8,4 +8,5 @@ include 'code-generator'
 include 'xx-dbp-druid'
 include 'xx-security'
 include 'xx-web-test'
+include 'jdk-newfeature'
 

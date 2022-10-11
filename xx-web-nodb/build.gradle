@@ -7,6 +7,8 @@ apply plugin: 'io.spring.dependency-management'
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
+    // 敏感词工具类
+    implementation group: 'com.github.houbb', name: 'sensitive-word', version: '0.2.0'
 }
 
 

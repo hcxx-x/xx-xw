@@ -9,6 +9,9 @@ dependencies {
     implementation "cn.hutool:hutool-all:$depVersion.hutool"
     implementation "org.apache.commons:commons-lang3:$depVersion.commonsLang3"
     implementation 'com.google.guava:guava:31.1-jre'
+    // https://mvnrepository.com/artifact/com.github.houbb/sensitive-word
+    implementation group: 'com.github.houbb', name: 'sensitive-word', version: '0.2.0'
+
 }
 
 test {

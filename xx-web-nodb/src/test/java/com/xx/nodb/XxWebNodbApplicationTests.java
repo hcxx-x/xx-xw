@@ -3,7 +3,7 @@ package com.xx.nodb;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest()
 class XxWebNodbApplicationTests {
 
     @Test

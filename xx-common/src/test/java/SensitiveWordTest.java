@@ -1,31 +1,14 @@
-package com.xx.nodb.controller;
-
 import com.github.houbb.sensitive.word.bs.SensitiveWordBs;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 
-import javax.annotation.Resource;
 import java.util.List;
 
-@Slf4j
-@RestController
-@RequestMapping("/test")
-public class TestController {
-
-    @Resource
-    private SensitiveWordBs sensitiveWordBs;
-
-    @GetMapping("click")
-    public void testClickNum(){
-        log.info("当前系统时间：{}",System.currentTimeMillis());
-    }
-
-
-
-    @GetMapping("word")
-    public void test(){
+/**
+ * @auther: hyy
+ * @date: 2022/10/11
+ */
+public class SensitiveWordTest {
+    public static void main(String[] args) {
         String text = "苏格拉底说：德性即知识。两千多年后，我一个朋友说了一句貌似对称的话：笨是一种人品。\n" +
                 "说笨是一种人品，大概是说，愚蠢常常不是智力不及，而是选择不去运用智力。也许因为利益，也许因为懦弱，也许因为“温暖的合群”，或者干脆因为懒惰，一些人选择荒废甚至屏蔽智力。在各种荒废智力的表现中，有一种是在迫害他人或为迫害他人摇旗呐喊时，竟然想不到：其实“他”也可以是我。\n" +
                 "最近李庄律师在王立军、薄熙来出事后的表现颇让人感慨。他表示，尽管他曾被重庆方面“黑打”，但仍然愿意给王、薄等人提供法律辩护或咨询。李庄这种不计前嫌的胸襟令人感动，但不知王与薄如果得知此话会作何感想。当年他们陶醉于“打黑”的热情却忽视嫌犯基本权利时，可曾想到：眼前这个人，这个在更大的权力面前陷于无助和恐惧当中的“他”，也可以是明天的我。\n" +
@@ -36,7 +19,14 @@ public class TestController {
                 "当然，走向均衡的道路未必通畅。有人说，中国过去一百年的悲剧是，任何一点进步都要以付出最大的代价为成本。本来两点可以一线走完，结果中国人过去一百年愣是在两点之间走出了一团乱麻。简单的事情被搞复杂，大约就是因为太多人只有自己亲自倒霉一场，才能体会到权利的可贵，好比一些孩子非要亲自被烫一次，才知道不能随便玩火，别人被烫时的痛苦却不能唤起他们的同理与同情心。数亿人只有通过被烫才明白火的危险，进步的代价能不大吗？这样说来，笨可能确实是一种人品。甚至还有不少人被烫了也未必明白火的危险，这种人据说叫做“斯德哥尔摩综合征患者”——碰到这样的人，笨就连人品都不是了，它就是一种意志。\n" +
                 "\n" +
                 "\n";
-        List<String> all = sensitiveWordBs.findAll(text);
-        log.info("所有敏感词：{}",all);
+
+        List<String> wordList = SensitiveWordHelper.findAll(text);
+        System.out.println(wordList);
+
+
+        System.out.println(SensitiveWordBs.newInstance()
+                .ignoreRepeat(true)
+                .findAll(text));
+
     }
 }

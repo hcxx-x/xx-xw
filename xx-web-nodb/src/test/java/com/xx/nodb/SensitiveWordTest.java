@@ -1,30 +1,25 @@
-package com.xx.nodb.controller;
+package com.xx.nodb;
 
 import com.github.houbb.sensitive.word.bs.SensitiveWordBs;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * @auther: hyy
+ * @date: 2022/10/11
+ */
 @Slf4j
-@RestController
-@RequestMapping("/test")
-public class TestController {
+@SpringBootTest()
+public class SensitiveWordTest {
 
     @Resource
     private SensitiveWordBs sensitiveWordBs;
 
-    @GetMapping("click")
-    public void testClickNum(){
-        log.info("当前系统时间：{}",System.currentTimeMillis());
-    }
-
-
-
-    @GetMapping("word")
+    @Test
     public void test(){
         String text = "苏格拉底说：德性即知识。两千多年后，我一个朋友说了一句貌似对称的话：笨是一种人品。\n" +
                 "说笨是一种人品，大概是说，愚蠢常常不是智力不及，而是选择不去运用智力。也许因为利益，也许因为懦弱，也许因为“温暖的合群”，或者干脆因为懒惰，一些人选择荒废甚至屏蔽智力。在各种荒废智力的表现中，有一种是在迫害他人或为迫害他人摇旗呐喊时，竟然想不到：其实“他”也可以是我。\n" +

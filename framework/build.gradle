@@ -1,0 +1,65 @@
+import com.xx.Deps
+
+buildscript {                        // 定义脚本使用资源
+    repositories {                        // 脚本资源仓库
+        maven { url 'https://maven.aliyun.com/repository/public' }
+    }
+    dependencies {                        // 依赖库
+        classpath Deps.spring_boot_gradle_plugin
+    }
+}
+
+
+subprojects {   // 子模块
+    apply plugin: 'java' // 引入之前的插件
+    // 提供 以api方式引入依赖的功能 api引入的依赖具有传递性
+    apply plugin: 'java-library'
+    apply plugin: "io.spring.dependency-management"
+
+    //项目基础属性设置
+    group "com.xx"
+    version "1.0.0"
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+
+    repositories {  // 配置Gradle仓库
+        mavenLocal()
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+        mavenCentral()
+    }
+
+    //依赖的配置:设置通用的依赖
+    dependencies {
+        implementation Deps.hutool_all
+        implementation Deps.springfox_boot_starter
+
+        // 解决使用gradle引入lombok后编译失败（不识别相关注解和log等问题）
+        compileOnly Deps.lombok
+
+        annotationProcessor Deps.lombok
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+        testCompileOnly Deps.lombok
+        testAnnotationProcessor Deps.lombok
+    }
+
+
+    // 此时只是一个依赖管理，并不会导入任何的jar包
+    // 子项目需要的时候才会真正导入
+    dependencyManagement {
+        imports {
+            // 统一管理 springboot版本（方式一）、如果引入了springboot-gradle的相关插件，也可以使用第二种方式
+            //mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+            // 统一管理springboot版本（方式二、需要引入springboot-gradle插件）
+            mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+            // 统一管理spring-cloud版本
+            mavenBom Deps.spring_cloud_bom
+            // 统一管理spring-cloud-alibaba相关版本
+            mavenBom Deps.spring_cloud_alibaba_bom
+        }
+    }
+}

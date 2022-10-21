@@ -1,0 +1,5 @@
+import com.xx.Deps
+
+dependencies {
+   api Deps.mybatis_plus_boot_starter
+}

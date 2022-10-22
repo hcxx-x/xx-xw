@@ -4,58 +4,17 @@ plugins {
 }
 apply plugin: 'io.spring.dependency-management'
 
+
+/*// 全局移除依赖
+configurations.all {
+    exclude group:'org.springframework.boot', module: 'spring-boot-starter-logging'
+}*/
+
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     // 敏感词工具类
     implementation group: 'com.github.houbb', name: 'sensitive-word', version: '0.2.0'
+    implementation group: "com.xx",name:"xx-starter-logback",version:"1.0.0"
 }
-
-
-/**
- * 以下是关于使用gradle 分环境构建运行springboot的一些配置示例
- *
- * 1、在没有任何配置的情况下可以使用 --args='--spring.profiles.active=test' 来激活不同的profile
- *  如在本项目中可以通过下面的命令实现 ./gradlew :xx-we-nodb:bootRun --args='--spring.profiles.active=test'
- *
- * 2、将java项目的系统属性设置给gradle的系统属性，此时就可以使用-Dspring.profiles.active=test来激活不同的profile
- *  如在本项目中可以通过下面的命令实现 ./gradlew :xx-we-nodb:bootRun -Dspring.profiles.active=test
- *
- *  将java项目的系统属性设置给gradle的系统属性的代码如下
-    bootRun {
-         systemProperties = System.properties
-    }
- *
- *  3、简化的命令行实现，通过属性赋值的方式，重写参数，即将执行命令时指定的参数或者属性设置给args
- *    // 设置默认的profile
-    def profile = 'test'
-    bootRun {
-       args = ["--spring.profiles.active=" + getProperty("profile")]
-    }
- *
- *  4、定义不同的任务，在任务中配置好profile,通过执行不同的任务来使用不同的profile
- *
-    // prod
-    tasks.register("bootRunProd") {
-        group = "application"
-        description = "Runs the Spring Boot application with the prod profile"
-        doFirst {
-            tasks.bootRun.configure {
-                systemProperty("spring.profiles.active", "prod")
-            }
-        }
-        finalizedBy("bootRun")
-    }
-    // dev
-    tasks.register("bootRunDev") {
-        group = "application"
-        description = "Runs the Spring Boot application with the dev profile"
-        doFirst {
-            tasks.bootRun.configure {
-                systemProperty("spring.profiles.active", "dev")
-            }
-        }
-        finalizedBy("bootRun")
-    }
- */
 

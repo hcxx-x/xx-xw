@@ -1,11 +1,6 @@
 rootProject.name = 'xx-xw'
-include 'xx-util'
-include 'xx-common'
-include 'xx-unweb'
-include 'xx-web'
-include 'xx-web-nodb'
-include 'code-generator'
-include 'xx-dbp-druid'
-include 'xx-security'
-include 'xx-web-test'
+
+include 'xw-web'
+include "xw-service"
+
 

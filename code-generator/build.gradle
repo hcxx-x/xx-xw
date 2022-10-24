@@ -1,4 +1,0 @@
-dependencies {
-    implementation "com.baomidou:mybatis-plus-boot-starter:${depVersion["mybatisPlus"]}"
-    implementation "com.baomidou:mybatis-plus-generator:${depVersion["mybatisPlus"]}"
-}

@@ -79,6 +79,7 @@ subprojects {
 
     //依赖的配置:设置通用的依赖
     dependencies {
+        api platform(Deps.spring_boot_dependencies)
         // 解决使用gradle引入lombok后编译失败（不识别相关注解和log等问题）
         compileOnly Deps.lombok
         annotationProcessor Deps.lombok

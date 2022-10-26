@@ -30,7 +30,8 @@ public class SpringSensitiveWordConfig {
     public SensitiveWordBs sensitiveWordBs() {
         IWordDeny wordDeny = WordDenys.chains(WordDenys.system(), myDdWordDeny);
         IWordAllow wordAllow = WordAllows.chains(WordAllows.system(), myDdWordAllow);
-        SensitiveWordBs sensitiveWordBs = SensitiveWordBs.newInstance()
+        SensitiveWordBs sensitiveWordBs = SensitiveWordBs.newInstance().ignoreRepeat(true)
+                .wordDeny(wordDeny)
                 .wordAllow(wordAllow)
                 // 各种其他配置
                 .init();

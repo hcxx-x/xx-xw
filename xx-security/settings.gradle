@@ -1,0 +1,4 @@
+rootProject.name = 'xx-security'
+include 'security-mvc'
+include 'security-backend'
+

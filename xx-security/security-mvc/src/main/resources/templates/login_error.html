@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆失败</title>
+</head>
+<body>
+<h1>登陆失败</h1>
+<h3>forward形式请求登陆失败接口（failureForwardUrl）<div th:text="${SPRING_SECURITY_LAST_EXCEPTION}"></div></h3>
+<h3>redirect形式请求登陆失败接口(failureUrl)<div th:text="${session.SPRING_SECURITY_LAST_EXCEPTION}"></div></h3>
+<div></div>
+</body>
+</html>

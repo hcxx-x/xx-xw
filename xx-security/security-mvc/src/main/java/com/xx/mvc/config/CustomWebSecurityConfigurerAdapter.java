@@ -3,6 +3,8 @@ package com.xx.mvc.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 /**
  * 自定义WebSecurity配置
@@ -24,6 +26,17 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
                 //.defaultSuccessUrl("/hello/security")// 认证之后的redirect路径，和successForwardUrl只能使用其中一个，并且如果之前有请求路径，会重定向到之前的url,只有当直接请求登陆接口后才会重定向到这里配置的url, 但是这种形式可以通过传入第二个参数(传true)让其始终跳到这个url
                 .failureForwardUrl("/loginFail")// 认证失败后的forword的跳转，注意"/loginFail"这个请求必须支持post请求，
                 //.failureUrl("/loginFail") // 认证失败后的redirect跳转，具体的请求方式暂时未尝试，应该是都可以的
+                .and()
+                .logout()// 退出登陆的相关配置
+                //.logoutUrl("/logout")// 退出登陆的url,这个url可以不在系统内提供,默认/logout,通过这个方法配置的url只支持GET请求
+                .logoutRequestMatcher(
+                        new OrRequestMatcher(
+                                new AntPathRequestMatcher("/aa","GET"), // 退出登陆url:/aa 请求方式为GET,无须定义对应的controller
+                                new AntPathRequestMatcher("/bb","POST")) // 退出登陆url:/bb 请求方式为POST,无须定义对应的controller
+                ) // 自定义退出登陆的请求，OrRequestMatcher 表示多个请求地址之间是或者的关系，只要有一个满足即可
+                .invalidateHttpSession(true)// 退出登陆后使session 失效，默认true
+                .clearAuthentication(true)// 退出的登陆后清楚认证信息, 默认true
+                .logoutSuccessUrl("/login.html") // 退出登陆成功后跳转的得治
                 .and()
                 .csrf().disable() // 禁用csrf(跨站请求保护)
         ;

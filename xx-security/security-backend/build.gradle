@@ -22,6 +22,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    // https://mvnrepository.com/artifact/com.github.penggle/kaptcha
+    implementation group: 'com.github.penggle', name: 'kaptcha', version: '2.3.2'
+
+
 
 }
 

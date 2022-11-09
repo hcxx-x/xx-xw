@@ -6,7 +6,6 @@
 </head>
 <body>
 <h1>用户登陆</h1>
-<h3 th:text="${#request.getAttribute('SPRING_SECURITY_LAST_EXCEPTION')}"></h3>
 <form method="post" th:action="@{/login}">
     用户名：<input name="username" type="text">
     密码：<input name="password" type="text">

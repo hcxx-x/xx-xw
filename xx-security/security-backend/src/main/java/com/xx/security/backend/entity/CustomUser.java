@@ -41,7 +41,7 @@ public class CustomUser implements UserDetails {
 
         CustomUser customUser = new CustomUser();
         customUser.setUsername("admin");
-        customUser.setPassword("{noop}123");
+        customUser.setPassword("$2a$10$AFz.enp2diHogMeW8hY9H.u.GWDS3Fj1WbQI48dmNV8gSQS1BiaIu");
         List<RoleEntity> list = new ArrayList<>();
         list.add(roleEntity);
         customUser.setRoles(list);

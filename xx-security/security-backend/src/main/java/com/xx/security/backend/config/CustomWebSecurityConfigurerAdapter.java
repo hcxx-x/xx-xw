@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
@@ -22,25 +24,13 @@ import java.util.List;
 @Configuration
 public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return new UserDetailsService(){
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                List<CustomUser> customUsers = CustomUser.mockData();
-                for (CustomUser customUser : customUsers) {
-                    if (customUser.getUsername().equals(username)){
-                        return customUser;
-                    }
-                }
-                throw new UsernameNotFoundException("用户不存在");
-            }
-        };
-    }
+    @Resource
+    private CustomUserDetailService userDetailsService;
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService());
+        auth.userDetailsService(userDetailsService);
     }
 
     @Bean
@@ -64,7 +54,7 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()// 开启对http请求的认证
-                .mvcMatchers("/allow","/kaptcha/getImage").permitAll()// 放行"/allow"请求，放行的请求需要在anyRequest().authenticated()之前配置
+                .mvcMatchers("/allow", "/kaptcha/getImage").permitAll()// 放行"/allow"请求，放行的请求需要在anyRequest().authenticated()之前配置
                 .anyRequest().authenticated()// 表示所有请求都需要经过认证
                 .and() // 返回 HttpSecurity 对象
                 .formLogin()// 采用表单登陆（默认表单）
@@ -79,4 +69,8 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
         http.addFilterAt(kaptchaFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
+
+    public static void main(String[] args) {
+        System.out.println(new BCryptPasswordEncoder().encode("123"));
+    }
 }

@@ -1,5 +1,0 @@
-2022-10-24 21:24:06.096 [ Test worker ] - [ INFO  ] [ com.xx.web.test.MyBatisPlusTest : ? ] - Starting MyBatisPlusTest using Java 1.8.0_333 on admin with PID 11808 (started by 28963 in E:\personal\code\xx-xw\xw-web)
-2022-10-24 21:24:06.097 [ Test worker ] - [ INFO  ] [ com.xx.web.test.MyBatisPlusTest : ? ] - No active profile set, falling back to 1 default profile: "default"
-2022-10-24 21:24:07.083 [ Test worker ] - [ INFO  ] [ com.dtflys.forest.scanner.ClassPathClientScanner : ? ] - [Forest] Created Forest Client Bean with name 'forestTestClient' and Proxy of 'com.xx.web.client.ForestTestClient' client interface
-2022-10-24 21:24:07.483 [ Test worker ] - [ INFO  ] [ com.xx.web.utils.RedisUtils : ? ] - Redis初始化配置注入成功！
-2022-10-24 21:24:08.263 [ Test worker ] - [ INFO  ] [ com.xx.web.test.MyBatisPlusTest : ? ] - Started MyBatisPlusTest in 2.523 seconds (JVM running for 3.747)

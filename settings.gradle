@@ -1,6 +1,0 @@
-rootProject.name = 'xx-xw'
-
-include 'xw-web'
-include "xw-service"
-
-

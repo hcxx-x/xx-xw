@@ -3,12 +3,18 @@ plugins {
     id 'org.springframework.boot' version '2.7.2'
 }
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java'
+apply plugin: 'java-library'
 
+repositories {
+    mavenLocal()
+    maven { url "https://maven.aliyun.com/repository/public" }
+    maven { url "https://maven.aliyun.com/repository/central" }
+    maven { url "https://maven.aliyun.com/repository/google" }
+    maven { url "https://maven.aliyun.com/repository/spring" }
+    mavenCentral()
+}
 
-/*// 全局移除依赖
-configurations.all {
-    exclude group:'org.springframework.boot', module: 'spring-boot-starter-logging'
-}*/
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/xx-cola/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/start/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/start/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-app/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-app/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-client/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-controller/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-controller/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-domain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-domain/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-infrastructure/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/xx-cola/xx-cola-infrastructure/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

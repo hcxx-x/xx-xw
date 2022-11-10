@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--这个配置文件好像不区分大小写，然后还会吧中划线专驼峰？这个配置文件中各种命名格式都有，居然没有报错，使用的时候还需要注意下-->
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出-->
+<!--monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数-->
+<configuration status="WARN" monitorInterval="60">
+
+    <!--变量配置-->
+    <Properties>
+        <!-- 格式化输出：%date表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %msg：日志消息，%n是换行符-->
+        <!-- %logger{36} 表示 Logger 名字最长36个字符 -->
+        <!--%highlight{}表示将{}中的内容高亮显示，但是自log4j 2.10版本以后该功能默认是关闭的，若要开启需要在 VM options 中添加 -Dlog4j.skipJansi=false即可-->
+        <!--<property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} %highlight{[%thread]} %-5level %logger{36} - %msg%n" />-->
+        <!--可以通过%style, %highlight,%clr 对日志的输出格式进行个性化 具体配置方式可以查看官方文档，如果官方文档中没有找到，可以参考这个链接（有可能会被删除）https://www.jianshu.com/p/b6409b3042e2-->
+        <!--不在springboot环境中使用log4j时 发现 highlight好像只能以%highlight{内容}{FATAL=red, ERROR=red.....} 指定在什么级别日志下输出什么颜色的日志，而%style则可以直接指定样式，不需要联合日志级别配置-->
+        <property name="LOG_PATTERN" value="%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright,BG_Yellow} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
+
+        <!--读取 SprigBoot 中的 spring.application.name 参数,spring.application.name后面的“:-”后面的内容表示在没有读取到对应配置时的默认值-->
+        <!--注意，使用下面这个配置读取springboot配置文件的属性的时候需要引入一个依赖：log4j-spring-boot-->
+        <property name="appName" value="${spring:spring.application.name:-defaultAppName}"/>
+
+        <!-- 定义日志存储的路径 -->
+        <property name="FILE_PATH" value="./logs/log4j2" />
+        <property name="FILE_NAME" value="${appName}" />
+    </Properties>
+
+    <appenders>
+        <console name="Console" target="SYSTEM_OUT">
+            <!--输出日志的格式（彩色: 指定 disableAnsi、noConsoleNoAnsi 为 false 即可）-->
+            <PatternLayout disableAnsi="false" noConsoleNoAnsi="false" charset="UTF-8" pattern="${LOG_PATTERN}"/>
+            <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </console>
+
+        <!--文件会打印出所有信息，append表示是已追加模式添加日志，如果是true则表示追加，如果是false则每次启动程序以前的日志会被清空，默认true-->
+        <File name="Filelog" fileName="${FILE_PATH}/${appName}.log" append="true">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </File>
+
+        <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/${appName}-info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!--interval属性用来指定多久滚动一次，默认是1 hour-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- 这个会打印出所有的warn及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileWarn" fileName="${FILE_PATH}/${appName}-warn.log" filePattern="${FILE_PATH}/${FILE_NAME}-WARN-%d{yyyy-MM-dd}_%i.log.gz">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!-- Policies:指定滚动日志的策略，就是什么时候进行新建日志文件输出日志.
+                TimeBasedTriggeringPolicy:Policies子节点，基于时间的滚动策略，interval属性用来指定多久滚动一次，默认是1 hour。modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am.
+                SizeBasedTriggeringPolicy:Policies子节点，基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小.-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <!-- 这个会打印出所有的error及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileError" fileName="${FILE_PATH}/${appName}-error.log" filePattern="${FILE_PATH}/${FILE_NAME}-ERROR-%d{yyyy-MM-dd}_%i.log.gz">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!--interval属性用来指定多久滚动一次，默认是1 hour-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖-->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+
+        <!--异步AsyncAppender进行配置直接引用上面的Console的name-->
+        <Async name="Async">
+            <AppenderRef ref="Console"/>
+        </Async>
+    </appenders>
+
+    <!--Logger节点用来单独指定日志的形式，比如要为指定包下的class指定不同的日志级别等。-->
+    <!--然后定义loggers，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <!--若是additivity设为false，则 子Logger 只会在自己的appender里输出，而不会在 父Logger 的appender里输出。-->
+        <logger name="org.mybatis" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </logger>
+
+        <root level="info">
+            <!--此处如果引用异步AsyncAppender的name就是异步输出日志-->
+            <!--需要注意的是这种配置方式 采用了ArrayBlockingQueue来保存需要异步输出的日志事件，效率并没有另外一种配置方式高-->
+           <!-- <Appender-Ref ref="Async"/>-->
+            <!--此处如果引用Appenders标签中Console的name就是同步输出日志-->
+            <appender-ref ref="Console"/>
+            <appender-ref ref="Filelog"/>
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="RollingFileWarn"/>
+            <appender-ref ref="RollingFileError"/>
+        </root>
+
+        <!--异步日志输出 需要在pom文件中引入disruptor的依赖（Log4j-2.9及更高版本在类路径上需要disruptor-3.3.4.jar或更高版本。在Log4j-2.9之前，需要disruptor-3.0.0.jar或更高版本。）-->
+        <!--  <AsyncLogger name="org.springframework" level="info" additivity="false">
+              <AppenderRef ref="Console"/>
+          </AsyncLogger>-->
+        <!--可以通过以下方法配置所有的appender为异步输出-->
+        <!-- <asyncRoot level="info">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="Filelog"/>
+            <appender-ref ref="RollingFileInfo"/>
+            <appender-ref ref="RollingFileWarn"/>
+            <appender-ref ref="RollingFileError"/>
+        </asyncRoot>-->
+
+        <!--
+            关于异步日志的多一点说明： 上面的AsyncLogger和 asyncRoot标签，可以用来将日志的异步记录和同步记录进行混用
+            除此之外还有一种完全异步的使用方式，推荐使用这种方式进行异步日志打印（不知道为什么推荐，难道性能更高？），配置方式如下
+            将系统属性log4j2.contextSelector设置 为org.apache.logging.log4j.core.async.AsyncLoggerContextSelector将会使所有的记录器异步
+            设置方式：
+            1、在resource目录下创建log4j2.component.properties，并添加以下内容
+                # 设置异步日志系统属性
+                log4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+            2、如果使用的事springboot项目，则可以在启动的main方法中添加如下代码（是不是放在第一行需要再测试）
+                System.setProperty("log4j2.contextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+
+            当配置AsyncLoggerContextSelector作为异步日志时，请确保在配置中使用普通的 <root>和<logger>元素。
+            AsyncLoggerContextSelector将确保所有记录器都是异步的，使用的机制与配置<asyncRoot> 或<asyncLogger>时的机制不同。
+
+            通过log.info(“是否为异步日志：{}”, AsyncLoggerContextSelector.isSelected());可以查看是否为异步日志。
+
+            sync：同步打印日志，日志输出与业务逻辑在同一线程内，当日志输出完毕，才能进行后续业务逻辑操作
+            Async Appender：异步打印日志，内部采用ArrayBlockingQueue，对每个AsyncAppender创建一个线程用于处理日志输出。
+            Async Logger：异步打印日志，采用了高性能并发框架Disruptor，创建一个线程用于处理日志输出。
+
+
+
+        -->
+    </loggers>
+
+</configuration>
+

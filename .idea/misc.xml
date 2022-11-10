@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
-    <file type="web" url="file://$PROJECT_DIR$/xx-mybatis-plus/xx-mybatis-plus" />
+    <file type="web" url="file://$PROJECT_DIR$/xx-mybatis-plus1" />
     <file type="web" url="file://$PROJECT_DIR$/xx-security" />
     <file type="web" url="file://$PROJECT_DIR$/xx-simple-web" />
   </component>

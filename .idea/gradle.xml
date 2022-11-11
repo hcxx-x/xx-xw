@@ -5,6 +5,17 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/xx-mybatis-plus" />
+        <option name="gradleHome" value="D:/portable/gradle-7.4.2" />
+        <option name="gradleJvm" value="#JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/xx-mybatis-plus" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/xx-mybatis-plus/xx-mybatis-plus" />
         <option name="gradleHome" value="D:/portable/gradle-7.4.2" />
         <option name="gradleJvm" value="#JAVA_HOME" />
@@ -24,6 +35,7 @@
             <option value="$PROJECT_DIR$/xx-security" />
             <option value="$PROJECT_DIR$/xx-security/security-backend" />
             <option value="$PROJECT_DIR$/xx-security/security-mvc" />
+            <option value="$PROJECT_DIR$/xx-security/security-rememberme-mvc" />
           </set>
         </option>
       </GradleProjectSettings>

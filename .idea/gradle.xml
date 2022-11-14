@@ -35,6 +35,7 @@
             <option value="$PROJECT_DIR$/xx-security" />
             <option value="$PROJECT_DIR$/xx-security/security-backend" />
             <option value="$PROJECT_DIR$/xx-security/security-mvc" />
+            <option value="$PROJECT_DIR$/xx-security/security-rememberme-backend" />
             <option value="$PROJECT_DIR$/xx-security/security-rememberme-mvc" />
           </set>
         </option>

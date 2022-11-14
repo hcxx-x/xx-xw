@@ -2,4 +2,5 @@ rootProject.name = 'xx-security'
 include 'security-mvc'
 include 'security-backend'
 include 'security-rememberme-mvc'
+include 'security-rememberme-backend'
 

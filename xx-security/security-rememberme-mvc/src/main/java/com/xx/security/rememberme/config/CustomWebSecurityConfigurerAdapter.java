@@ -75,6 +75,8 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
     public RememberMeServices rememberMeServices(){
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
+        // 在项目启动的时候自动执行建表语句
+        tokenRepository.setCreateTableOnStartup(true);
         return new PersistentTokenBasedRememberMeServices(UUID.randomUUID().toString(),userDetailsService(),tokenRepository);
     }
 }

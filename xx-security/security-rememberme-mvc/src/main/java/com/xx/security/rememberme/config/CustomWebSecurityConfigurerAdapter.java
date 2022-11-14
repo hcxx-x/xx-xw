@@ -8,8 +8,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
+import java.util.UUID;
 
 /**
  * 自定义WebSecurity配置
@@ -40,18 +46,35 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
         return new InMemoryUserDetailsManager(User.builder().username("user").password("{noop}user").roles("adminn").build());
     }
 
+    @Resource
+    private DataSource dataSource;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()// 开启对http请求的认证
                 .anyRequest().authenticated()// 表示所有请求都需要经过认证
                 .and() // 返回 HttpSecurity 对象
                 .formLogin()// 采用表单登陆（默认表单）
-//                .and()
-//                .rememberMe()// 开启记住我功能，该功能需要手动指定UserDetailsService
-//                .alwaysRemember(true)// 无论前端是都勾选记住我功能，都开启记住我*/
-//                .userDetailsService(userDetailsService())
+                .and()
+                .rememberMe()// 开启记住我功能，该功能需要手动指定UserDetailsService
+                .alwaysRemember(true)// 无论前端是都勾选记住我功能，都开启记住我*/
+                .userDetailsService(userDetailsService())
+                .rememberMeServices(rememberMeServices())
                 .and()
                 .csrf().disable() // 禁用csrf(跨站请求保护)
         ;
+    }
+
+    /**
+     * 使用自定义的rememberMeService, 并将生产的token放入内存中
+     *
+     * PersistentTokenBasedRememberMeServices 持久化token记住我服务，这个service 会在每次请求的时候刷新cookie中remember-me的值
+     * @return RememberMeServices
+     */
+    @Bean
+    public RememberMeServices rememberMeServices(){
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return new PersistentTokenBasedRememberMeServices(UUID.randomUUID().toString(),userDetailsService(),tokenRepository);
     }
 }

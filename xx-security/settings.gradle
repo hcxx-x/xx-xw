@@ -3,4 +3,5 @@ include 'security-mvc'
 include 'security-backend'
 include 'security-rememberme-mvc'
 include 'security-rememberme-backend'
+include 'security-session-management'
 

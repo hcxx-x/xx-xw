@@ -37,6 +37,7 @@
             <option value="$PROJECT_DIR$/xx-security/security-mvc" />
             <option value="$PROJECT_DIR$/xx-security/security-rememberme-backend" />
             <option value="$PROJECT_DIR$/xx-security/security-rememberme-mvc" />
+            <option value="$PROJECT_DIR$/xx-security/security-session-management" />
           </set>
         </option>
       </GradleProjectSettings>

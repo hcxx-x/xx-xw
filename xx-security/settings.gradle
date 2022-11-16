@@ -9,4 +9,5 @@ include 'security-cors'
 include 'security-exception'
 include 'security-authorization'
 include 'security-authorization-db'
+include 'security-oauth2-github'
 

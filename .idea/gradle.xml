@@ -33,8 +33,12 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/xx-security" />
+            <option value="$PROJECT_DIR$/xx-security/security-authorization" />
+            <option value="$PROJECT_DIR$/xx-security/security-authorization-db" />
             <option value="$PROJECT_DIR$/xx-security/security-backend" />
+            <option value="$PROJECT_DIR$/xx-security/security-cors" />
             <option value="$PROJECT_DIR$/xx-security/security-csrf" />
+            <option value="$PROJECT_DIR$/xx-security/security-exception" />
             <option value="$PROJECT_DIR$/xx-security/security-mvc" />
             <option value="$PROJECT_DIR$/xx-security/security-rememberme-backend" />
             <option value="$PROJECT_DIR$/xx-security/security-rememberme-mvc" />

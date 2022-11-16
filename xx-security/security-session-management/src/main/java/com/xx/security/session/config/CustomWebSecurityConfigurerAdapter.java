@@ -1,13 +1,19 @@
 package com.xx.security.session.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @auther: hanyangyang
@@ -29,10 +35,25 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
                 .expiredSessionStrategy(new SessionInformationExpiredStrategy() {
                     @Override
                     public void onExpiredSessionDetected(SessionInformationExpiredEvent event) throws IOException, ServletException {
-
+                        HttpServletResponse response = event.getResponse();
+                        Map<String, Object> result = new HashMap<>();
+                        result.put("msg","您已在其他地方登陆");
+                        result.put("status",500);
+                        response.setContentType("application/json;charset=UTF-8");
+                        String resultJosnStr = new ObjectMapper().writeValueAsString(result);
+                        response.getWriter().println(resultJosnStr);
                     }
-                })// 前后端分离中回话失效后的处理逻辑
-                .maxSessionsPreventsLogin(true) // 当达到最大回话的时候拒绝登陆
+                })// 前后端分离中回话失效后的处理逻辑，如果使用这个方法配置了前后端分离的处理逻辑，那么上面的跳转url则会失效
+                //.maxSessionsPreventsLogin(true) // 当达到最大回话的时候拒绝登陆
         ;
+    }
+
+    /**
+     * 据说是在以前的版本需要加上这个配置，目前的的新版本 已经不需要了（案例所用版本为springboot2.6.2）
+     * @return
+     */
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher(){
+        return new HttpSessionEventPublisher();
     }
 }

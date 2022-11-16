@@ -7,4 +7,6 @@ include 'security-session-management'
 include 'security-csrf'
 include 'security-cors'
 include 'security-exception'
+include 'security-authorization'
+include 'security-authorization-db'
 

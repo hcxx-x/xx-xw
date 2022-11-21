@@ -10,4 +10,5 @@ include 'security-exception'
 include 'security-authorization'
 include 'security-authorization-db'
 include 'security-oauth2-github'
+include 'security-oauth2-authenticated-server'
 

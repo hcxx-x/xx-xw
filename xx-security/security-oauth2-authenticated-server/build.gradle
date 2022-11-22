@@ -1,6 +1,5 @@
 dependencies {
     api platform("org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE")
-    api platform("org.springframework.cloud:spring-cloud-dependencies:2.6.2")
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     implementation("org.springframework.boot:spring-boot-starter-web")

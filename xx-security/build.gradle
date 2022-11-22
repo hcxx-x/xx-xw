@@ -15,7 +15,7 @@ subprojects {
         maven { url "https://maven.aliyun.com/repository/spring" }
         mavenCentral()
     }
-    dependencies {
+    /*dependencies {
         api platform("org.springframework.boot:spring-boot-dependencies:2.6.2")
-    }
+    }*/
 }

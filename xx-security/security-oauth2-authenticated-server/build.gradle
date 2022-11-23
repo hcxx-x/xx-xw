@@ -12,6 +12,8 @@ dependencies {
     // 认证服务器的依赖
     // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-oauth2
     implementation 'org.springframework.cloud:spring-cloud-starter-oauth2:2.2.5.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.7.5'
+    implementation 'mysql:mysql-connector-java:8.0.28'
 
 
 }

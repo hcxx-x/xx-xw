@@ -25,16 +25,18 @@ public class JwtResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Bean
-    public TokenStore tokenStore(){
+    public TokenStore tokenStore() {
         return new JwtTokenStore(jwtAccessTokenConverter());
     }
 
     /**
-     *配置jwt转换器 这里配置jwt 签名密钥的的时候需要和授权服务器的保持一致，不然这里就会无法解析授权服务器办法的 jwt token
+     * 配置jwt转换器 这里配置jwt 签名密钥的的时候需要和授权服务器的保持一致，不然这里就会无法解析授权服务器办法的 jwt token
+     *
      * @return
      */
+
     @Bean
-    public JwtAccessTokenConverter jwtAccessTokenConverter(){
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
         // 设置生成jwt的加密密钥
         jwtAccessTokenConverter.setSigningKey("jwtSecret");

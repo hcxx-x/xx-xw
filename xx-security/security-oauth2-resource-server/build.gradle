@@ -1,0 +1,19 @@
+dependencies {
+    api platform("org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE")
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+
+    // 认证服务器的依赖
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-oauth2
+    implementation 'org.springframework.cloud:spring-cloud-starter-oauth2:2.2.5.RELEASE'
+
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'mysql:mysql-connector-java:8.0.28'
+
+}

@@ -11,4 +11,5 @@ include 'security-authorization'
 include 'security-authorization-db'
 include 'security-oauth2-github'
 include 'security-oauth2-authenticated-server'
+include 'security-oauth2-resource-server'
 

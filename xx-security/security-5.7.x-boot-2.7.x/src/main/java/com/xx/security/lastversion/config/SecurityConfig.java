@@ -81,7 +81,7 @@ public class SecurityConfig{
      * 并且如果想要放行一些特定的资源的可能还需要通过上面自定义 WebSecurityCustomizer Bean的方式实现
      * @return SecurityFilterChain
      */
-    @Bean
+    //@Bean
     public SecurityFilterChain securityFilterChain(){
         RequestMatcher requestMatcher = new AntPathRequestMatcher("/**");
         List<Filter> filters = new ArrayList<>();
@@ -96,22 +96,11 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/login").permitAll() // 放行/login请求
-                .antMatchers("/users/**", "/settings/**")
-                .hasAuthority("Admin")  // 拥有admin权限可以访问 "/users/**", "/settings/**"
-                //.hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper") //拥有下面的任意一种权限即可
-                .anyRequest().authenticated()// 其余所有请求均需认证后访问
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login") // mvc 模式自定义登陆页面
-                .usernameParameter("email") // 自定义登陆是用户名对应的参数
-                .permitAll()
                 .and()
-                .rememberMe().key("AbcdEfghIjklmNopQrsTuvXyz_0123456789")
-                .and()
-                .logout().permitAll();
-
-        http.headers().frameOptions().sameOrigin();
+                .csrf().disable();
         return http.build();
     }
 

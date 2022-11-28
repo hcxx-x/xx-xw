@@ -1,0 +1,3 @@
+rootProject.name = 'xx-springboot'
+include 'xx-springboot-redis'
+

@@ -1,9 +1,6 @@
 package com.bilibili.juc.thread;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ThreadPoolExecutorDemo {
     public static void main(String[] args) throws InterruptedException {
@@ -23,6 +20,11 @@ public class ThreadPoolExecutorDemo {
             }
         }));
 
+        new ThreadPoolExecutor(2,2,60L,
+                TimeUnit.SECONDS,new ArrayBlockingQueue<>(16),Executors.defaultThreadFactory(),new ThreadPoolExecutor.AbortPolicy());
+
+
+
         /**
          * 线程池中的数量小于核心线程数时创建一个新的工作线程
          */
@@ -32,7 +34,7 @@ public class ThreadPoolExecutorDemo {
          */
         threadPoolExecutor.prestartAllCoreThreads();
 
-        threadPoolExecutor.allowCoreThreadTimeOut();
+        threadPoolExecutor.allowCoreThreadTimeOut(false);
 
         threadPoolExecutor.shutdown();
     }

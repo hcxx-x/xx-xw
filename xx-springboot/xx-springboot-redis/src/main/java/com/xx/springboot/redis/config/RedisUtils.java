@@ -42,8 +42,8 @@ import javax.annotation.Resource;
  * @version 1.1 (GitHub文档: https://github.com/whvcse/RedisUtil )
  */
 @Component
-public  class RedisUtil {
-    static Logger log = LoggerFactory.getLogger(RedisUtil.class);
+public  class RedisUtils {
+    static Logger log = LoggerFactory.getLogger(RedisUtils.class);
     private static RedisTemplate<String,Object> redisTemplate;
 
     @Resource
@@ -55,7 +55,7 @@ public  class RedisUtil {
             redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
             log.info("Redis初始化配置注入成功！");
         }
-        RedisUtil.redisTemplate = redisTemplate;
+        RedisUtils.redisTemplate = redisTemplate;
     }
 
 

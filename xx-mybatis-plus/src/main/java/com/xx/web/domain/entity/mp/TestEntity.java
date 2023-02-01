@@ -18,7 +18,7 @@ public class TestEntity {
 
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String unique;
+    private String uniqueField;
     @TableLogic(value = "0",delval = "id")
-    private Long delFlag;
+    private Boolean delFlag;
 }

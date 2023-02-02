@@ -1,0 +1,30 @@
+rootProject.name = 'xx-xw'
+
+include 'xx-mybatis-plus'
+
+include 'xx-security'
+include 'xx-security:security-mvc'
+include 'xx-security:security-backend'
+include 'xx-security:security-rememberme-mvc'
+include 'xx-security:security-rememberme-backend'
+include 'xx-security:security-session-management'
+include 'xx-security:security-csrf'
+include 'xx-security:security-cors'
+include 'xx-security:security-exception'
+include 'xx-security:security-authorization'
+include 'xx-security:security-authorization-db'
+include 'xx-security:security-oauth2-github'
+include 'xx-security:security-oauth2-authenticated-server'
+include 'xx-security:security-oauth2-resource-server'
+include 'xx-security:security-5.7.x-boot-2.7.x'
+
+include 'xx-simple-web'
+
+include 'xx-springboot'
+include 'xx-springboot:xx-springboot-redis'
+
+
+
+
+
+

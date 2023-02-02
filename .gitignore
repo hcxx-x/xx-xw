@@ -3,5 +3,6 @@
 .idea
 **/build/
 **/target
-./logs
+**/logs
+**/*.iml
 

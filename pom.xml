@@ -12,6 +12,7 @@
 
     <modules>
         <module>juc</module>
+        <module>xx-springboot-docker</module>
     </modules>
 
     <properties>

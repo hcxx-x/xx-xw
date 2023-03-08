@@ -1,0 +1,10 @@
+
+async:
+  executor:
+    thread:
+      core_pool_size: 5
+      max_pool_size: 5
+      queue_capacity: 200
+      name.prefix: async-executor
+server:
+  port: 8081

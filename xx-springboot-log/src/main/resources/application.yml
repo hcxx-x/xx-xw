@@ -32,4 +32,4 @@ mybatis-plus:
     cache-enabled: false
     local-cache-scope: statement
   global-config:
-    banner: false
+    banner: true

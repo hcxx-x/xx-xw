@@ -2,3 +2,4 @@ master 1
 master 2
 master 3
 git-rebase 1
+git-rebase 2

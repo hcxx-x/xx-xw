@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    # mem指定数据库使用内存模式 ;DB_CLOSE_DELAY=-1 这样能够保证在虚拟机退出之前 H2 数据库不关闭连接。 MODE指定使用MySQL模式
+    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=MySQL;
+    username: root
+    password: root
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-timeout: 30000 # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 默认:30秒
+      minimum-idle: 10
+      maximum-pool-size: 100
+      auto-commit: true
+      idle-timeout: 600000 # 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），默认:10分钟
+      max-lifetime: 28000000 # 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟 1800000ms，建议设置比数据库超时时长少60秒，参考MySQL wait_timeout参数（show variables like '%timeout%';） -->
+      connection-test-query: SELECT 1
+      validation-timeout: 3000
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema-h2.sql
+      data-locations: classpath:db/data-h2.sql
+
+
+  h2:
+    console:
+      #开启h2 web 访问
+      enabled: true
+
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    local-cache-scope: statement
+  global-config:
+    banner: false

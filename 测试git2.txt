@@ -1,3 +1,0 @@
-my_dev 111
-other_dev 222
-other_dev 444

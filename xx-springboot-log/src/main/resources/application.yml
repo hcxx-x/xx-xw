@@ -34,6 +34,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
   global-config:
     banner: true
+  type-handlers-package: com.xx.log.config.mybatis.th
 
 logging:
   level:

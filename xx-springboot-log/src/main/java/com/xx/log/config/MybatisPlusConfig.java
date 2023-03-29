@@ -18,8 +18,8 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        // sql记录插件
-        interceptor.addInnerInterceptor(new MyBatisPlusSqlLogInterceptor());
+        // sql记录插件,存在大量的动态参数的时候，这个日志输出会影响性能
+        //interceptor.addInnerInterceptor(new MyBatisPlusSqlLogInterceptor());
         return interceptor;
     }
 

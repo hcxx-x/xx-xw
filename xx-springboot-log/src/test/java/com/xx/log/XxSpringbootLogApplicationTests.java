@@ -28,7 +28,7 @@ class XxSpringbootLogApplicationTests {
     @Test
     void contextLoads() {
         List<Integer> ids = new ArrayList<>();
-        for (int i = 1; i <= 20000; i++) {
+        for (int i = 1; i <= 20; i++) {
             ids.add(i);
         }
         //System.out.println(ids.stream().map(e -> e.toString()).collect(Collectors.joining(",")));

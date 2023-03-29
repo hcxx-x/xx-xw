@@ -28,11 +28,11 @@ class XxSpringbootLogApplicationTests {
     @Test
     void contextLoads() {
         List<Integer> ids = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 20000; i++) {
             ids.add(i);
         }
         //System.out.println(ids.stream().map(e -> e.toString()).collect(Collectors.joining(",")));
-        // log.info("y用户列表1：{}",userInfoService.list(Wrappers.<UserInfo>lambdaQuery().in(UserInfo::getId,ids)));
+        //log.info("y用户列表1：{}",userInfoService.list(Wrappers.<UserInfo>lambdaQuery().in(UserInfo::getId,ids)));
         log.info("用户列表：{}",userInfoMapper.queryAllUserConditionIdIn(ids));
     }
 

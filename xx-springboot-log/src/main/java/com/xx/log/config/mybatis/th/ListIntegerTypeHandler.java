@@ -25,7 +25,7 @@ public class ListIntegerTypeHandler extends BaseTypeHandler<List<Integer>> {
 
     @Override
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, List<Integer> integers, JdbcType jdbcType) throws SQLException {
-        preparedStatement.setString(i, integers.stream().map(e->e.toString()).collect(Collectors.joining(",")));
+        preparedStatement.setObject(i, integers.stream().map(e->e.toString()).collect(Collectors.joining(",")));
     }
 
     @Override

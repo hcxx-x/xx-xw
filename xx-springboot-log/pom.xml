@@ -62,6 +62,33 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>log4j2</id>
+            <properties>
+                <env>log4j2,p6-mysql</env>
+            </properties>
+            <dependencies>
+                <!--全局排除springboot 自带的日志框架，如果不排除的话会有冲突-->
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>*</groupId>
+                            <artifactId>*</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-log4j2</artifactId>
+                </dependency>
+
+            </dependencies>
+
+        </profile>
     </profiles>
 
 

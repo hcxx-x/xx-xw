@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>xx-springboot-docker</artifactId>
+    <version>1.0.1</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -34,8 +35,58 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
+                <configuration>
+                    <image>
+                        <name>registry.cn-hangzhou.aliyuncs.com/haliyun/${project.name}/${project.artifactId}:${project.version}</name>
+                        <!-- 执行完build 自动push -->
+                        <publish>true</publish>
+                        <!-- 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT -->
+                        <pullPolicy>IF_NOT_PRESENT</pullPolicy>
+                    </image>
+                    <!--配置构建宿主机信息，本机不用配置-->
+                    <docker>
+                        <!--远程docker daemon的连接地址和端口-->
+                        <host>tcp://192.168.99.100:2375</host>
+                        <!--如果使用https协议需要设置为true-->
+                        <tlsVerify>false</tlsVerify>
+                        <publishRegistry>
+                            <username>user</username>
+                            <password>secret</password>
+                            <url>registry.cn-shenzhen.aliyuncs.com</url>
+                        </publishRegistry>
+                    </docker>
+                </configuration>
             </plugin>
+            <!--构建docker镜像，使用这个插件需要本地安装docker,或设置环境变量指定远程docker地址，前端是远程docker可以允许被访问
+             DOCKER_HOST=tcp://x.x.x.x:2375 注意如果连接不上可能是防火墙的问题-->
+            <!--<plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <useProxy>false</useProxy>
+                    <repository>registry.cn-hangzhou.aliyuncs.com/haliyun/${project.name}</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
+                    <dockerfile>Dockerfile</dockerfile>
+                    &lt;!&ndash;推送到镜像仓库的时候需要&ndash;&gt;
+                    <username>**</username>
+                    <password>**</password>
+                </configuration>
+            </plugin>-->
+
         </plugins>
     </build>
-
 </project>

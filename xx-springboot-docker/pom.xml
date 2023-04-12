@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>xx-springboot-docker</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -32,31 +32,134 @@
 
     <build>
         <plugins>
+            <!--官方文档：https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin#quickstart
+            jib:build  构建镜像并推送到远程仓库
+            jib:buildDocker  构建镜像不推送到远程仓库，但是会推送到本地或者远程的docker daemon中，推送到远程时需要配置docker client
+            jib:buildTaf  构建成一个tar包，可以将tar包复制到服务器，然后通过docker的命令（docker load），直接加载tar包成一个镜像
+            -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <!-- 拉取所需的基础镜像 -->
+                    <from>
+                        <!-- 默认从官方公共仓库拉取镜像，速度较慢 -->
+                        <image>openjdk:17-jdk-alpine</image>
+                        <!-- 从指定仓库拉取镜像提速（需提前将镜像 push 至仓库） -->
+                        <!--<image>192.168.10.10:5000/openjdk:alpine</image>-->
+                    </from>
+                    <!-- push 到哪个镜像仓库（公共仓库、阿里云仓库、私有自建仓库等） -->
+                    <to>
+                        <!-- 使用 DockerHub 的官方公共仓库：仓库地址/用户名/镜像名 -->
+                        <!--<image>registry.hub.docker.com/mrhelloworld/${project.name}</image>-->
+                        <!-- 使用自建的私有仓库：仓库地址/镜像名 -->
+                        <!-- <image>192.168.10.10:5000/${project.artifactId}</image>-->
+                        <!-- 使用阿里云镜像仓库仓库地址-->
+                        <image>registry.cn-hangzhou.aliyuncs.com/haliyun/${project.artifactId}</image>
+                        <!-- 镜像版本号 -->
+                        <tags>
+                            <tag>${project.version}</tag>
+                        </tags>
+
+                        <!--
+                        连接仓库的账号密码
+                        其实这里还是建议 使用maven-setting的配置方式 请参照
+                        https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin#authentication-methods
+                        https://maven.apache.org/guides/mini/guide-encryption.html
+                       -->
+                        <auth>
+                            <username>笑haha</username>
+                            <password>AliyunContainerResp.</password>
+                        </auth>
+                    </to>
+                    <!-- 使 jib 插件支持 http 协议连接镜像仓库(安全起见，默认是关闭的) -->
+                    <allowInsecureRegistries>true</allowInsecureRegistries>
+                    <!--容器相关的属性-->
+                    <container>
+                        <!--微服务的启动类-->
+                        <mainClass>org.example.SpringBootDockerApplication</mainClass>
+                        <!--使用该参数将镜像的创建时间与系统时间对其-->
+                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        <!--jvm内存参数-->
+                        <jvmFlags>
+                            <jvmFlag>-Xms128m</jvmFlag>
+                            <jvmFlag>-Xmx128m</jvmFlag>
+                            <jvmFlag>-Duser.timezone=GMT+08</jvmFlag>
+                            <jvmFlag>-Dfile.encoding=UTF8</jvmFlag>
+                        </jvmFlags>
+                        <!--设置环境变量，可以设置多个-->
+                        <environment>
+                            <MY_ENV1>my_env1_value1</MY_ENV1>
+                            <MY_ENV2>my_env1_value2</MY_ENV2>
+                        </environment>
+                        <!--要暴露的端口，可以设置多个-->
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+
+                    </container>
+                    <!--
+                    配置 Docker daemon
+                    这里需要一个docker client的客户端工具，这个工具可以通过docker官网中二进制安装docker engine页面中的指引去下载
+                    页面地址：https://docs.docker.com/engine/install/binaries/
+                    win端下载地址：https://download.docker.com/win/static/stable/x86_64/
+                    下载解压后docker.exe为客户端工具，需要在下面executable中配置该工具的位置
+                    然后配置这个工具运行的环境变量，即远程docker的tcp地址（远程docker 需要允许远程访问）
+                    -->
+                    <dockerClient>
+                        <!--配置docker客户端可执行文件的位置-->
+                        <executable>D:\portable\docker\docker.exe</executable>
+                        <!--配置docker客户端执行需要的环境变量-->
+                        <environment>
+                            <DOCKER_HOST>tcp://192.168.116.140:2375</DOCKER_HOST>
+                        </environment>
+                    </dockerClient>
+                </configuration>
+                <!--将插件的goal绑定到maven默认的生命周期中，在执行绑定的生命周期时会制动执行这个插件的goal（goal就是:后的内容，比如jib:build,那么build就是一个goal）-->
+                <executions>
+                    <execution>
+                        <id>jib-maven-plugin</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-
-                <configuration>
+                <!--服务器不能访问github...不好用-->
+                <!--<configuration>
                     <image>
                         <name>registry.cn-hangzhou.aliyuncs.com/haliyun/${project.name}/${project.artifactId}:${project.version}</name>
-                        <!-- 执行完build 自动push -->
+                        &lt;!&ndash; 执行完build 自动push &ndash;&gt;
                         <publish>true</publish>
-                        <!-- 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT -->
+                        &lt;!&ndash; 拉取镜像的策略，可选的值：ALWAYS, NEVER, IF_NOT_PRESENT &ndash;&gt;
                         <pullPolicy>IF_NOT_PRESENT</pullPolicy>
+                        &lt;!&ndash;<env>
+                            &lt;!&ndash;配置代理&ndash;&gt;
+                            &lt;!&ndash;这里如果配置的代理需要在局域网访问的话，要注意docker所在宿主机的ip是不是下面代理的ip在同一个网段，如果不在，则无法代理&ndash;&gt;
+                            <HTTP_PROXY>http://127.0.0.1:10809</HTTP_PROXY>
+                            <HTTPS_PROXY>https://127.0.0.1:10809</HTTPS_PROXY>
+                        </env>&ndash;&gt;
                     </image>
-                    <!--配置构建宿主机信息，本机不用配置-->
+                    &lt;!&ndash;配置构建宿主机信息，本机不用配置&ndash;&gt;
                     <docker>
-                        <!--远程docker daemon的连接地址和端口-->
-                        <host>tcp://192.168.99.100:2375</host>
-                        <!--如果使用https协议需要设置为true-->
+                        &lt;!&ndash;远程docker daemon的连接地址和端口&ndash;&gt;
+                        <host>tcp://192.168.116.140:2375</host>
+                        &lt;!&ndash;如果使用https协议需要设置为true&ndash;&gt;
                         <tlsVerify>false</tlsVerify>
                         <publishRegistry>
                             <username>user</username>
                             <password>secret</password>
-                            <url>registry.cn-shenzhen.aliyuncs.com</url>
+                            <url>registry.cn-hangzhou.aliyuncs.com</url>
                         </publishRegistry>
                     </docker>
-                </configuration>
+                </configuration>-->
             </plugin>
             <!--构建docker镜像，使用这个插件需要本地安装docker,或设置环境变量指定远程docker地址，前端是远程docker可以允许被访问
              DOCKER_HOST=tcp://x.x.x.x:2375 注意如果连接不上可能是防火墙的问题-->

@@ -11,4 +11,9 @@
         </where>
     </select>
 
+
+    <select id="testIntLong" resultType="java.lang.Integer">
+        select id from user_info
+    </select>
+
 </mapper>

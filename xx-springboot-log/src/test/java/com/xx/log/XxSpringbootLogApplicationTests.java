@@ -34,6 +34,26 @@ class XxSpringbootLogApplicationTests {
         //System.out.println(ids.stream().map(e -> e.toString()).collect(Collectors.joining(",")));
         //log.info("y用户列表1：{}",userInfoService.list(Wrappers.<UserInfo>lambdaQuery().in(UserInfo::getId,ids)));
         log.info("用户列表：{}",userInfoMapper.queryAllUserConditionIdIn(ids));
+
+        List<Long> longs = userInfoMapper.testIntLong();
+
+        System.out.println(longs.get(0).getClass().getName());
+        log.info("{}",longs);
     }
 
+    public static void main(String[] args) {
+        /*
+        getList方法返回的结果是不带泛型的，可以使用带有泛型的声明去接收，这样就会出来虽然list内部类型是Integer，但是声明的list的泛型却是Long的情况
+        但是这种方式会有问题，在获取元素操作的时候很容易出现类型转换失败的异常
+        * */
+        List<Long> list = getList();
+        System.out.println(1);
+    }
+
+    public static List getList(){
+        List list = new ArrayList<>();
+        Object a = Integer.valueOf(1);
+        list.add(a);
+        return list;
+    }
 }

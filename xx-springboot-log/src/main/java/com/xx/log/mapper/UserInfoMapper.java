@@ -14,4 +14,6 @@ import java.util.List;
 @Mapper
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
  List<UserInfo> queryAllUserConditionIdIn(@Param("ids") List<Integer> ids);
+
+ List<Long> testIntLong();
 }

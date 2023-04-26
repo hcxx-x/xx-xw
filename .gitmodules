@@ -1,0 +1,3 @@
+[submodule "g-framework"]
+	path = g-framework
+	url = https://gitee.com/young96/g-framework.git

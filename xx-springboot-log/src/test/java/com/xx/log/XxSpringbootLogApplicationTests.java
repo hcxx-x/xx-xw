@@ -7,6 +7,7 @@ import com.xx.log.entity.UserInfo;
 import com.xx.log.mapper.UserInfoMapper;
 import com.xx.log.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
+import org.h2.engine.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -36,9 +37,27 @@ class XxSpringbootLogApplicationTests {
         log.info("用户列表：{}",userInfoMapper.queryAllUserConditionIdIn(ids));
 
         List<Long> longs = userInfoMapper.testIntLong();
-
         System.out.println(longs.get(0).getClass().getName());
         log.info("{}",longs);
+    }
+
+    @Test
+    void testBatchInsert(){
+        List<UserInfo> list = userInfoService.list();
+        log.info("批量插入之前的list:{}",list);
+        List<UserInfo> userList = new ArrayList<>();
+        for (int i = 0; i < 1800; i++) {
+            UserInfo user = new UserInfo();
+            user.setAge(i);
+            user.setName("name"+i);
+            user.setId(Long.valueOf(i));
+            user.setEmail(i+"@qq.com");
+            userList.add(user);
+        };
+        boolean b = userInfoService.insertBatchSomeColumn(userList);
+        log.info("批量插入的结果：{}",b);
+
+        log.info("插入之后的数量：{}",userInfoService.count());
     }
 
     public static void main(String[] args) {

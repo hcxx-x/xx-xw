@@ -192,11 +192,11 @@
 
 
     <!--=======================================输出日志到logstash=========================================-->
-    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <!--指定logstash ip：监听端口-->
+   <!-- <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        &lt;!&ndash;指定logstash ip：监听端口&ndash;&gt;
         <destination>192.168.116.141:9601</destination>
         <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
-    </appender>
+    </appender>-->
     <!--=======================================输出日志到logstash=========================================-->
 
     <!--
@@ -254,7 +254,7 @@
     <!--root也是<logger>元素，但是它是根logger，是所有logger的祖先，所有包下面的日志都会被记录。可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger。-->
     <root level="info" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="LOGSTASH"/>
+      <!--  <appender-ref ref="LOGSTASH"/>-->
        <!-- <appender-ref ref="ASYNC_LOG_FILE_INFO_APPENDER"/>
         <appender-ref ref="ASYNC_LOG_FILE_WARN_APPENDER"/>
         <appender-ref ref="ASYNC_LOG_FILE_ERROR_APPENDER"/>-->

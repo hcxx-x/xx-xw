@@ -1,4 +1,4 @@
-package com.xx.log.config;
+package com.xx.log.config.mybatis;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +21,11 @@ public class MybatisPlusConfig {
         // sql记录插件,存在大量的动态参数的时候，这个日志输出会影响性能
         //interceptor.addInnerInterceptor(new MyBatisPlusSqlLogInterceptor());
         return interceptor;
+    }
+
+    @Bean
+    public MySqlInjector sqlInjector() {
+        return new MySqlInjector();
     }
 
 

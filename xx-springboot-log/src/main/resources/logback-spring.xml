@@ -155,7 +155,7 @@
         </encoder>
     </appender>
 
-
+    <!--================================异步输出日志配置开始=======================================================-->
     <!-- 异步输出info级别的日志 -->
     <appender name="ASYNC_LOG_FILE_INFO_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
         <!-- 不丢失日志  默认情况下如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
@@ -166,6 +166,7 @@
         <appender-ref ref="LOG_FILE_INFO_APPENDER"/>
     </appender>
 
+    <!-- 异步输出warn级别的日志 -->
     <appender name="ASYNC_LOG_FILE_WARN_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
         <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
         <discardingThreshold>0</discardingThreshold>
@@ -175,6 +176,7 @@
         <appender-ref ref="LOG_FILE_WARN_APPENDER"/>
     </appender>
 
+    <!-- 异步输出error级别的日志 -->
     <appender name="ASYNC_LOG_FILE_ERROR_APPENDER" class="ch.qos.logback.classic.AsyncAppender">
         <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
         <discardingThreshold>0</discardingThreshold>
@@ -183,7 +185,16 @@
         <!-- 添加附加的appender,最多只能添加一个 -->
         <appender-ref ref="LOG_FILE_ERROR_APPENDER"/>
     </appender>
+    <!--================================异步输出日志配置结束=======================================================-->
 
+
+    <!--=======================================输出日志到logstash=========================================-->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <!--指定logstash ip：监听端口-->
+        <destination>192.168.116.141:9601</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+    <!--=======================================输出日志到logstash=========================================-->
 
     <!--
         name: 用来指定受此 logger 约束的某一个包或者具体的某一个类
@@ -240,9 +251,10 @@
     <!--root也是<logger>元素，但是它是根logger，是所有logger的祖先，所有包下面的日志都会被记录。可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger。-->
     <root level="info" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="ASYNC_LOG_FILE_INFO_APPENDER"/>
+        <appender-ref ref="LOGSTASH"/>
+       <!-- <appender-ref ref="ASYNC_LOG_FILE_INFO_APPENDER"/>
         <appender-ref ref="ASYNC_LOG_FILE_WARN_APPENDER"/>
-        <appender-ref ref="ASYNC_LOG_FILE_ERROR_APPENDER"/>
+        <appender-ref ref="ASYNC_LOG_FILE_ERROR_APPENDER"/>-->
     </root>
 
 </configuration>

@@ -3,6 +3,7 @@ package com.xx.log.config.p6spy;
 import com.p6spy.engine.spy.appender.MessageFormattingStrategy;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author hanyangyang
@@ -19,8 +20,8 @@ public class MyCustomP6SpyLogger implements MessageFormattingStrategy {
      */
     @Override
     public String formatMessage(int connectionId, String now, long elapsed, String category, String prepared, String sql, String url) {
-        return !"".equals(sql.trim()) ? "\n[ " + LocalDateTime.now() + " ] --- | 执行耗时： "
-                + elapsed + "ms | " + category + " | connection " + connectionId + "| \n"
+        return !"".equals(sql.trim()) ? "[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS")) + "] --- | 耗时："
+                + String.format("%-7s", elapsed+"ms")+"| " + category + " | connection " + connectionId + " | "
                 + sql + ";" : "";
     }
 }

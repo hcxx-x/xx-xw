@@ -15,9 +15,12 @@
         <!--不在springboot环境中使用log4j时 发现 highlight好像只能以%highlight{内容}{FATAL=red, ERROR=red.....} 指定在什么级别日志下输出什么颜色的日志，而%style则可以直接指定样式，不需要联合日志级别配置-->
         <property name="LOG_PATTERN" value="%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
 
+        <!--读取maven提供的变量，如果继承了springboot parent可以使用 @变量key@,如果没有继承parent 可以使用${变量key}-->
+        <property name="defaultServiceName" value="@project.name@"/>
+
         <!--读取 SprigBoot 中的 spring.application.name 参数,spring.application.name后面的“:-”后面的内容表示在没有读取到对应配置时的默认值-->
         <!--注意，使用下面这个配置读取springboot配置文件的属性的时候需要引入一个依赖：log4j-spring-boot-->
-        <property name="appName" value="${spring:spring.application.name:-defaultAppName}"/>
+        <property name="appName" value="${spring:spring.application.name:-${defaultServiceName}"/>
 
         <!-- 定义日志存储的路径 -->
         <property name="FILE_PATH" value="./logs/log4j2" />

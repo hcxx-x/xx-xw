@@ -9,9 +9,12 @@
     <property name="LOG_HOME" value="./logs/logback"/>
     <property name="sql_log_level" value="info"/>
 
+    <!--读取maven提供的变量，如果继承了springboot parent可以使用 @变量key@,如果没有继承parent 可以使用${变量key}-->
+    <property name="defaultServiceName" value="@project.name@"/>
+
 
     <!--从springboot 配置文件中读取属性值 scope表示作用域， name为变量名称，source指定springboot配置文件中的某个配置项，defaultValue表示没有读取到对应配置时的默认值-->
-    <springProperty scope="context" name="appName" source="spring.application.name"  defaultValue="app"/>
+    <springProperty scope="context" name="appName" source="spring.application.name"  defaultValue="${defaultServiceName}"/>
 
     <!-- 设置 logger context 名称,一旦设置不可改变，默认为default -->
     <contextName>myAppName</contextName>

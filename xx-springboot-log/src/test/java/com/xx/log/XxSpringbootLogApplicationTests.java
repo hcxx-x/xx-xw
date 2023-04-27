@@ -1,5 +1,6 @@
 package com.xx.log;
 
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -60,6 +61,12 @@ class XxSpringbootLogApplicationTests {
         log.info("插入之后的数量：{}",userInfoService.count());
     }
 
+    @Test
+    void testAssert(){
+        Object o = null;
+        Assert.notNull(o,"对象不能为空");
+    }
+
     public static void main(String[] args) {
         /*
         getList方法返回的结果是不带泛型的，可以使用带有泛型的声明去接收，这样就会出来虽然list内部类型是Integer，但是声明的list的泛型却是Long的情况
@@ -75,4 +82,8 @@ class XxSpringbootLogApplicationTests {
         list.add(a);
         return list;
     }
+
+
+
+
 }

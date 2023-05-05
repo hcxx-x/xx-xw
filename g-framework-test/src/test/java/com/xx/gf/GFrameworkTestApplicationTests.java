@@ -40,24 +40,4 @@ class GFrameworkTestApplicationTests {
         log.info("批量插入耗时：{}ms",stopWatch.getTotalTimeMillis());
     }
 
-    @Test
-    void testInertOrUpdateOnDuplicateKey(){
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        List<UserInfo> list = new ArrayList<>();
-        for (int a = 0; a < 1; a++) {
-            for (int i = 0; i < 2; i++) {
-                list.add(UserInfo.builder().name(i+"").age(i).email(i+"@qq.com").id(i+1L).build());
-            }
-            userInfoService.insertOrUpdateOnDuplicateKey(list);
-            List<UserInfo> idIsNullList = list.stream().filter(e -> Objects.isNull(e.getId())).toList();
-            if (CollUtil.isNotEmpty(idIsNullList)){
-                log.info("id回填失败数据：{}",idIsNullList);
-            }
-        }
-
-        stopWatch.stop();
-        log.info("批量插入耗时：{}ms",stopWatch.getTotalTimeMillis());
-    }
-
 }

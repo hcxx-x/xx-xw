@@ -16,6 +16,11 @@ logging:
   level:
     com.xx.gf.mapper: debug
 
+mybatis:
+  updateOnDuplicateKey:
+    autoKey:
+      check: false
+
 ---
 spring:
   config:

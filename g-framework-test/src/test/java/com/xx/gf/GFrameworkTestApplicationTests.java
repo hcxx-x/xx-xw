@@ -27,17 +27,26 @@ class GFrameworkTestApplicationTests {
         List<UserInfo> list = new ArrayList<>();
         for (int a = 0; a < 1; a++) {
             for (int i = 0; i < 2; i++) {
-                list.add(UserInfo.builder().name(i+"").age(i).email(i+"@qq.com").build());
+                list.add(UserInfo.builder().name(i + "").age(i).email(i + "@qq.com").build());
             }
             userInfoService.realBatchSave(list);
             List<UserInfo> idIsNullList = list.stream().filter(e -> Objects.isNull(e.getId())).toList();
-            if (CollUtil.isNotEmpty(idIsNullList)){
-                log.info("id回填失败数据：{}",idIsNullList);
+            if (CollUtil.isNotEmpty(idIsNullList)) {
+                log.info("id回填失败数据：{}", idIsNullList);
             }
         }
 
         stopWatch.stop();
-        log.info("批量插入耗时：{}ms",stopWatch.getTotalTimeMillis());
+        log.info("批量插入耗时：{}ms", stopWatch.getTotalTimeMillis());
+    }
+
+    @Test
+    void testInsertOrUpdate() {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        userInfoService.insertOrUpdateOnDuplicateKey(UserInfo.builder().name(1 + "").age(1).email(1 + "@qq.com").build());
+        stopWatch.stop();
+        log.info("批量插入耗时：{}ms", stopWatch.getTotalTimeMillis());
     }
 
 }

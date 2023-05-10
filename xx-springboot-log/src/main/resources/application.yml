@@ -55,6 +55,9 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     # mem指定数据库使用内存模式 ;DB_CLOSE_DELAY=-1 这样能够保证在虚拟机退出之前 H2 数据库不关闭连接。 MODE指定使用MySQL模式
+    # jdbc:h2:mem:... 其中mem表示使用内存存储数据，此时数据都存在内存中，服务停止数据消失
+    # jdbc:h2:file:./test 表示使用本地文件存储数据，其中:file可以省略，./表示当前目录，test表示数据库名称，也是文件名的前缀
+    # 其形式如：jdbc:h2:[file:][<path>]<databaseName>，在win下可以指定盘符如：jdbc:h2:file:C:/data/sample 官方参考文档：http://www.h2database.com/html/features.html#embedded_databases
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=MySQL;
     username: root
     password: root

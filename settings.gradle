@@ -1,7 +1,5 @@
 rootProject.name = 'xx-xw'
 
-include 'xx-web-withdb'
-
 include 'xx-security'
 include 'xx-security:security-mvc'
 include 'xx-security:security-backend'
@@ -16,12 +14,8 @@ include 'xx-security:security-authorization-db'
 include 'xx-security:security-oauth2-github'
 include 'xx-security:security-oauth2-authenticated-server'
 include 'xx-security:security-oauth2-resource-server'
-include 'xx-security:security-5.7.x-boot-2.7.x'
+include 'xx-security:security-5_7_x-boot-2_7_x'
 
-include 'xx-web-nodb'
-
-include 'xx-springboot'
-include 'xx-springboot:xx-springboot-redis'
 
 
 

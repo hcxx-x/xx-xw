@@ -11,8 +11,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>juc</module>
-        <module>xx-springboot-docker</module>
+
+        <module>xx-springboot-log</module>
     </modules>
 
     <properties>

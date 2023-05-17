@@ -1,19 +1,17 @@
 package com.xx.kafka.alone;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 
+import java.util.Objects;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * @author hanyangyang
  * @since 2023/5/9
  */
-public class MyKafkaProducer {
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
+public class MyKafkaProducerWithCallback {
+    public static void main(String[] args) {
         // 1. 创建 kafka 生产者的配置对象
         Properties properties = new Properties();
         // 2. 给 kafka 配置对象添加配置信息：bootstrap.servers
@@ -27,15 +25,29 @@ public class MyKafkaProducer {
 
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 "org.apache.kafka.common.serialization.StringSerializer");
-
         // 3. 创建 kafka 生产者对象
         KafkaProducer<String, String> kafkaProducer = new
                 KafkaProducer<String, String>(properties);
         // 4. 调用 send 方法,发送消息
         for (int i = 0; i < 5; i++) {
-            kafkaProducer.send(new ProducerRecord<>("first","msg " + i));
+            String msg = "msg with callback 序号： " + i;
+            kafkaProducer.send(new ProducerRecord<>("first", msg), new Callback() {
+                /**
+                 * 这个方法会在生产者不到ack后异步调用
+                 * @param recordMetadata 消息的一些元素数据信息，比如topic,partition,offset
+                 * @param e 如果发送失败则会给出对应的异常，发送成功则为空
+                 */
+                @Override
+                public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                    if (Objects.isNull(e)){
+                        System.out.println(String.format("消息发送成功，topic:%s, partition:%s",recordMetadata.topic(),recordMetadata.partition()));
+                    }else{
+                        System.out.println("消息发送失败：消息内容"+recordMetadata);
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
-
         // 5. 关闭资源
         kafkaProducer.close();
     }

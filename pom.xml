@@ -12,6 +12,7 @@
 
     <modules>
         <module>g-framework-test</module>
+        <module>g-framework</module>
     </modules>
 
     <properties>

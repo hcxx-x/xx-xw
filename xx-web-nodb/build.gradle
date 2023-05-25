@@ -1,7 +1,15 @@
 //引用springboot插件的新写法
 plugins {
     id 'org.springframework.boot' version '2.7.2'
+    id 'idea'
 }
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
 apply plugin: 'java-library'
@@ -21,6 +29,20 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     // 敏感词工具类
     implementation group: 'com.github.houbb', name: 'sensitive-word', version: '0.2.0'
-    implementation group: "com.xx",name:"xx-starter-logback",version:"1.0.0"
+    //implementation group: "com.xx",name:"xx-starter-logback",version:"1.0.0"
 }
+
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
+
+task copyResources(type: Copy) {
+    from "${projectDir}/src/main/resources"
+    into "${buildDir}/classes/java/main"
+    // 如果只有上面两行配置的的话，打包的时候会出现错误，大概意思是resources中的文件会在classpath下存在两份
+    processResources.exclude{"**/*.*"}
+}
+processResources.dependsOn copyResources
 

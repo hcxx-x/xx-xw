@@ -18,8 +18,10 @@ public class TestController {
     private SensitiveWordBs sensitiveWordBs;
 
     @GetMapping("click")
-    public void testClickNum(){
-        log.info("当前系统时间：{}",System.currentTimeMillis());
+    public long testClickNum(){
+        long currentTimeMillis = System.currentTimeMillis();
+        log.info("当前系统时间：{}", currentTimeMillis);
+        return currentTimeMillis;
     }
 
 

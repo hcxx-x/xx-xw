@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 import javax.lang.model.element.VariableElement;
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,8 +21,8 @@ public class MyDdWordAllow implements IWordAllow {
     @Override
     public List<String> allow() {
         ArrayList<String> allowList = new ArrayList<>();
-        try (   FileInputStream fileInputStream = new FileInputStream("build/resources/main/sensitive_words/allow.txt");
-                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+        try (   InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("sensitive_words/allow.txt");
+                InputStreamReader inputStreamReader = new InputStreamReader(resourceAsStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader)
         ) {
            String context = bufferedReader.readLine();

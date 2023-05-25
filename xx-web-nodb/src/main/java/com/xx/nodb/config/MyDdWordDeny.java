@@ -4,10 +4,8 @@ import com.github.houbb.sensitive.word.api.IWordDeny;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +18,8 @@ public class MyDdWordDeny implements IWordDeny {
     @Override
     public List<String> deny() {
         ArrayList<String> allowList = new ArrayList<>();
-        try (FileInputStream fileInputStream = new FileInputStream("build/resources/main/sensitive_words/deny.txt");
-             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+        try ( InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("sensitive_words/allow.txt");
+             InputStreamReader inputStreamReader = new InputStreamReader(resourceAsStream);
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)
         ) {
             String context = bufferedReader.readLine();

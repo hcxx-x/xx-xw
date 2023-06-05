@@ -1,6 +1,7 @@
 package com.xx.web.test;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.xx.web.client.ForestTestClient;
 import com.xx.web.domain.entity.TestActable;
 import com.xx.web.mapper.TestActableMapper;
 import com.xx.web.mapper.TestMapper;
@@ -16,10 +17,10 @@ import java.util.List;
 
 @Slf4j
 @SpringBootTest()
-public class MyBatisPlusTest {
+public class ForestTest {
 
     @Autowired
-    TestActableMapper testActableMapper;
+    ForestTestClient forestTestClient;
 
     @Test
     public void testSelect(){

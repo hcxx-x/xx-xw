@@ -1,0 +1,32 @@
+首先，我觉得这篇文档应该是写给一个纠结的、容易钻牛角尖的人看的，比如我自己。
+
+在学习kafka的过程中看了不少文档资料，在这些文档资料中几乎是全部都会提到broker这个东西，然后有说broker就是kafka的服务，又说broker是kafka的重要组件，这一会是kafka服务，一会是组件的真是把我搞的晕晕的，到底是服务，还是组件啊~  
+
+后来各种翻资料也没有得出一个让我觉得很清楚的关于broker的定义。对于kafka来说，官方给的唯一一个关于broker的定义就是说，可能有很多服务器组成了一个kafka集群，然后这些集群中有一部分是作为存储层，也就是负责存储数据的，这一部分的服务器就叫做broker。 完蛋，官方给的这个定义也不行啊，服务器就是broker，那咋做组件嘞，持续懵逼中.....  
+
+翻了很多资料、文档，甚至是官方文档也没有得出一个很好的结论，没办法了，就结合这些东西加上自己的理解先骗骗自己吧，万一蒙对了呢。然后我就得出了一个结论： 
+
+ 1. 我们通常说的kafka应该是一个“狭义”的kafka, 我们说的这个kafka是只提供了接受消息，以及供消费者拉取消息的，并保持自身不会丢消息等特性的kafka,而此时将broker理解为kafka服务其实是没有问题的，因为这些功能都是在broker组件中实现的。
+ 2. 而真正的Kafka应该是一个分布式系统，由服务器和客户端组成，服务器提供了topic的管理，分区的管理，以及接受客户端的的请求并响应，并提供了消息的存取并保证消息的可靠性（这一部分就是Broker的功能）。而客户端就是可以理解为kafka提供的客户端api,或者是kafka提供的一系列的操作脚本，这都可以算作一个客户端。从这里来看就不能单单的吧Broker看做是kafka,而应该将其看做kafka的一个组件
+ 3. 为什么我们会说broker就是kafka的服务，我觉得有以下原因：
+    1. 首先是kafka官方文档的描述不清，官方文档定义为承担存储功能的服务器就是broker,但是实际情况下，我们在使用过程中所有运行kafka服务的机器都会承担这样一个工作。所以有了一个broker就是一个运行着的kafka服务
+    2. 因为我们通常所需要的功能其实就是broker提供的功能（消息的存取和收发），对于kafka其他功能的感知并不是很强，所以就感觉broker就是kafka的全部了（狭义上的kafka）
+
+在这之后，我大概看了一下kafka的源码，然后发现了两个类，KafkaBroker和KafkaServer，其中KafkaServer继承了KafkaBroker, 通过对Java继承的理解可以知道，KafkaBroker和KafkaServer可以理解为同一类的东西，但是KafkaServer比KafkaBroker的功能会更加强大，从这里来看，如果就把Server看成Broker好像也没有关系（就像说猫是猫科动物一样），如果吧Broker看做是Kafka的一个组件也没有关系，因为Server在继承Broker的时候还提供了其他的功能啊
+
+再之后，我看了一下其他消息中间件的一些文档，这些文档中大都存在Broker组件或者提到了Broker
+RocketMQ中对Broker组件的定义：Broker主要负责消息的存储、投递和查询以及服务高可用保证。
+RabbitMQ：RabbitMQ is a message broker   RabbitMQ将自己就定义为一个broker
+ActiveMQ: The Tried and Trusted Open Source Message Broker /  ActiveMQ Artemis  The Next Generation Message Broker by ActiveMQ  也是将自己定义为一个消息Broker, 并且ActiveMQ好像有一个可以将服务内嵌到代码中的模式，也被称为broker模式
+
+
+同一种类型的中间件，架构上应该总有相似的地方吧
+从这些消息中间件对Broker的定义来看，broker要么是一个消息中间件将自己定义成一个broker,要么就是在消息中间件中承担存储、投递和服务高可用的核心功能，所以说如果把消息中间件服务，就看做是一个broker,在狭义上应该是没有问题的。而如果把broker 看做是一个消息中间件的一个重要组件，也是没有问题的，因为很可能这个中间件还有实现了一些别的什么功能
+
+broker 翻译过来就是代理人、经纪人，再MQ中，broker就是消息的代理（Message Broker），Producers往Brokers里面的指定Topic中写消息，Consumers从Brokers里面拉取指定Topic的消息，然后进行业务处理，broker在中间起到一个代理保存消息的中转站。
+
+
+消息代理(Message Broker)  
+消息代理是一种架构模式，用于消息验证、变换、路由。虽然不同的消息中间件架构和实现各不相同，但是大部分都实现了Broker：其实就是消息中间件服务器，它是中间件的核心。
+注意:RabbitMQ、Kafka、RocketMQ等都有消息代理，但是注意，不是所有中间件都这么选，例如ZeroMQ，它用了套接字风格的API。
+在一些地方其实说消息代理就是指消息中间件，如Python语言知名的分布式任务队列框架Celery中就这么称呼的（所谓的「任务」其实就是一个包含了任务全部数据的消息）。当然，Celery中使用的消息代理比知名的消息中间件范围广得多，其他的如Redis、MongoDB、Zookeeper等都可以作为消息代理，因为对于Celery来说，它要的只是一个消息存储的「代理」，类似数据库这种具备存储特性的软件都可以作为消息代理。

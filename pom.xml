@@ -3,19 +3,46 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
     <groupId>com.xx</groupId>
-    <artifactId>xx-xw</artifactId>
-    <version>0.0.1</version>
+    <artifactId>xw</artifactId>
+    <version>1.0.0</version>
 
     <packaging>pom</packaging>
 
     <modules>
-
+        <module>xw-springboot-mybatisplus</module>
     </modules>
 
     <properties>
-        <skipt.test>true</skipt.test>
+        <hutool.version>5.8.2</hutool.version>
+        <lombok.version>1.18.28</lombok.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
 </project>

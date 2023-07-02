@@ -14,6 +14,16 @@
     </modules>
 
     <properties>
+        <!--jdk版本-->
+        <java.version>17</java.version>
+        <!-- Maven 相关 -->
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--指定maven生成各种报告时使用的编码，参考：https://maven.apache.org/plugins/maven-compiler-plugin/project-reports.html-->
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!--版本管理-->
         <hutool.version>5.8.2</hutool.version>
         <lombok.version>1.18.28</lombok.version>
     </properties>

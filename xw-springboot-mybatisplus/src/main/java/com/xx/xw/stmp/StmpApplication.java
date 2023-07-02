@@ -7,6 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication
 @MapperScan("com.xx.xw.stmp.mapper")
+@EnableAspectJAutoProxy(proxyTargetClass = false)
 public class StmpApplication {
     public static void main(String[] args) {
         SpringApplication.run(StmpApplication.class,args);

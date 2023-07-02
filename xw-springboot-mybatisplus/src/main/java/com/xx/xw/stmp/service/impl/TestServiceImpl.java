@@ -15,8 +15,8 @@ public class TestServiceImpl extends ServiceImpl<ITestMapper, TestEntity> implem
 
     @Override
     public void testTx() {
-        TestServiceImpl testService = SpringUtil.getApplicationContext().getBean(this.getClass());
-        testService.realTx();
+        ITestService testService = SpringUtil.getApplicationContext().getBean(ITestService.class);
+        System.out.println(testService);
     }
 
     @Transactional(rollbackFor = Exception.class)

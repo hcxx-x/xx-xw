@@ -18,4 +18,9 @@ public class TestController {
         testService.testTx();
         return "ok";
     }
+
+    @RequestMapping("/batch")
+    public void testBatch(){
+        testService.testBatchFail();
+    }
 }

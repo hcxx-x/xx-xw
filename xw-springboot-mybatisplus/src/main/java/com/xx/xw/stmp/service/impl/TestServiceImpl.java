@@ -10,6 +10,9 @@ import org.springframework.aop.support.AopUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
 @Service
 public class TestServiceImpl extends ServiceImpl<ITestMapper, TestEntity> implements ITestService {
 
@@ -17,6 +20,20 @@ public class TestServiceImpl extends ServiceImpl<ITestMapper, TestEntity> implem
     public void testTx() {
         ITestService testService = SpringUtil.getApplicationContext().getBean(ITestService.class);
         System.out.println(testService);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void testBatchFail() {
+        TestEntity testEntity = new TestEntity();
+        testEntity.setContent("测试事务--更新后的结果");
+
+        TestEntity testEntity1 = new TestEntity();
+
+        ArrayList<TestEntity> list = new ArrayList<>();
+        list.add(testEntity);
+        list.add(testEntity1);
+        this.saveBatch(list);
     }
 
     @Transactional(rollbackFor = Exception.class)

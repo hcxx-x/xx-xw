@@ -5,4 +5,6 @@ import com.xx.xw.stmp.pojo.entity.TestEntity;
 
 public interface ITestService extends IService<TestEntity> {
     void testTx();
+
+    void testBatchFail();
 }

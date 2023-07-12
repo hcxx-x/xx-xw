@@ -1,29 +1,18 @@
-package com.xx.springboot.redis.config;
+package com.xx.springboot.redis.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
+import com.dyuproject.protostuff.Schema;
+import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
-import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
-
-
-import java.io.ByteArrayOutputStream;
-import java.util.List;
-import com.dyuproject.protostuff.LinkedBuffer;
-import com.dyuproject.protostuff.ProtostuffIOUtil;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -33,17 +22,19 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Redis工具类
- *
- * @author WangFan
- * @date 2018-02-24 下午03:09:50
- * @version 1.1 (GitHub文档: https://github.com/whvcse/RedisUtil )
+ * @author hanyangyang
+ * @since 2023/7/11
  */
 @Component
-public  class RedisUtils1 {
-    static Logger log = LoggerFactory.getLogger(RedisUtils.class);
+public class RedisUtil {
+    static Logger log = LoggerFactory.getLogger(RedisUtil.class);
     private static RedisTemplate<String,Object> redisTemplate;
 
     @Resource
@@ -55,16 +46,16 @@ public  class RedisUtils1 {
             redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
             log.info("Redis初始化配置注入成功！");
         }
-        RedisUtils1.redisTemplate = redisTemplate;
+        RedisUtil.redisTemplate = redisTemplate;
     }
 
 
-    /** -------------------key相关操作--------------------- */
+    /*================================key相关操作=====================================*/
 
     /**
      * 删除key
-     *
-     * @param key
+     * del key
+     * @param key 需要被删除的key
      */
     public static void delete(String key) {
         redisTemplate.delete(key);
@@ -72,18 +63,18 @@ public  class RedisUtils1 {
 
     /**
      * 批量删除key
-     *
-     * @param keys
+     * del key ...
+     * @param keys 需要呗删除的key集合
      */
     public static void delete(Collection<String> keys) {
         redisTemplate.delete(keys);
     }
 
     /**
-     * 序列化key
-     *
-     * @param key
-     * @return
+     * 序列化key对应的value
+     * dump key
+     * @param key redis key
+     * @return value对应的序列化结果
      */
     public static byte[] dump(String key) {
         return redisTemplate.dump(key);
@@ -91,21 +82,21 @@ public  class RedisUtils1 {
 
     /**
      * 是否存在key
-     *
-     * @param key
-     * @return
+     * exists key
+     * @param key redis key
+     * @return 存在 true 不存在：false
      */
     public static Boolean hasKey(String key) {
         return redisTemplate.hasKey(key);
     }
 
     /**
-     * 设置过期时间
-     *
-     * @param key
-     * @param timeout
-     * @param unit
-     * @return
+     * 设置key多久之后过期
+     * expire key seconds
+     * @param key redis key
+     * @param timeout 时间单位数量
+     * @param unit 时间单位
+     * @return 操作结果，成功true,失败false
      */
     public static Boolean expire(String key, long timeout, TimeUnit unit) {
         return redisTemplate.expire(key, timeout, unit);
@@ -113,10 +104,10 @@ public  class RedisUtils1 {
 
     /**
      * 设置过期时间
-     *
-     * @param key
-     * @param date
-     * @return
+     * expireat key timestamp
+     * @param key redis key
+     * @param date 过期时间
+     * @return 操作结果，成功true,失败false
      */
     public static Boolean expireAt(String key, Date date) {
         return redisTemplate.expireAt(key, date);
@@ -124,9 +115,9 @@ public  class RedisUtils1 {
 
     /**
      * 查找匹配的key
-     *
-     * @param pattern
-     * @return
+     * keys pattern
+     * @param pattern 正则表达式
+     * @return 与正则表达式相匹配的redis key的集合
      */
     public static Set<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
@@ -134,10 +125,10 @@ public  class RedisUtils1 {
 
     /**
      * 将当前数据库的 key 移动到给定的数据库 db 当中
-     *
-     * @param key
-     * @param dbIndex
-     * @return
+     * move key db
+     * @param key  redis key
+     * @param dbIndex 数据库序号，redis默认16个库 0-15
+     * @return 操作结果，成功true,失败false
      */
     public static Boolean move(String key, int dbIndex) {
         return redisTemplate.move(key, dbIndex);
@@ -145,9 +136,9 @@ public  class RedisUtils1 {
 
     /**
      * 移除 key 的过期时间，key 将持久保持
-     *
-     * @param key
-     * @return
+     * persist key
+     * @param key redis key
+     * @return 操作结果，成功true,失败false
      */
     public static Boolean persist(String key) {
         return redisTemplate.persist(key);
@@ -155,10 +146,11 @@ public  class RedisUtils1 {
 
     /**
      * 返回 key 的剩余的过期时间
-     *
-     * @param key
-     * @param unit
-     * @return
+     * ttl key 以秒为单位返回key的剩余过期时间
+     * pttl key 以毫秒为单位返回key的过期时间
+     * @param key redis key
+     * @param unit 时间单位
+     * @return 剩余的过期时间，返回0代表永久有效
      */
     public static Long getExpire(String key, TimeUnit unit) {
         return redisTemplate.getExpire(key, unit);
@@ -166,7 +158,8 @@ public  class RedisUtils1 {
 
     /**
      * 根据key 获取过期时间
-     *
+     * ttl key 以秒为单位返回key的剩余过期时间
+     * pttl key 以毫秒为单位返回key的过期时间
      * @param key 键 不能为null
      * @return 时间(秒) 返回0代表为永久有效
      */
@@ -176,8 +169,8 @@ public  class RedisUtils1 {
 
     /**
      * 从当前数据库中随机返回一个 key
-     *
-     * @return
+     * randomkey
+     * @return 随机返回的key
      */
     public static String randomKey() {
         return redisTemplate.randomKey();
@@ -185,9 +178,9 @@ public  class RedisUtils1 {
 
     /**
      * 修改 key 的名称
-     *
-     * @param oldKey
-     * @param newKey
+     * rename key newkey
+     * @param oldKey 旧key的名称
+     * @param newKey 新key的名称
      */
     public static void rename(String oldKey, String newKey) {
         redisTemplate.rename(oldKey, newKey);
@@ -195,9 +188,9 @@ public  class RedisUtils1 {
 
     /**
      * 仅当 newkey 不存在时，将 oldKey 改名为 newkey
-     *
-     * @param oldKey
-     * @param newKey
+     * renamenx key newkey
+     * @param oldKey 旧key的名称
+     * @param newKey 新key的名称
      * @return
      */
     public static Boolean renameIfAbsent(String oldKey, String newKey) {
@@ -206,29 +199,33 @@ public  class RedisUtils1 {
 
     /**
      * 返回 key 所储存的值的类型
-     *
-     * @param key
-     * @return
+     * type key
+     * @param key redis key
+     * @return 对于大多数的redis数据类型 使用这个命令都会返回String, 如list/set/zset/hash都会返回String
      */
     public static DataType type(String key) {
         return redisTemplate.type(key);
     }
 
-    /** -------------------string相关操作--------------------- */
+
+
+    /* ============================string相关操作=============================== */
 
     /**
      * 设置指定 key 的值
-     * @param key
-     * @param value
+     * set key value
+     * @param key  键
+     * @param value 值
      */
     public static void set(String key, String value) {
         redisTemplate.opsForValue().set(key, value);
     }
 
     /**
-     * 设置指定 key 的值
-     * @param key
-     * @param value
+     * 设置指定 key 的值,并设置过期时间，时间单位为秒
+     * setex key seconds value
+     * @param key 键
+     * @param value 值
      */
     public static void set(String key, String value,long time) {
         redisTemplate.opsForValue().set(key, value,time,TimeUnit.SECONDS);
@@ -236,19 +233,20 @@ public  class RedisUtils1 {
 
     /**
      * 获取指定 key 的值
-     * @param key
-     * @return
+     * get key
+     * @param key 键
+     * @return 指定键对应的value
      */
     public static String get(String key) {
         return (String) redisTemplate.opsForValue().get(key);
     }
 
     /**
-     * 返回 key 中字符串值的子字符
-     * @param key
-     * @param start
-     * @param end
-     * @return
+     * 返回 key 对应的值中字符串值的子字符
+     * @param key  键
+     * @param start 其实位置
+     * @param end 结束位置
+     * @return value的子字符串
      */
     public static String getRange(String key, long start, long end) {
         return redisTemplate.opsForValue().get(key, start, end);
@@ -532,7 +530,7 @@ public  class RedisUtils1 {
      * @param options
      * @return
      */
-    public static Cursor<Entry<Object, Object>> hScan(String key, ScanOptions options) {
+    public static Cursor<Map.Entry<Object, Object>> hScan(String key, ScanOptions options) {
         return redisTemplate.opsForHash().scan(key, options);
     }
 
@@ -752,7 +750,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Object lBRightPopAndLeftPush(String sourceKey, String destinationKey,
-                                        long timeout, TimeUnit unit) {
+                                               long timeout, TimeUnit unit) {
         return redisTemplate.opsForList().rightPopAndLeftPush(sourceKey,
                 destinationKey, timeout, unit);
     }
@@ -903,7 +901,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Long sIntersectAndStore(String key, Collection<String> otherKeys,
-                                   String destKey) {
+                                          String destKey) {
         return redisTemplate.opsForSet().intersectAndStore(key, otherKeys,
                 destKey);
     }
@@ -951,7 +949,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Long sUnionAndStore(String key, Collection<String> otherKeys,
-                               String destKey) {
+                                      String destKey) {
         return redisTemplate.opsForSet().unionAndStore(key, otherKeys, destKey);
     }
 
@@ -999,7 +997,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Long sDifference(String key, Collection<String> otherKeys,
-                            String destKey) {
+                                   String destKey) {
         return redisTemplate.opsForSet().differenceAndStore(key, otherKeys,
                 destKey);
     }
@@ -1076,7 +1074,7 @@ public  class RedisUtils1 {
      * @param values
      * @return
      */
-    public static Long zAdd(String key, Set<TypedTuple<Object>> values) {
+    public static Long zAdd(String key, Set<ZSetOperations.TypedTuple<Object>> values) {
         return redisTemplate.opsForZSet().add(key, values);
     }
 
@@ -1146,8 +1144,8 @@ public  class RedisUtils1 {
      * @param end
      * @return
      */
-    public static Set<TypedTuple<Object>> zRangeWithScores(String key, long start,
-                                                    long end) {
+    public static Set<ZSetOperations.TypedTuple<Object>> zRangeWithScores(String key, long start,
+                                                                          long end) {
         return redisTemplate.opsForZSet().rangeWithScores(key, start, end);
     }
 
@@ -1175,8 +1173,8 @@ public  class RedisUtils1 {
      *            最大值
      * @return
      */
-    public static Set<TypedTuple<Object>> zRangeByScoreWithScores(String key,
-                                                           double min, double max) {
+    public static Set<ZSetOperations.TypedTuple<Object>> zRangeByScoreWithScores(String key,
+                                                                                 double min, double max) {
         return redisTemplate.opsForZSet().rangeByScoreWithScores(key, min, max);
     }
 
@@ -1189,8 +1187,8 @@ public  class RedisUtils1 {
      * @param end
      * @return
      */
-    public static Set<TypedTuple<Object>> zRangeByScoreWithScores(String key,
-                                                           double min, double max, long start, long end) {
+    public static Set<ZSetOperations.TypedTuple<Object>> zRangeByScoreWithScores(String key,
+                                                                                 double min, double max, long start, long end) {
         return redisTemplate.opsForZSet().rangeByScoreWithScores(key, min, max,
                 start, end);
     }
@@ -1215,8 +1213,8 @@ public  class RedisUtils1 {
      * @param end
      * @return
      */
-    public static Set<TypedTuple<Object>> zReverseRangeWithScores(String key,
-                                                           long start, long end) {
+    public static Set<ZSetOperations.TypedTuple<Object>> zReverseRangeWithScores(String key,
+                                                                                 long start, long end) {
         return redisTemplate.opsForZSet().reverseRangeWithScores(key, start,
                 end);
     }
@@ -1230,7 +1228,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Set<Object> zReverseRangeByScore(String key, double min,
-                                            double max) {
+                                                   double max) {
         return redisTemplate.opsForZSet().reverseRangeByScore(key, min, max);
     }
 
@@ -1242,7 +1240,7 @@ public  class RedisUtils1 {
      * @param max
      * @return
      */
-    public static Set<TypedTuple<Object>> zReverseRangeByScoreWithScores(
+    public static Set<ZSetOperations.TypedTuple<Object>> zReverseRangeByScoreWithScores(
             String key, double min, double max) {
         return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key,
                 min, max);
@@ -1258,7 +1256,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Set<Object> zReverseRangeByScore(String key, double min,
-                                            double max, long start, long end) {
+                                                   double max, long start, long end) {
         return redisTemplate.opsForZSet().reverseRangeByScore(key, min, max,
                 start, end);
     }
@@ -1350,7 +1348,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Long zUnionAndStore(String key, Collection<String> otherKeys,
-                               String destKey) {
+                                      String destKey) {
         return redisTemplate.opsForZSet()
                 .unionAndStore(key, otherKeys, destKey);
     }
@@ -1364,7 +1362,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Long zIntersectAndStore(String key, String otherKey,
-                                   String destKey) {
+                                          String destKey) {
         return redisTemplate.opsForZSet().intersectAndStore(key, otherKey,
                 destKey);
     }
@@ -1378,7 +1376,7 @@ public  class RedisUtils1 {
      * @return
      */
     public static Long zIntersectAndStore(String key, Collection<String> otherKeys,
-                                   String destKey) {
+                                          String destKey) {
         return redisTemplate.opsForZSet().intersectAndStore(key, otherKeys,
                 destKey);
     }
@@ -1389,7 +1387,7 @@ public  class RedisUtils1 {
      * @param options
      * @return
      */
-    public static Cursor<TypedTuple<Object>> zScan(String key, ScanOptions options) {
+    public static Cursor<ZSetOperations.TypedTuple<Object>> zScan(String key, ScanOptions options) {
         return redisTemplate.opsForZSet().scan(key, options);
     }
 
@@ -2174,7 +2172,7 @@ public  class RedisUtils1 {
  * @author Sirius
  * @date 2019-1-8
  */
- class ProtoStuffSerializerUtil {
+class ProtoStuffSerializerUtil {
     /**
      * 序列化对象
      * @param obj
@@ -2275,5 +2273,6 @@ public  class RedisUtils1 {
         }
         return result;
     }
+
 
 }

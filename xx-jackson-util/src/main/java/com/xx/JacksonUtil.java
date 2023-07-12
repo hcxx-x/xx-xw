@@ -142,7 +142,7 @@ public class JacksonUtil {
     /**
      * 将JSON数据转换成列表
      *
-     * @param jsonStr JSON数据
+     * @param jsonStr  JSON数据
      * @param beanType 对象类型
      * @return 列表
      */
@@ -159,7 +159,7 @@ public class JacksonUtil {
     /**
      * 将JSON数据转换成Set集合
      *
-     * @param jsonStr    JSON数据
+     * @param jsonStr     JSON数据
      * @param elementType 元素类型
      * @return Set集合
      */
@@ -176,7 +176,7 @@ public class JacksonUtil {
     /**
      * 将JSON数据转换成Map集合
      *
-     * @param jsonStr  JSON数据
+     * @param jsonStr   JSON数据
      * @param keyType   键类型
      * @param valueType 值类型
      * @return Map集合
@@ -193,13 +193,47 @@ public class JacksonUtil {
 
     /**
      * 判断是字符串是否是json字符串
+     *
      * @param str
      * @return
      */
-    public static boolean isJson(String str){
+    public static boolean isJson(String str) {
         try {
-            OBJECT_MAPPER.createParser(str);
+            if (Objects.isNull(str) || "".equals(str.trim())) {
+                // 空字符串返回false
+                return false;
+            }
+            str = str.trim();
+            if (!(str.startsWith("{") && str.endsWith("}")) && !(str.startsWith("[") && str.endsWith("]"))) {
+                // 如果不是{}或者[]开始和结束返回false
+                return false;
+            }
+            OBJECT_MAPPER.readValue(str, Object.class);
             return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * 判断字符串是否是jsonArray字符串
+     * @param str
+     * @return
+     */
+    public static boolean isJsonArray(String str){
+        try {
+            if (Objects.isNull(str) || "".equals(str.trim())) {
+                // 空字符串返回false
+                return false;
+            }
+            str = str.trim();
+            if (!(str.startsWith("[") && str.endsWith("]"))) {
+                // 如果不是{}或者[]开始和结束返回false
+                return false;
+            }
+            JsonNode jsonNode = OBJECT_MAPPER.readTree(str);
+            return jsonNode.isArray();
         } catch (IOException e) {
             return false;
         }
@@ -207,11 +241,12 @@ public class JacksonUtil {
 
     /**
      * 判断json字符串是否包含某个属性
+     *
      * @param jsonStr json 字符串
-     * @param field 属性名称
+     * @param field   属性名称
      * @return 是否包含
      */
-    public static boolean hasField(String jsonStr,String field){
+    public static boolean hasField(String jsonStr, String field) {
         try {
             JsonNode jsonNode = OBJECT_MAPPER.readTree(jsonStr);
             return jsonNode.has(field);
@@ -219,6 +254,40 @@ public class JacksonUtil {
             return false;
         }
     }
+
+    /**
+     * 获取指定属性的值，并转成指定类型的对象
+     * @param jsonStr
+     * @param fieldName
+     */
+    public static String getField(String jsonStr, String fieldName) {
+        try {
+            JsonNode jsonNode = OBJECT_MAPPER.readTree(jsonStr);
+            return jsonNode.get(fieldName).asText();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 获取指定属性的值，并转成指定类型的对象
+     * @param jsonStr
+     * @param fieldName
+     * @param T
+     * @return
+     * @param <T>
+     */
+    public static <T> T getFieldBean(String jsonStr, String fieldName, Class<T> T) {
+        try {
+            JsonNode jsonNode = OBJECT_MAPPER.readTree(jsonStr);
+            String text = jsonNode.get(fieldName).asText();
+            return JacksonUtil.toBean(text, T);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 
 }

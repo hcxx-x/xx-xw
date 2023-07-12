@@ -12,6 +12,7 @@
 
     <modules>
 
+        <module>xx-jackson-util</module>
     </modules>
 
     <properties>

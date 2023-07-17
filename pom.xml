@@ -15,7 +15,7 @@
 
     <properties>
         <!--jdk版本-->
-        <java.version>17</java.version>
+        <java.version>1.8</java.version>
         <!-- Maven 相关 -->
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xx.xw.stmp.mapper.IExportMapper">
-    <select id="getAll" resultType="com.xx.xw.stmp.pojo.entity.ExportEntity" fetchSize="-2147483648" resultSetType="FORWARD_ONLY">
+    <select id="getAll" resultType="java.util.List" fetchSize="1000" resultSetType="FORWARD_ONLY">
         select * from t_export
     </select>
 

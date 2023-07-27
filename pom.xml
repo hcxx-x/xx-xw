@@ -11,11 +11,24 @@
     <packaging>pom</packaging>
 
     <modules>
-
+        <module>sharding-sphere</module>
     </modules>
 
     <properties>
         <skipt.test>true</skipt.test>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>aliyun</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

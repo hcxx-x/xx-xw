@@ -11,7 +11,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>sharding-sphere</module>
+        <module>sharding-sphere-read-write-split</module>
+        <module>sharding-sphere-vertical-split-db</module>
     </modules>
 
     <properties>

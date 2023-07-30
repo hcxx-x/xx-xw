@@ -1,7 +1,7 @@
-package com.xx.shardingsphereverticalsplitdb.mapper;
+package com.xx.splitdbsplittable.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xx.shardingsphereverticalsplitdb.entity.Order;
+import com.xx.splitdbsplittable.entity.Order;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

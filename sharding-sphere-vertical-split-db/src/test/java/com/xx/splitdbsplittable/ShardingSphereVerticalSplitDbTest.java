@@ -1,9 +1,9 @@
-package com.xx.shardingsphereverticalsplitdb;
+package com.xx.splitdbsplittable;
 
-import com.xx.shardingsphereverticalsplitdb.entity.Order;
-import com.xx.shardingsphereverticalsplitdb.entity.User;
-import com.xx.shardingsphereverticalsplitdb.mapper.OrderMapper;
-import com.xx.shardingsphereverticalsplitdb.mapper.UserMapper;
+import com.xx.splitdbsplittable.entity.Order;
+import com.xx.splitdbsplittable.entity.User;
+import com.xx.splitdbsplittable.mapper.OrderMapper;
+import com.xx.splitdbsplittable.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;

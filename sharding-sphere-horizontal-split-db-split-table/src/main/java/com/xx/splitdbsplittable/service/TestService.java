@@ -1,9 +1,9 @@
-package com.xx.shardingsphereverticalsplitdb.service;
+package com.xx.splitdbsplittable.service;
 
-import com.xx.shardingsphereverticalsplitdb.entity.Order;
-import com.xx.shardingsphereverticalsplitdb.entity.User;
-import com.xx.shardingsphereverticalsplitdb.mapper.OrderMapper;
-import com.xx.shardingsphereverticalsplitdb.mapper.UserMapper;
+import com.xx.splitdbsplittable.entity.Order;
+import com.xx.splitdbsplittable.entity.User;
+import com.xx.splitdbsplittable.mapper.OrderMapper;
+import com.xx.splitdbsplittable.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -13,6 +13,7 @@
     <modules>
         <module>sharding-sphere-read-write-split</module>
         <module>sharding-sphere-vertical-split-db</module>
+        <module>sharding-sphere-horizontal-split-db-split-table</module>
     </modules>
 
     <properties>

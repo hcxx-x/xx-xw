@@ -1,6 +1,6 @@
-package com.xx.shardingsphereverticalsplitdb.controller;
+package com.xx.splitdbsplittable.controller;
 
-import com.xx.shardingsphereverticalsplitdb.service.TestService;
+import com.xx.splitdbsplittable.service.TestService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

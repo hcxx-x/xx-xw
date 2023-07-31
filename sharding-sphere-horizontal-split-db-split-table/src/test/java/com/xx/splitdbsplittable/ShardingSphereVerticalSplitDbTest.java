@@ -1,11 +1,13 @@
 package com.xx.splitdbsplittable;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xx.splitdbsplittable.entity.Order;
 import com.xx.splitdbsplittable.entity.User;
 import com.xx.splitdbsplittable.mapper.OrderMapper;
 import com.xx.splitdbsplittable.mapper.UserMapper;
 import com.xx.splitdbsplittable.service.IOrderService;
 import com.xx.splitdbsplittable.service.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @SpringBootTest
 public class ShardingSphereVerticalSplitDbTest {
 
@@ -60,6 +63,19 @@ public class ShardingSphereVerticalSplitDbTest {
         }
         userService.saveBatch(userList);
         orderService.saveBatch(orderList);
+    }
+
+
+    @Test
+    public void testOrderBy(){
+        List<Order> list = orderService.list(new LambdaQueryWrapper<Order>().orderByDesc(Order::getId).last("limit 2"));
+        log.info("排序结果：{}",list);
+    }
+
+    @Test
+    public void testGroupBy(){
+        List<Order> list = orderService.list(new LambdaQueryWrapper<Order>().groupBy(Order::getId).orderByDesc(Order::getId).last("limit 2"));
+        log.info("排序结果：{}",list);
     }
 
     @Test

@@ -35,11 +35,11 @@ class XxSpringbootLogApplicationTests {
         }
         //System.out.println(ids.stream().map(e -> e.toString()).collect(Collectors.joining(",")));
         //log.info("y用户列表1：{}",userInfoService.list(Wrappers.<UserInfo>lambdaQuery().in(UserInfo::getId,ids)));
-        log.info("用户列表：{}",userInfoMapper.queryAllUserConditionIdIn(ids));
+        log.info("用户列表：{}",userInfoMapper.selectList(null));
 
-        List<Long> longs = userInfoMapper.testIntLong();
-        System.out.println(longs.get(0).getClass().getName());
-        log.info("{}",longs);
+        //List<Long> longs = userInfoMapper.testIntLong();
+       /* System.out.println(longs.get(0).getClass().getName());
+        log.info("{}",longs);*/
     }
 
     @Test
@@ -47,7 +47,7 @@ class XxSpringbootLogApplicationTests {
         List<UserInfo> list = userInfoService.list();
         log.info("批量插入之前的list:{}",list);
         List<UserInfo> userList = new ArrayList<>();
-        for (int i = 0; i < 1800; i++) {
+        for (int i = 2000; i < 2800; i++) {
             UserInfo user = new UserInfo();
             user.setAge(i);
             user.setName("name"+i);

@@ -153,4 +153,29 @@ public class MongoTemplateTest {
             Optional.ofNullable(result.get("username")).orElse(null);
         }
     }
+
+    /**
+     * GroupOperation 分组操作样例
+     */
+    private void groupOperationUsageSample() {
+        Aggregation.group("age")
+                // 取分组后 age 字段里的第一个值 存入 age 字段
+                .first("age").as("age")
+                // 取分组后的数据总数 存入 count 字段
+                .count().as("count")
+                // 将分组后姓名存入 usernameList 列表
+                .push("username").as("usernameList")
+                // 将分组后姓名存入 usernameSet 集合， 去重
+                .addToSet("username").as("usernameSet")
+                // 取分组后学分总和
+                .sum("score").as("scoreSum")
+                // 取分组后学分平均数
+                .avg("score").as("scoreAvg")
+                // 取分组后学分最大值
+                .max("score").as("scoreMax")
+                // 取分组后学分最小值
+                .min("score").as("scoreMin")
+                // 取最后一条数据
+                .last("$$ROOT").as("data");
+    }
 }

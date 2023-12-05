@@ -14,10 +14,9 @@ import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -262,5 +261,20 @@ public class MongoTemplateTest {
                 .min("score").as("scoreMin")
                 // 取最后一条数据
                 .last("$$ROOT").as("data");
+    }
+
+    /**
+     * ProjectionOperation 投射操作样例
+     */
+    private void projectionOperationUsageSample() {
+        Aggregation.project()
+                // 希望显示的字段
+                .andInclude("age", "username", "usernameList", "usernameSet", "data")
+                // 不希望显示的字段
+                .andExclude("_id")
+                // 拼接一个需要展示的字段的表达式 此表达式用法较多 具体可查 AggregationExpression 实现类
+                .and(AggregationExpression.from(MongoExpression.create(""))).as("andExpression")
+                // 例: 投射一个 username-age 的值给 custom 字段
+                .and(StringOperators.Concat.valueOf("username").concat("-").concatValueOf("age")).as("custom");
     }
 }

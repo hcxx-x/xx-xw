@@ -347,4 +347,70 @@ public class MongoTemplateTest {
                     .orElse(new ArrayList<String>());
         }
     }
+
+
+    /**
+     * demo1
+     * 按日期 日/周/月/年 分组求和统计示例（demo 以日为例）
+     * mongo shell:
+     * db.demo.aggregate([
+     *     {
+     *         $project: {
+     *             date: {
+     *                 $dateToString: {
+     *                     format: '%Y-%m-%d',
+     *                     date: {
+     *                         $add: ['$crtDateTime', 2880000]
+     *                     }
+     *                 }
+     *             }
+     *         }
+     *     },
+     *     {
+     *         $group: {
+     *             _id: "$date",
+     *             date: {
+     *                 $first: "$date",
+     *             },
+     *             count: {
+     *                 $sum: 1
+     *             }
+     *         }
+     *     },
+     *     {
+     *         $sort: {
+     *             date: 1
+     *         }
+     *     }
+     * ])
+     */
+    private void demo1() {
+        // DAY("天","{$dateToString:{format:'%Y-%m-%d',date:{$add:{'$%s', 28800000}}}}"),
+        // WEEK("周","{$dateToString:{format:'%Y-%U',date:{$add:{'$%s', 28800000}}}}"),
+        // MONTH("月","{$dateToString:{format:'%Y-%m',date:{$add:{'$%s', 28800000}}}}"),
+        // YEAR("年","{$dateToString:{format:'%Y',date:{$add:{'$%s', 28800000}}}}"),
+        // 将 LocalDateTime 时间根据 format 表达式转换为字符串（yyyy-MM-dd） 用于分组
+        String time = "{$dateToString:{format:'%%Y-%%m-%%d',date:{$add:['$%s', 28800000]}}}";
+        // crtDateTime 为要分组的时间字段
+        String expression = String.format(time, "crtDateTime");
+        List<AggregationOperation> operations = Lists.newArrayList(
+                // 将 LocalDateTime 转为字符串时间
+                Aggregation.project().andExpression(expression).as("date"),
+                // 分组求和
+                Aggregation.group("date").first("date").as("date").count().as("count"),
+                // 按时间正序显示
+                Aggregation.sort(Sort.Direction.ASC, "date")
+        );
+        Aggregation aggregation = Aggregation.newAggregation(operations);
+        // 这里如果有构造好的接收类， 可以用其替换 Document.class， 返回构造类的 List 即可
+        AggregationResults<Document> docs = mongoTemplate.aggregate(aggregation, UserInfo.class, Document.class);
+        // 遍历查询结果
+        for (Document doc : docs.getMappedResults()) {
+            // 日期
+            String date = Optional.ofNullable(doc.get("date")).map(Object::toString).orElse(null);
+            // 总数
+            Integer count = Optional.ofNullable(doc.get("count"))
+                    .map(Object::toString).map(Integer::parseInt).orElse(null);
+        }
+    }
 }

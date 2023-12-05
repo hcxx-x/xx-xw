@@ -2,6 +2,7 @@ package com.xx.sbootmongodb;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.system.UserInfo;
+import com.mongodb.client.result.DeleteResult;
 import com.xx.sbootmongodb.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
@@ -151,6 +152,23 @@ public class MongoTemplateTest {
         mongoTemplate.insert(new UserInfo());
         mongoTemplate.insert(new UserInfo(), "userInfo");
         mongoTemplate.save(new UserInfo());
+    }
+
+    /**
+     * 删除操作
+     * <p>
+     * 根据Object删除
+     * public DeleteResult remove(Object object) {}
+     * 根据查询条件进行删除
+     * public DeleteResult remove(Query query, Class<?> entityClass) {}
+     */
+    private void remove() {
+        mongoTemplate.remove(new UserInfo());
+        DeleteResult deleteResult = mongoTemplate.remove(new UserInfo(), "userInfo");
+        // 是否执行成功
+        deleteResult.wasAcknowledged();
+        // 删除数量
+        deleteResult.getDeletedCount();
     }
 
 

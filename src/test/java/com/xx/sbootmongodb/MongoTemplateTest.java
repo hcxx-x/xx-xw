@@ -137,6 +137,22 @@ public class MongoTemplateTest {
         long count = mongoTemplate.count(query, UserInfo.class);
     }
 
+    /**
+     * 插入操作
+     *
+     * 新增一条记录
+     * public <T> T insert(T objectToSave) {}
+     * 在collectionName中新增一条记录
+     * public <T> T insert(T objectToSave, String collectionName) {}
+     * 保存一条记录
+     * public <T> T save(T objectToSave) {}
+     */
+    private void insert() {
+        mongoTemplate.insert(new UserInfo());
+        mongoTemplate.insert(new UserInfo(), "userInfo");
+        mongoTemplate.save(new UserInfo());
+    }
+
 
     /**
      * 聚合操作

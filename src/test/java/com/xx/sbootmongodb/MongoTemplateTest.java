@@ -3,9 +3,11 @@ package com.xx.sbootmongodb;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.system.UserInfo;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.xx.sbootmongodb.entity.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
+import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
@@ -18,6 +20,7 @@ import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -169,6 +172,29 @@ public class MongoTemplateTest {
         deleteResult.wasAcknowledged();
         // 删除数量
         deleteResult.getDeletedCount();
+    }
+
+    /**
+     * 更新操作
+     */
+    private void update() {
+        // 原子操作
+        Update update = new Update();
+        update.inc("number", 1);
+        // 批量更新
+        mongoTemplate.updateMulti(new Query(), update, UserInfo.class);
+        // 更新第一条
+        mongoTemplate.updateFirst(new Query(), update, UserInfo.class);
+        // 更新数据， 如果不存在就插入
+        UpdateResult updateResult = mongoTemplate.upsert(new Query(), update, UserInfo.class);
+        // 是否执行成功
+        updateResult.wasAcknowledged();
+        // 匹配到的数量
+        updateResult.getMatchedCount();
+        // 更新数量
+        updateResult.getModifiedCount();
+        // 插入新数据的id
+        BsonValue upsertedId = updateResult.getUpsertedId();
     }
 
 

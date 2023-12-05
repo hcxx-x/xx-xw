@@ -23,10 +23,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author hanyangyang
@@ -276,5 +273,78 @@ public class MongoTemplateTest {
                 .and(AggregationExpression.from(MongoExpression.create(""))).as("andExpression")
                 // 例: 投射一个 username-age 的值给 custom 字段
                 .and(StringOperators.Concat.valueOf("username").concat("-").concatValueOf("age")).as("custom");
+    }
+
+
+    /**
+     * demo
+     * 根据某字段分组求和示例
+     * mongo shell:
+     * db.demo.aggregate([
+     *     {
+     *         $match: {
+     *             score: {
+     *                 $gte: 60
+     *             }
+     *         }
+     *     },
+     *     {
+     *         $group: {
+     *             _id: "$score",
+     *             score: {
+     *                 $first: "$score",
+     *             },
+     *             count: {
+     *                 $sum: 1
+     *             },
+     *             usernameList: {
+     *                 $push: "$username"
+     *             }
+     *         }
+     *     },
+     *     {
+     *         $sort: {
+     *             score: -1
+     *         }
+     *     },
+     *     {
+     *         $limit: 10
+     *     }
+     * ])
+     */
+    private void groupByScore() {
+        // 查询分数大于等于60分的人
+        Criteria criteria = Criteria.where("score").gte(60);
+        List<AggregationOperation> operations = Lists.newArrayList(
+                // 匹配查询条件
+                Aggregation.match(criteria),
+                // 对分数进行分组
+                Aggregation.group("score")
+                        .first("score").as("score")
+                        // 求和
+                        .count().as("count")
+                        // 将用户姓名添加到列表中
+                        .push("username").as("usernameList"),
+                // 按照分数排倒序
+                Aggregation.sort(Sort.by(Sort.Order.desc("score"))),
+                // 只显示前10的分数
+                Aggregation.limit(10)
+        );
+        Aggregation aggregation = Aggregation.newAggregation(operations);
+        // aggregation -> 聚合函数, UserInfo.class -> 待查询的源数据表, Document.class -> 根据聚合函数查询到的结果存入的 output 类型
+        // 这里如果有构造好的接收类， 可以用其替换 Document.class， 返回构造类的 List 即可
+        AggregationResults<Document> docs = mongoTemplate.aggregate(aggregation, UserInfo.class, Document.class);
+        // 遍历查询结果
+        for (Document doc : docs.getMappedResults()) {
+            // 分数
+            Integer score = Optional.ofNullable(doc.get("score"))
+                    .map(Object::toString).map(Integer::parseInt).orElse(null);
+            // 总数
+            Integer count = Optional.ofNullable(doc.get("count"))
+                    .map(Object::toString).map(Integer::parseInt).orElse(null);
+            // 用户姓名列表
+            List<String> usernameList = (List<String>) Optional.ofNullable(doc.get("usernameList"))
+                    .orElse(new ArrayList<String>());
+        }
     }
 }

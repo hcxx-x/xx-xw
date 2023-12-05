@@ -112,6 +112,31 @@ public class MongoTemplateTest {
                 new Document().append("$expr", new Document("$ne", List.of("$A", "$B"))));
     }
 
+    /**
+     * 查询操作
+     *
+     * 根据查询条件查询
+     * public <T> List<T> find(Query query, Class<T> entityClass) {}
+     * 根据查询条件查询返回一条记录
+     * public <T> <T> findOne(Query query, Class<T> entityClass) {}
+     * 查询该collection所有记录
+     * public <T> List<T> findAll(Class<T> entityClass) {}
+     */
+    private void query() {
+        // 组装查询条件（参数 Criteria 的详细用法见 criteriaUsageSample()）
+        Query query = new Query(Criteria.where("username").is("admin"));
+        // 查询唯一一条满足条件的数据（如果满足条件的数据多于1条，会报错）
+        UserInfo one = mongoTemplate.findOne(query, UserInfo.class);
+        // 查询满足条件的数据列表
+        List<UserInfo> list = mongoTemplate.find(query, UserInfo.class);
+        // 查询所有记录
+        List<UserInfo> all = mongoTemplate.findAll(UserInfo.class);
+        // 根据 filed 去重查询
+        List<UserInfo> distinctList = mongoTemplate.findDistinct(query, "username", UserInfo.class, UserInfo.class);
+        // 查询总数
+        long count = mongoTemplate.count(query, UserInfo.class);
+    }
+
 
     /**
      * 聚合操作

@@ -1,6 +1,9 @@
 package com.xx.sbootmongodb.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -16,6 +19,9 @@ import java.time.LocalDateTime;
  */
 @Document
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
     /**
      * 如果以属性id作为主键，springdata 会自动将其映射到文档的_id字段，此时不要加@Field注解，否则可能会导致springdata无法正确的处理ObjectId

@@ -1,14 +1,7 @@
 package com.bilibili.juc.tl;
 
-import lombok.Getter;
-import sun.font.FontRunIterator;
-
 import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
 class House //资源类
 {

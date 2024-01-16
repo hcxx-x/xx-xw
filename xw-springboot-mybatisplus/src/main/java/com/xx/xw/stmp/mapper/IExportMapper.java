@@ -17,5 +17,5 @@ import java.util.List;
 
 @Mapper
 public interface IExportMapper extends BaseMapper<ExportEntity> {
-    void getAll(ResultHandler<List<ExportEntity>> resultHandler);
+    void getAll(ResultHandler<ExportEntity> resultHandler);
 }

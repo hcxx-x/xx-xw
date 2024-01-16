@@ -55,14 +55,13 @@ public class TestController {
         ExcelWriter write = EasyExcel.write(response.getOutputStream(), ExportEntity.class).build();
         WriteSheet writeSheet = EasyExcel.writerSheet("sheet").build();
         ArrayList<ExportEntity> list = new ArrayList<>();
-        exportMapper.getAll(new ResultHandler<List<ExportEntity>>() {
+        exportMapper.getAll(new ResultHandler<ExportEntity>() {
             @Override
-            public void handleResult(ResultContext<? extends List<ExportEntity>> resultContext) {
-                List<ExportEntity> resultObject = resultContext.getResultObject();
-                /*list.add(resultObject);
+            public void handleResult(ResultContext<? extends ExportEntity> resultContext) {
+                ExportEntity resultObject = resultContext.getResultObject();
+                list.add(resultObject);
                 write.write(list,writeSheet);
-                list.clear();*/
-                System.out.println(resultObject.size());
+                list.clear();
             }
         });
         //write.finish();

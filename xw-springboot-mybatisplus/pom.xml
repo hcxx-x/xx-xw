@@ -4,16 +4,56 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.xx</groupId>
-        <artifactId>xw</artifactId>
-        <version>1.0.0</version>
+       <!-- <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.13</version>-->
+         <groupId>com.xx</groupId>
+         <artifactId>xw</artifactId>
+         <version>1.0.0</version>
+
     </parent>
+
     <groupId>com.xx</groupId>
     <artifactId>xw-springboot-mybatisplus</artifactId>
 
     <properties>
         <springboot.version>2.7.13</springboot.version>
+        <resource.delimiter>@</resource.delimiter>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>mysql</id>
+            <properties>
+                <profiles.active>mysql</profiles.active>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>5.1.49</version>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>pgsql</id>
+            <properties>
+                <profiles.active>pgsql</profiles.active>
+            </properties>
+            <dependencies>
+                <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>42.7.1</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -33,11 +73,7 @@
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.5.3.1</version>
         </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.49</version>
-        </dependency>
+
         <dependency>
             <groupId>p6spy</groupId>
             <artifactId>p6spy</artifactId>
@@ -48,19 +84,43 @@
             <artifactId>easyexcel</artifactId>
             <version>2.2.6</version>
         </dependency>
+
+
+
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/application*.yml</include>
+                    <include>**/application*.yaml</include>
+                    <include>**/application*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.13</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <propertiesEncoding>${project.build.sourceEncoding}</propertiesEncoding>
+                    <delimiters>
+                        <delimiter>${resource.delimiter}</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>true</useDefaultDelimiters>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-
-
-
 
 
     <dependencyManagement>

@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: pgsql
+    password: pgsql
+    url: jdbc:postgresql://127.0.0.1:5432/xx-xw
+    hikari:
+      schema: xx-xw

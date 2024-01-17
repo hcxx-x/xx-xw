@@ -12,6 +12,7 @@ import com.xx.xw.stmp.service.ITestService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +47,7 @@ public class TestController {
     }
 
     @RequestMapping("/export")
+    @Transactional
     public void testExport(HttpServletResponse response) throws IOException {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

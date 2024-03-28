@@ -12,11 +12,9 @@
     <artifactId>xx-xw</artifactId>
     <version>0.0.1</version>
 
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
 
-    </modules>
 
     <properties>
         <skipt.test>true</skipt.test>
@@ -28,7 +26,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-            <version>3.3.1</version>
+            <version>3.5.2</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>

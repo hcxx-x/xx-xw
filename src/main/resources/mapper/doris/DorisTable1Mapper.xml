@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xx.md.dd.mapper.doris.DorisTable1Mapper">
+
+    <resultMap id="BaseResultMap" type="com.xx.md.dd.domain.doris.DorisTable1">
+
+            <result property="siteid" column="siteid" jdbcType="INTEGER"/>
+            <result property="citycode" column="citycode" jdbcType="SMALLINT"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="pv" column="pv" jdbcType="BIGINT"/>
+    </resultMap>
+
+
+</mapper>

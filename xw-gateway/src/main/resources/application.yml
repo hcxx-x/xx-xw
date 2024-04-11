@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: service1           #路由的ID，没有固定规则但要求唯一，建议配合服务名
+          uri: lb://service1    #匹配后提供服务的路由地址
+          predicates:
+            - Path=/gw-service1/**    #断言，路径相匹配的进行路由
+          filters:
+            - StripPrefix=1
+        - id: service2
+          uri: lb://service2
+          predicates:
+            - Path=/gw-service1/**
+          filters:
+            - StripPrefix=1

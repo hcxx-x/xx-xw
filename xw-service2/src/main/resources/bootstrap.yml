@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    nacos:
+      server-addr: http://192.168.32.46:8848
+      discovery:
+        namespace: hy-test
+      config:
+        file-extension: yaml
+        namespace: hy-test
+  application:
+    name: service2
+server:
+  port: 8082

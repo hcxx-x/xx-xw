@@ -1,0 +1,43 @@
+feign:
+  hystrix:
+    # 这里会关闭hystrix的使用
+    enabled: true
+  client:
+    refresh-enabled: true
+    config:
+      # 对全部的feignclient配置
+      default:
+        connect-timeout: 10000
+        read-timeout: 1000
+      # 根据context-id配置，只对指定的context_id生效
+      context-id:
+        connect-timeout: 10000
+        read-timeout: 10000
+
+ribbon:
+  ReadTimeout: 900   #单位ms,请求处理的超时时间 负载均衡超时时间，默认值5000
+  ConnectTimeout: 3000 # 单位ms,请求连接超时时间 ribbon请求连接的超时时间，默认值2000
+#  MaxAutoRetries: 0     #对当前实例的重试次数，默认0
+#  OkToRetryOnAllOperations: false #对所有操作请求都进行重试,默认false
+#  MaxAutoRetriesNextServer: 1 #对切换实例的重试次数，默认1
+
+
+hystrix:
+  threadpool:
+    default:
+      #设置feign的核心线程池的数量
+      coreSize: 200
+  command:
+    default:
+      execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制,为true,则超时作为熔断根据
+          enabled: true
+        isolation:
+          thread:
+            #断路器超时设置和请求的超时  默认应该也是1s
+            timeoutInMilliseconds: 1000
+          isolation:
+            semaphore:
+              #设置回退的最大线程数
+              maxConcurrentRequests: 10

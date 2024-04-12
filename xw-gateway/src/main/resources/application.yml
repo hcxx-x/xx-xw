@@ -1,3 +1,4 @@
+#路由配置要放在application.yml中配置，fileters要配置再predicates下面
 spring:
   cloud:
     gateway:

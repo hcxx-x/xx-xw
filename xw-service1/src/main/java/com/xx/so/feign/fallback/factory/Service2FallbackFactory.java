@@ -19,8 +19,8 @@ public class Service2FallbackFactory implements FallbackFactory<Service2Client> 
         log.error("异常原因:{}", throwable.getMessage(), throwable);
         return new Service2Client(){
             @Override
-            public String api1() {
-                return throwable.getMessage();
+            public String api1() throws Throwable {
+                throw throwable;
             }
         };
     }

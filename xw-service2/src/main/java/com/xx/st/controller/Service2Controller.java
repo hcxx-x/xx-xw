@@ -15,7 +15,7 @@ public class Service2Controller {
 
     @RequestMapping("/api1")
     public String api1() throws InterruptedException {
-        Thread.sleep(1000);
+        int a =1/0;
         return "service 2 api1";
     }
 }

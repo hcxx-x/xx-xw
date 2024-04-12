@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author hanyangyang
  * @since 2024/4/11
  */
-@FeignClient(value = "service2",path = "/service2",fallbackFactory = Service2FallbackFactory.class)
+@FeignClient(value = "service2",path = "/service2",fallbackFactory = Service2FallbackFactory.class,configuration = FeignClientConfiguration.class)
 public interface Service2Client {
 
     @RequestMapping("/api1")
-    String api1();
+    String api1() throws Throwable;
 }

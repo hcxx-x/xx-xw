@@ -18,3 +18,5 @@ ribbon还有MaxAutoRetries是单个实例的重试次数,MaxAutoRetriesNextServe
 
 超时优先级：
 hystrix>feign>rabbion
+
+如果rabbion配置了重试（默认是配置重试的）,那么当hystrix配置的超时时间大于feign和rabbion配置的超市时间的时候，rabbion会进行重试，这个时候和不进行重试抛出的异常是不一样的

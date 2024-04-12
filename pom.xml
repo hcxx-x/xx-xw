@@ -19,6 +19,7 @@
         <module>xw-service1</module>
         <module>xw-service2</module>
         <module>xw-gateway</module>
+        <module>xw-core</module>
     </modules>
 
     <properties>

@@ -22,7 +22,7 @@ public class Service1Controller {
     }
 
     @RequestMapping("/feign/api1")
-    public String feignApi1(){
+    public String feignApi1() throws Throwable {
         return service2Client.api1();
     }
 }

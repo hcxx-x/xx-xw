@@ -1,5 +1,6 @@
 package com.xx.st.controller;
 
+import com.xx.core.http.HttpR;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,8 +15,17 @@ import java.util.concurrent.TimeUnit;
 public class Service2Controller {
 
     @RequestMapping("/api1")
-    public String api1() throws InterruptedException {
-        int a =1/0;
-        return "service 2 api1";
+    public void api1() throws InterruptedException {
+
+    }
+
+    @RequestMapping("/api2")
+    public HttpR<String> api2() throws InterruptedException {
+        return HttpR.ok("service api2");
+    }
+
+    @RequestMapping("/api3")
+    public HttpR<String> api3() throws InterruptedException {
+        return HttpR.ok("service api2");
     }
 }

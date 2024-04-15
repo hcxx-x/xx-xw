@@ -1,5 +1,6 @@
 package com.xx.so.feign;
 
+import com.xx.core.http.HttpR;
 import com.xx.so.feign.fallback.factory.Service2FallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,5 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface Service2Client {
 
     @RequestMapping("/api1")
-    String api1() throws Throwable;
+    void api1() throws Throwable;
+
+    @RequestMapping("/api2")
+    String api2() throws Throwable;
+
+    @RequestMapping("/api3")
+    String api3() throws Throwable;
 }

@@ -1,5 +1,6 @@
 package com.xx.so.feign.fallback.factory;
 
+import com.xx.core.http.HttpR;
 import com.xx.so.feign.Service2Client;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,18 @@ public class Service2FallbackFactory implements FallbackFactory<Service2Client> 
         log.error("异常原因:{}", throwable.getMessage(), throwable);
         return new Service2Client(){
             @Override
-            public String api1() throws Throwable {
+            public void api1() throws Throwable {
                 throw throwable;
+            }
+
+            @Override
+            public String api2() throws Throwable {
+                return "";
+            }
+
+            @Override
+            public String api3() throws Throwable {
+                return "";
             }
         };
     }

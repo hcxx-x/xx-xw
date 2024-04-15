@@ -13,25 +13,25 @@ public class HttpR<T> {
     private T data;
 
     public static <T> HttpR<T> ok() {
-        HttpR<T> r = new HttpR<>();
-        r.setCode(0);
-        r.setMsg("success");
-        return r;
+        HttpR<T> httpR = new HttpR<>();
+        httpR.setCode(0);
+        httpR.setMsg("success");
+        return httpR;
     }
 
     public static <T> HttpR<T> ok(T data) {
-        HttpR<T> r = new HttpR<>();
-        r.setCode(0);
-        r.setMsg("success");
-        r.setData(data);
-        return r;
+        HttpR<T> httpR = new HttpR<>();
+        httpR.setCode(0);
+        httpR.setMsg("success");
+        httpR.setData(data);
+        return httpR;
     }
 
     public static <T> HttpR<T> fail(int code, String msg) {
-        HttpR<T> r = new HttpR<>();
-        r.setCode(code);
-        r.setMsg(msg);
-        return r;
+        HttpR<T> httpR = new HttpR<>();
+        httpR.setCode(code);
+        httpR.setMsg(msg);
+        return httpR;
     }
 
 

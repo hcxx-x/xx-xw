@@ -1,5 +1,6 @@
 package com.xx.so.feign;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.codec.Decoder;
 import feign.optionals.OptionalDecoder;
 import org.springframework.beans.factory.ObjectFactory;
@@ -23,7 +24,7 @@ public class FeignClientConfiguration {
         return new CustomFeignInterceptor();
     }*/
     @Bean
-    public Decoder feignDecoder(ObjectProvider<HttpMessageConverters> messageConverters) {
+    public Decoder feignDecoder(ObjectProvider<HttpMessageConverters> messageConverters, ObjectMapper objectMapper) {
         return new OptionalDecoder((new ResponseEntityDecoder(new ResponseDecoder(new SpringDecoder(messageConverters)))));
     }
 

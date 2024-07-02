@@ -1,0 +1,3 @@
+[submodule "sunshine"]
+	path = sunshine
+	url = https://gitee.com/fxy2/sunshine.git

@@ -11,6 +11,7 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -28,7 +29,7 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @date 2025/3/4
  **/
 @Component
-public class LearnSpringbootTransaction {
+public class TransactionWithLockLearn {
 
   @Resource
   private RedissonClient redissonClient;
@@ -45,19 +46,25 @@ public class LearnSpringbootTransaction {
   private PlatformTransactionManager transactionManager;
 
 
+  /**
+   * 注解式事务和分布式锁一起使用
+   * @param phone
+   * @throws InterruptedException
+   */
   @Transactional(rollbackFor = Exception.class)
-  public void AnnotationTransaction(String phone) throws InterruptedException {
+  public void annotationTransaction(String phone) throws InterruptedException {
     RLock lock = redissonClient.getLock("phone_lock");
     lock.lock();
     userService.remove(null);
     try{
-      applicationContext.getBean(UserServiceImpl.class).doSaveRepeat(phone);
+      // 若目标方法事务隔离级别为REQUIRES_NEW，则外部方法报错不会影响到目标方法事务
+      applicationContext.getBean(TransactionWithLockLearn.class).doSaveRepeat(phone);
       // 不能找到对应的额事务id
     }catch (Exception e){
       e.printStackTrace();
     }
     finally {
-      // 注册事务同步回调：在事务提交后释放锁(声明式事务和编程式事务中都可以使用)
+      // 注册事务同步回调：在事务提交后释放锁(声明式事务和编程式事务中都可以使用)，这里获取的是外层事务@Transactional注解对应的事务
       TransactionSynchronizationManager.registerSynchronization(
           new TransactionSynchronization() {
             @Override
@@ -68,9 +75,10 @@ public class LearnSpringbootTransaction {
 
             @Override
             public void afterCompletion(int status) {
-              System.out.println("事务完成");
+
               // 事务回滚时也释放锁（可选，根据业务需求）
               if (status == STATUS_ROLLED_BACK) {
+                System.out.println("事务回滚");
                 lock.unlock();
               }
             }
@@ -79,26 +87,43 @@ public class LearnSpringbootTransaction {
     TimeUnit.SECONDS.sleep(5);
   }
 
+  /**
+   * 通过自定义的transactionTemplate修改编程式事务的属性
+   * @return
+   */
+  /*@Bean
+  public TransactionTemplate transactionTemplate() {
+    TransactionTemplate customerTransactionTemplate = new TransactionTemplate();
+    customerTransactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+    customerTransactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
+    return customerTransactionTemplate;
+  }*/
 
+  /**
+   * transactionTemplate 手动编程事务和分布式锁一起使用
+   * @param phone
+   * @throws InterruptedException
+   */
+  @Transactional(rollbackFor = Exception.class)
   public void transactionTemplateTransaction(String phone) throws InterruptedException {
     RLock lock = redissonClient.getLock("phone_lock");
     lock.lock();
     userService.remove(null);
     try{
-
       transactionTemplate.execute(new TransactionCallback<Object>() {
         @Override
         public Object doInTransaction(TransactionStatus status) {
-          applicationContext.getBean(UserServiceImpl.class).doSaveRepeat(phone);
+          // 若目标方法事务隔离级别为REQUIRES_NEW，则外部方法报错不会影响到目标方法事务
+          applicationContext.getBean(TransactionWithLockLearn.class).doSaveRepeat(phone);
           return null;
         }
       });
 
     }catch (Exception e){
       e.printStackTrace();
-    }
-    finally {
-      // 注册事务同步回调：在事务提交后释放锁(声明式事务和编程式事务中都可以使用)
+    } finally {
+      // 注册事务同步回调：在事务提交后释放锁(声明式事务和编程式事务中都可以使用)，
+      // 这里获取的是外层事务@Transactional注解对应的事务，如果要获取内层事务需要在transactionTemplate.execute()方法里面加入下面的代码
       TransactionSynchronizationManager.registerSynchronization(
           new TransactionSynchronization() {
             @Override
@@ -117,6 +142,7 @@ public class LearnSpringbootTransaction {
             }
           });
     }
+
     TimeUnit.SECONDS.sleep(5);
   }
 
@@ -130,7 +156,7 @@ public class LearnSpringbootTransaction {
     TransactionStatus status = transactionManager.getTransaction(definition);
     try {
       // 执行业务逻辑（如数据库操作）
-      userService.repeatInsertUser(phone);
+      doSaveRepeat(phone);
       // 提交事务
       transactionManager.commit(status);
     } catch (Exception e) {
@@ -153,5 +179,6 @@ public class LearnSpringbootTransaction {
     user.setGender("MAN");
     userService.save(user);
     int i = 1/0;
+
   }
 }

@@ -1,6 +1,6 @@
 package com.xx.springbootdemo.controller;
 
-import com.xx.springbootdemo.service.impl.UserServiceImpl;
+import com.xx.springbootdemo.learn.TransactionWithLockLearn;
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
   @Resource
-  private UserServiceImpl userService;
+  private TransactionWithLockLearn transactionWithLockLearn;
 
   @GetMapping("/repeatInsert")
   public String repeatInsertUser(@RequestParam("phone") String phone) throws InterruptedException {
-    userService.repeatInsertUser(phone);
+    transactionWithLockLearn.transactionTemplateTransaction(phone);
     return "SUCCESS";
   }
 }

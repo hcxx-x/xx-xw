@@ -11,5 +11,4 @@ import org.springframework.stereotype.Service;
 
 public interface IUserService extends IService<User> {
 
-  void repeatInsertUser(String phone) throws InterruptedException;
 }

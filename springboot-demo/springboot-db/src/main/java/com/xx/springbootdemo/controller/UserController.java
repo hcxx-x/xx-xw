@@ -20,7 +20,7 @@ public class UserController {
 
   @GetMapping("/repeatInsert")
   public String repeatInsertUser(@RequestParam("phone") String phone) throws InterruptedException {
-    transactionWithLockLearn.transactionTemplateTransaction(phone);
+    transactionWithLockLearn.TransactionDefinitionTx(phone);
     return "SUCCESS";
   }
 }

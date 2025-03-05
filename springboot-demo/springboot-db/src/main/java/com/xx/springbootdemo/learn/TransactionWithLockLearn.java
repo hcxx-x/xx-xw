@@ -4,14 +4,18 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.xx.springbootdemo.entity.User;
 import com.xx.springbootdemo.service.IUserService;
 import com.xx.springbootdemo.service.impl.UserServiceImpl;
+import java.sql.Connection;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -47,6 +51,12 @@ public class TransactionWithLockLearn {
 
   @Autowired
   private PlatformTransactionManager transactionManager;
+
+  @Resource
+  private JdbcTemplate jdbcTemplate;
+
+  @Autowired
+  private DataSource dataSource;
 
 
   /**
@@ -172,16 +182,19 @@ public class TransactionWithLockLearn {
     DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
     definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
     definition.setIsolationLevel(TransactionDefinition.ISOLATION_READ_COMMITTED);
-
     TransactionStatus status = transactionManager.getTransaction(definition);
+    System.out.println("status:"+status.isNewTransaction());
     try {
+      // 通过连接的hash 可以粗略的判断是不是同一个事务，如果hash不同就不是同一个事务，当时如果相同也不一定说明就是同一个事物，可能存在连接池连接复用情况
+      Connection parentConn = DataSourceUtils.getConnection(dataSource);
+      System.out.println("父事务连接哈希: " + parentConn.hashCode());
       // 执行业务逻辑（如数据库操作）
-
       User user = new User();
       user.setName(UUID.randomUUID().toString());
       user.setPhone(phone);
       user.setGender("MAN");
       userService.save(user);
+
 
       try {
         // 内层开启新事物有效，如果内层报错，内层回滚，外层通过捕获异常的方式不会回滚事务
@@ -218,8 +231,13 @@ public class TransactionWithLockLearn {
 
   @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
   public void doUpdate(String phone) {
+    // 通过连接的hash 可以粗略的判断是不是同一个事务，如果hash不同就不是同一个事务，当时如果相同也不一定说明就是同一个事物，可能存在连接池连接复用情况
+    Connection childConn = DataSourceUtils.getConnection(dataSource);
+    System.out.println("子事务连接哈希: " + childConn.hashCode());
     userService.update(Wrappers.lambdaUpdate(User.class).set(User::getGender, "WOMAN")
         .eq(User::getId, 22));
+    Object txId = TransactionSynchronizationManager.getResource("TX_ID");
+    System.out.println("内层获取TX_ID:"+txId);
     int i = 1 / 0;
 
   }

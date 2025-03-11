@@ -36,7 +36,7 @@ public class InputStreamLearn {
   public static void fileInputStream() {
     FileInputStream fis = null;
     try {
-      fis = new FileInputStream("./input.txt");
+      fis = new FileInputStream(new File("input.txt"));
       byte[] bytes = new byte[1024];
       int readed = 0;
       while ((readed = fis.read(bytes)) != -1) {
@@ -63,7 +63,6 @@ public class InputStreamLearn {
 
   public static void getResource() throws IOException {
     // 直接写 D:/data/config.txt 或者 /data/config.txt 以绝对路径获取,
-    // data/config.txt 或者 ./data/config 以相对路径获取,相对于当前工作目录，相当于System.getProperty("user.dir")+"/input.txt"
     InputStream resourceAsStream1 = new FileInputStream("input.txt");
 
     /**
@@ -89,7 +88,6 @@ public class InputStreamLearn {
 
   public static void getFile(){
     // 直接写 D:/data/config.txt 或者 /data/config.txt 以绝对路径获取,
-    // data/config.txt 或者 ./data/config 以相对路径获取,相对于当前工作目录，相当于System.getProperty("user.dir")+"/input.txt"
     File file = new File("D:/data/config.txt");
 
     //文件在包内（类路径下的包目录）

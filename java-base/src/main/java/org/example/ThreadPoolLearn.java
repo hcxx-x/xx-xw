@@ -25,12 +25,33 @@ public class ThreadPoolLearn {
    * 4、可通过调用方法allowCoreThreadTimeOut(true) 设置允许关闭核心线程
    */
   static int corePoolSize = 2;
+  /**
+   * 任务队列满了之后才起作用
+   * 当队列满了之后，会创建新的线程，直到线程数=最大线程数，
+   * 如果和核心线程数一样，队列满了之后会执行拒绝策略
+   */
   static int maximumPoolSize = 5;
+  /**
+   * 空闲线程存活时间
+   */
   static int keepAliveTime = 1;
 
   static AtomicInteger atomicInteger = new AtomicInteger(0);
 
-  public static ThreadPoolExecutor createThreadPool() {
+
+  public static ThreadPoolExecutor threadPoolInit(){
+    ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+        corePoolSize,
+        maximumPoolSize,
+        keepAliveTime,
+        TimeUnit.SECONDS,
+        new ArrayBlockingQueue<>(10),
+        new ThreadPoolExecutor.CallerRunsPolicy()
+    );
+    return threadPoolExecutor;
+  }
+
+  public static ThreadPoolExecutor threadPoolInitWithThreadFactory() {
     ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
         corePoolSize,
         maximumPoolSize,
@@ -38,7 +59,6 @@ public class ThreadPoolLearn {
         TimeUnit.SECONDS,
         new ArrayBlockingQueue<>(10),
         new ThreadFactory() {
-
           @Override
           public Thread newThread(Runnable r) {
             String threadName = "pool-thread" + atomicInteger.getAndIncrement();
@@ -51,9 +71,15 @@ public class ThreadPoolLearn {
     return threadPoolExecutor;
   }
 
-  public static void main(String[] args)
-      throws IllegalAccessException, NoSuchFieldException, InterruptedException {
-    ThreadPoolExecutor threadPool = createThreadPool();
+  /**
+   * 测试核心线程数量参数，验证最后存活的核心线程不是最先被创建的
+   * @throws InterruptedException
+   * @throws NoSuchFieldException
+   * @throws IllegalAccessException
+   */
+  public static void testCorePoolSize()
+      throws InterruptedException, NoSuchFieldException, IllegalAccessException {
+    ThreadPoolExecutor threadPool = threadPoolInitWithThreadFactory();
     threadPool.allowCoreThreadTimeOut(true);
     for (int i = 0; i < 100; i++) {
       threadPool.execute(() -> {
@@ -73,5 +99,10 @@ public class ThreadPoolLearn {
     }
     // 线程池使用完要关闭
     threadPool.shutdown();
+  }
+
+  public static void main(String[] args)
+      throws IllegalAccessException, NoSuchFieldException, InterruptedException {
+    testCorePoolSize();
   }
 }

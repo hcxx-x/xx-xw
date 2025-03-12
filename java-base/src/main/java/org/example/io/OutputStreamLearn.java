@@ -11,7 +11,8 @@ import java.io.OutputStream;
  */
 public class OutputStreamLearn {
   public static void main(String[] args) {
-    try(OutputStream os = new FileOutputStream("output.txt")){
+    // append 默认false,表示清空原文件写，可以设置true表示追加
+    try(OutputStream os = new FileOutputStream("output.txt",false)){
       os.write("hello world".getBytes());
       os.flush();
     } catch (FileNotFoundException e) {

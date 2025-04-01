@@ -11,9 +11,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.xx</groupId>
-    <artifactId>springboot-db</artifactId>
+    <artifactId>springboot-mybatisplus</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springboot-db</name>
+    <name>springboot-mybatisplus</name>
     <description>springboot-demo</description>
 
     <properties>

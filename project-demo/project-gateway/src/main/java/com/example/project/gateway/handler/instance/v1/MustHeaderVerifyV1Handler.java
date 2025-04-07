@@ -1,18 +1,23 @@
-package com.example.project.gateway.factory;
+package com.example.project.gateway.handler.instance.v1;
 
 
 import com.example.project.gateway.constant.HttpHeaderConstants;
 import com.example.project.gateway.exception.GlobalMustHeaderException;
-import com.example.project.gateway.property.GatewayProperties;
+import com.example.project.gateway.handler.IMustHeaderVerifyHandler;
+import com.example.project.gateway.property.SystemProperties;
 import com.example.project.gateway.utils.BusinessValidateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.util.Objects;
 
-import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants.IS_VERIFIED_TIMESTAMP;
+import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants.*;
 
-
+/**
+ * @Author zcchu
+ * @Date 2024/6/7 16:39
+ **/
 @Slf4j
 public class MustHeaderVerifyV1Handler implements IMustHeaderVerifyHandler {
     private static final MustHeaderVerifyV1Handler instance = new MustHeaderVerifyV1Handler();
@@ -23,7 +28,7 @@ public class MustHeaderVerifyV1Handler implements IMustHeaderVerifyHandler {
     }
 
     @Override
-    public void verify(GatewayProperties properties, ServerWebExchange exchange) throws GlobalMustHeaderException {
+    public void verify(SystemProperties properties, ServerWebExchange exchange) throws GlobalMustHeaderException {
         final String timestamp = exchange.getRequest().getHeaders().getFirst(HttpHeaderConstants.X_TIMESTAMP);
         if(!BusinessValidateUtil.validateTimestamp(timestamp, properties.getTimestampTimeout())){
             log.error("http headers['{}']='{}' error, should be not null or Math.abs(System.currentTimeMillis() - timestamp) at {}ms.", HttpHeaderConstants.X_TIMESTAMP, timestamp, properties.getTimestampTimeout());

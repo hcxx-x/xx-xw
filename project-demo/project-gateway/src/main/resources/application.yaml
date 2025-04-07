@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      enabled: true
+      routes:
+        - id: project-web
+          uri: http://localhost:8801
+          predicates:
+            - Path=/project-web/**
+          filters:
+            - StripPrefix=1

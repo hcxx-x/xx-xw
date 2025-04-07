@@ -15,8 +15,13 @@
 	<description>project-demo</description>
 	<packaging>pom</packaging>
 
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+
 	<modules>
 		<module>project-gateway</module>
+		<module>project-web</module>
 	</modules>
 
 	<!--版本通义控制-->

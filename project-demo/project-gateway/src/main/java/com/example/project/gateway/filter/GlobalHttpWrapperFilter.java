@@ -1,9 +1,14 @@
 package com.example.project.gateway.filter;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONConfig;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONFactory;
 import com.alibaba.fastjson2.JSONWriter;
 import com.example.project.gateway.constant.ProjectConstants;
 import com.example.project.gateway.constant.HttpHeaderConstants;
@@ -33,6 +38,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -195,6 +201,10 @@ public class GlobalHttpWrapperFilter implements GlobalFilter, Ordered {
                 .put("headers", request.getHeaders().toSingleValueMap())
                 .put("param", param)
                 .build();
-        return JSON.toJSONString(requestMap, format?JSONWriter.Feature.PrettyFormat:null);
+        List<JSONWriter.Feature> features = new ArrayList<>();
+        if (format) {
+            features.add(JSONWriter.Feature.PrettyFormat);
+        }
+        return JSON.toJSONString(requestMap, features.toArray(new JSONWriter.Feature[0]));
     }
 }

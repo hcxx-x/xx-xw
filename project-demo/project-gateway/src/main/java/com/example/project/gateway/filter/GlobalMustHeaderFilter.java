@@ -4,7 +4,7 @@ package com.example.project.gateway.filter;
 import com.example.project.gateway.constant.HttpHeaderConstants;
 import com.example.project.gateway.exception.GlobalMustHeaderException;
 import com.example.project.gateway.factory.MustHeaderVerifyHandlerFactory;
-import com.example.project.gateway.property.GatewayProperties;
+import com.example.project.gateway.property.SystemProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -22,11 +22,11 @@ import static com.example.project.gateway.constant.ServerWebExchangeAttributesKe
 /**
  * 是否验证请求头
  */
-@ConditionalOnProperty(prefix = "byuis.gateway.verify.must-header", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "gateway.verify.must-header", name = "enabled", havingValue = "true", matchIfMissing = true)
 @Component
 public class GlobalMustHeaderFilter implements GlobalFilter, Ordered {
     @Resource
-    private GatewayProperties properties;
+    private SystemProperties properties;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

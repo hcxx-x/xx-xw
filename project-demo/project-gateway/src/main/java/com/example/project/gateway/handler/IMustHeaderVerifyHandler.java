@@ -1,8 +1,8 @@
-package com.example.project.gateway.factory;
+package com.example.project.gateway.handler;
 
 
 import com.example.project.gateway.exception.GlobalMustHeaderException;
-import com.example.project.gateway.property.GatewayProperties;
+import com.example.project.gateway.property.SystemProperties;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
@@ -16,5 +16,5 @@ public interface IMustHeaderVerifyHandler {
      * @param exchange
      * @throws GlobalMustHeaderException header校验不通过
      */
-    void verify(GatewayProperties properties, ServerWebExchange exchange) throws GlobalMustHeaderException;
+    void verify(SystemProperties properties, ServerWebExchange exchange) throws GlobalMustHeaderException;
 }

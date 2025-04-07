@@ -2,12 +2,14 @@ package com.example.project.gateway.property;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
 @Setter
 @Getter
-public class GatewayProperties {
+@ConfigurationProperties(prefix = "system")
+public class SystemProperties {
 
     /**
      * 仅代理(不做任何校验)

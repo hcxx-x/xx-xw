@@ -2,14 +2,15 @@ package com.example.project.gateway.filter;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
-import com.alibaba.fastjson.JSON;
-import com.ynby.byuis.common.constants.UisConstants;
-import com.ynby.byuis.common.constants.UisHttpHeaderConstants;
-import com.ynby.byuis.gateway.filter.decorator.ByuisServerHttpRequestDecorator;
-import com.ynby.byuis.gateway.filter.decorator.ByuisServerHttpResponseDecorator;
-import com.ynby.byuis.gateway.utils.HttpUtils;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
+import com.example.project.gateway.constant.ProjectConstants;
+import com.example.project.gateway.constant.HttpHeaderConstants;
+import com.example.project.gateway.filter.decorator.ServerHttpRequestDecorator;
+import com.example.project.gateway.filter.decorator.ServerHttpResponseDecorator;
+import com.example.project.gateway.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -22,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ReactiveHttpOutputMessage;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.ynby.byuis.gateway.constant.FilterOrderedConstant.GLOBAL_HTTP_WRAPPER;
-import static com.ynby.byuis.gateway.constant.ServerWebExchangeAttributesKeyContants.*;
+import static com.example.project.gateway.constant.FilterOrderedConstant.GLOBAL_HTTP_WRAPPER;
+import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants.*;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
 /**
@@ -46,14 +46,12 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  * <br/>
  * 1: 解决body只能读取一次的问题
  * 2: 记录请求及响应日志
- *
- * @author zcchu
- * @date 2021/11/17 17:17
  */
 @Slf4j
 @Component
 public class GlobalHttpWrapperFilter implements GlobalFilter, Ordered {
     private final List<HttpMessageReader<?>> messageReaders = HandlerStrategies.withDefaults().messageReaders();
+    // 静态文件
     private static final List<String> STATICTIS_URI_SUFFIX = CollUtil.newArrayList("/favicon.ico",
             ".html",
             ".css",
@@ -74,11 +72,14 @@ public class GlobalHttpWrapperFilter implements GlobalFilter, Ordered {
         final MediaType mediaType = exchange.getRequest().getHeaders().getContentType();
         Mono<Void> result;
         if(isStaticResourceRequest(exchange)){
+            // 静态文件，放行
             result = chain.filter(exchange);
         } else if(Objects.nonNull(mediaType) && mediaType.toString().contains("boundary=")){
+            // 边界请求，一般用于文件上传之类的
             exchange.getAttributes().put(IS_BOUNDARY, true);
             result = chain.filter(exchange);
         } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType) || (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType) && !exchange.getRequest().getMethod().equals(HttpMethod.GET))) {
+            // 表单请求或者json请求，并且不是GET请求，则需要包装请求体，解决body只能读取一次的问题
             result = wrapperRequestBody(exchange, chain);
         }else{
             result = wrapperBasicLog(exchange, chain);
@@ -142,15 +143,15 @@ public class GlobalHttpWrapperFilter implements GlobalFilter, Ordered {
         return bodyInserter.insert(outputMessage, new BodyInserterContext())
                 .then(Mono.defer(() -> {
                     // 重新封装请求
-                    ByuisServerHttpRequestDecorator decoratedRequest = new ByuisServerHttpRequestDecorator(exchange.getRequest(), headers, outputMessage);
+                    ServerHttpRequestDecorator decoratedRequest = new ServerHttpRequestDecorator(exchange.getRequest(), headers, outputMessage);
                     // 记录响应日志
-                    ServerHttpResponseDecorator decoratedResponse = new ByuisServerHttpResponseDecorator(exchange);
-                    decoratedResponse.getHeaders().add(UisHttpHeaderConstants.X_TID, MDC.get(UisConstants.MDC_TRACE_ID));
+                    org.springframework.http.server.reactive.ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(exchange);
+                    decoratedResponse.getHeaders().add(HttpHeaderConstants.X_TID, MDC.get(ProjectConstants.MDC_TRACE_ID));
                     // 记录普通的
                     ServerWebExchange.Builder mutate = exchange.mutate();
                     mutate.request(decoratedRequest);
                     if(log.isInfoEnabled()){
-                        mutate.response(new ByuisServerHttpResponseDecorator(exchange));
+                        mutate.response(new ServerHttpResponseDecorator(exchange));
                     }
                     return chain.filter(mutate.build());
                 }));
@@ -164,7 +165,7 @@ public class GlobalHttpWrapperFilter implements GlobalFilter, Ordered {
             }else {
                 MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
                 for (Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
-                    builder.append(entry.getKey()).append("=").append(StringUtils.join(entry.getValue(), "&"));
+                    builder.append(entry.getKey()).append("=").append(StrUtil.join("&",entry.getValue()));
                 }
             }
             if(log.isDebugEnabled()){
@@ -177,8 +178,8 @@ public class GlobalHttpWrapperFilter implements GlobalFilter, Ordered {
         ServerWebExchange.Builder mutate = exchange.mutate();
         if(log.isInfoEnabled()){
             // 记录响应日志
-            ServerHttpResponseDecorator decoratedResponse = new ByuisServerHttpResponseDecorator(exchange);
-            decoratedResponse.getHeaders().add(UisHttpHeaderConstants.X_TID, MDC.get(UisConstants.MDC_TRACE_ID));
+            org.springframework.http.server.reactive.ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(exchange);
+            decoratedResponse.getHeaders().add(HttpHeaderConstants.X_TID, MDC.get(ProjectConstants.MDC_TRACE_ID));
             mutate.response(decoratedResponse);
         }
         return chain.filter(mutate.build());
@@ -194,6 +195,6 @@ public class GlobalHttpWrapperFilter implements GlobalFilter, Ordered {
                 .put("headers", request.getHeaders().toSingleValueMap())
                 .put("param", param)
                 .build();
-        return JSON.toJSONString(requestMap, format);
+        return JSON.toJSONString(requestMap, format?JSONWriter.Feature.PrettyFormat:null);
     }
 }

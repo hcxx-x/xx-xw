@@ -41,10 +41,12 @@ import java.util.stream.Collectors;
 import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants.TRACE_ID;
 
 /**
- * 异常拦截配置
+ * 自定义异常拦截配置
  *
- * @Author zcchu
- * @Date 2021/3/12 16:01
+ * 在SpringCloud gateway中默认使用 DefaultErrorWebExceptionHandler来处理异常。这个可以通过配置类 ErrorWebFluxAutoConfiguration 得之。
+ *
+ * 我们可以自定义一个 CustomErrorWebExceptionHandler类用来继承 DefaultErrorWebExceptionHandler，然后修改生成前端响应数据的逻辑。
+ * 再然后定义一个配置类，写法可以参考 ErrorWebFluxAutoConfiguration，简单将异常类替换成 CustomErrorWebExceptionHandler类即可。
  */
 @Configuration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
@@ -126,7 +128,9 @@ public class CustomErrorWebFluxAutoConfiguration {
     }
 
 
-
+    /**
+     * 自定义异常处理器
+     */
     @Slf4j
     static class JsonErrorWebExceptionHandler extends DefaultErrorWebExceptionHandler {
 
@@ -142,26 +146,55 @@ public class CustomErrorWebFluxAutoConfiguration {
         }
 
 
+        /**
+         * 重写错误属性获取方法，根据请求路径区分处理逻辑，生成定制化错误响应
+         *
+         * @param request 当前请求对象，用于获取请求路径和错误信息
+         * @param includeStackTrace 是否包含堆栈跟踪标识，父类方法使用该参数控制错误信息详细程度
+         * @return Map<String, Object> 结构化的错误响应体，包含错误码、消息等信息
+         */
         @Override
         protected Map<String, Object> getErrorAttributes(ServerRequest request, boolean includeStackTrace) {
+            // 特殊路径处理：对Spring Actuator端点保持默认错误处理逻辑
             if(request.path().contains(SPRING_ACTUATOR_URI)){
                 return super.getErrorAttributes(request, includeStackTrace);
             }
-            // 这里其实可以根据异常类型进行定制化逻辑
+            // 核心错误处理逻辑：通过全局异常处理器构建统一响应格式
             Throwable throwable = super.getError(request);
+            // 将响应对象转换为Map结构，适配框架错误处理格式要求
             Map<String, Object> responseBody = BeanUtil.beanToMap(globalExceptionHandler.response(throwable));
+
+            // 记录错误日志：包含请求路径、响应体和异常概要信息
             log.error("request uri: {}, response body:{}, err: {}", request.path(), JSON.toJSONString(responseBody), Util.throwableMessage(throwable));
+
             return responseBody;
         }
 
+        /**
+         * 重写父类方法构建全局错误处理路由函数
+         *
+         * @param errorAttributes 错误属性对象，包含请求上下文中的错误信息
+         * @return 配置好的路由函数，用于处理所有请求的错误响应
+         *
+         * 实现逻辑：
+         * 1. 创建匹配所有请求的路由规则
+         * 2. 对每个请求生成错误响应对象
+         * 3. 检查响应头是否包含跟踪ID：
+         *    - 若存在则直接返回响应
+         *    - 若不存在则从请求属性中获取跟踪ID并注入响应头
+         */
         @Override
         protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
             return RouterFunctions.route(RequestPredicates.all(), (request) -> {
+                // 生成错误响应对象的基础Mono流
                 Mono<ServerResponse> serverResponseMono = this.renderErrorResponse(request);
+                // 获取响应头并处理跟踪ID逻辑
                 HttpHeaders headers = request.exchange().getResponse().getHeaders();
                 if(headers.containsKey(HttpHeaderConstants.X_TID)){
+                    // 已存在跟踪ID时直接返回响应
                     return serverResponseMono;
                 }
+                // 注入新的跟踪ID到响应头
                 headers.add(HttpHeaderConstants.X_TID, request.exchange().getAttributeOrDefault(TRACE_ID,"空"));
                 return serverResponseMono;
             });

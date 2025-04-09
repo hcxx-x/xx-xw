@@ -2,7 +2,7 @@ package com.example.project.gateway.filter;
 
 import cn.hutool.core.util.StrUtil;
 import com.example.project.gateway.constant.FilterOrderedConstant;
-import com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants;
+import com.example.project.gateway.constant.ServerWebExchangeAttributesKeyConstants;
 import com.example.project.gateway.constant.ProjectConstants;
 import com.example.project.gateway.constant.HttpHeaderConstants;
 import com.github.f4b6a3.ulid.Ulid;
@@ -29,13 +29,16 @@ public class GlobalMdcTraceIdFilter implements GlobalFilter, Ordered {
         final String traceId = StrUtil.isNotBlank(traceIdInHeader) ? traceIdInHeader : Ulid.fast().toString();
         // 放到MDC中
         MDC.put(ProjectConstants.MDC_TRACE_ID, traceId);
-        exchange.getAttributes().put(ServerWebExchangeAttributesKeyContants.TRACE_ID, traceId);
+        exchange.getAttributes().put(ServerWebExchangeAttributesKeyConstants.TRACE_ID, traceId);
         // 执行过滤器链，并在最后清空MDC
         return chain.filter(exchange).doFinally((signalType)->MDC.remove(ProjectConstants.MDC_TRACE_ID));
     }
 
     @Override
     public int getOrder() {
+        /**
+         * Order 最小，最先执行
+         */
         return FilterOrderedConstant.GLOBAL_MDC_TRACE_ID_ORDER;
     }
 }

@@ -6,7 +6,7 @@ import com.alibaba.fastjson2.JSON;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants;
+import com.example.project.gateway.constant.ServerWebExchangeAttributesKeyConstants;
 import com.example.project.gateway.enums.GatewayErrorEnum;
 import com.example.project.gateway.exception.TokenVerifyException;
 import com.example.project.gateway.handler.ITokenVerifyHandler;
@@ -47,13 +47,13 @@ public class TokenVerifyV1Handler implements ITokenVerifyHandler {
         final String tokenKey = TOKEN_REDIS_PREFIX + tokenSuffix;
         final JwtUserVO jwtUserVO = RedisUtils.get(tokenKey, JwtUserVO.class);
         if(Objects.nonNull(jwtUserVO)){
-            exchange.getAttributes().put(ServerWebExchangeAttributesKeyContants.JWT_INFO, jwtUserVO);
+            exchange.getAttributes().put(ServerWebExchangeAttributesKeyConstants.JWT_INFO, jwtUserVO);
             return;
         }
         try{
             DecodedJWT jwt = JwtUtils.decodedJWT(token);
             JwtUserVO userVO = JwtUtils.getUserCenterUserInfo(jwt);
-            exchange.getAttributes().put(ServerWebExchangeAttributesKeyContants.JWT_INFO, userVO);
+            exchange.getAttributes().put(ServerWebExchangeAttributesKeyConstants.JWT_INFO, userVO);
             long expireTime = jwt.getExpiresAt().getTime() - System.currentTimeMillis();
             RedisUtils.set(tokenKey, JSON.toJSONString(userVO), expireTime / 1000);
         } catch (ExpiredJwtException | TokenExpiredException e) {

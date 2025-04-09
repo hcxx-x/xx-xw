@@ -12,3 +12,22 @@ spring:
             - Path=/project-web/**
           filters:
             - StripPrefix=1
+
+system:
+  verify:
+    sign-consistency:
+      enabled: true
+    replay-attack:
+      enabled: true
+    #白名单地址(不校验token、nonce、sign)
+    white-urls:
+      - /project-web/project/list
+    #白名单地址(不校验token)
+    token-white-urls:
+      - /project-web/project/list
+    # 白名单地址(不校验nonce)
+    replay-attack-white-urls:
+      - /project-web/project/list
+    # 白名单地址(不校验sign)
+    sign-white-urls:
+      - /project-web/project/list

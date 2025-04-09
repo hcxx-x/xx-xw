@@ -1,6 +1,6 @@
 package com.example.project.gateway.constant;
 
-public class ServerWebExchangeAttributesKeyContants {
+public class ServerWebExchangeAttributesKeyConstants {
     public static final String IS_BOUNDARY = "is_boundary";
     public static final String IS_ALL_NOT_NEED_VERIFY = "is_all_not_need_verify";
     public static final String IS_NEED_VERIFY_MUST_HEADER = "is_need_verify_must_header";

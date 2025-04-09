@@ -10,14 +10,8 @@ import java.util.List;
 @Getter
 @ConfigurationProperties(prefix = "system")
 public class SystemProperties {
-
     /**
-     * 仅代理(不做任何校验)
-     */
-    private List<String> onlyProxyUrls;
-
-    /**
-     * 白名单地址(不校验token、sign)
+     * 白名单地址(不校验token、nonce、sign)
      */
     private List<String> whiteUrls;
 

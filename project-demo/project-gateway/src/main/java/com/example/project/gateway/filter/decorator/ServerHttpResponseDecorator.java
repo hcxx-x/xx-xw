@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants.GATEWAY_HTTP_RESPONSE_CACHE_KEY;
+import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyConstants.GATEWAY_HTTP_RESPONSE_CACHE_KEY;
 
 /**
  * 响应装饰器

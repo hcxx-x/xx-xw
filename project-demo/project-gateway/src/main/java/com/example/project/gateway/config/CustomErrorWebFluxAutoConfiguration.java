@@ -38,11 +38,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants.TRACE_ID;
+import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyConstants.TRACE_ID;
 
 /**
  * 自定义异常拦截配置
- *
  * 在SpringCloud gateway中默认使用 DefaultErrorWebExceptionHandler来处理异常。这个可以通过配置类 ErrorWebFluxAutoConfiguration 得之。
  *
  * 我们可以自定义一个 CustomErrorWebExceptionHandler类用来继承 DefaultErrorWebExceptionHandler，然后修改生成前端响应数据的逻辑。

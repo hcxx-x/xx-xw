@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.example.project.gateway.constant.FilterOrderedConstant.GLOBAL_HTTP_WRAPPER;
-import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants.*;
+import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyConstants.*;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
 /**

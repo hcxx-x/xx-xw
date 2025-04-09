@@ -7,12 +7,11 @@ import com.example.project.gateway.handler.IMustHeaderVerifyHandler;
 import com.example.project.gateway.property.SystemProperties;
 import com.example.project.gateway.utils.BusinessValidateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.util.Objects;
 
-import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyContants.*;
+import static com.example.project.gateway.constant.ServerWebExchangeAttributesKeyConstants.*;
 
 
 @Slf4j

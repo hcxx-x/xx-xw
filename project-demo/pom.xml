@@ -24,7 +24,7 @@
 		<module>project-web</module>
 	</modules>
 
-	<!--版本通义控制-->
+	<!--版本统一控制-->
 	<dependencyManagement>
 		<dependencies>
 			<!--spring cloud 依赖版本统一控制-->

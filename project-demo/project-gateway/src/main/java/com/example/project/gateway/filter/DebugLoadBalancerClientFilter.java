@@ -31,6 +31,9 @@ import java.util.stream.Collectors;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*;
 
+/**
+ * 用于在测试环境和开发环境中选择同一网段的服务实例，用于解决跨网段的问题（开发环境启动项目注册到测试环境注册中心）。
+ */
 @Slf4j
 @Component
 public class DebugLoadBalancerClientFilter implements GlobalFilter, Ordered {

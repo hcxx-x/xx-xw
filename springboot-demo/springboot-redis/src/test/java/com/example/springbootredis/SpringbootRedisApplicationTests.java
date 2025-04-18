@@ -1,24 +1,23 @@
 package com.example.springbootredis;
 
+import com.example.springbootredis.service.TestServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 
+@Slf4j
 @SpringBootTest
 class SpringbootRedisApplicationTests {
 
     @Resource
-    private ObjectMapper redisObjectMapper;
-
-    @Resource
-    private ObjectMapper objectMapper;
+    private TestServices testServices;
 
     @Test
     void contextLoads() {
-        System.out.println(redisObjectMapper);
-        System.out.println(objectMapper);
+       log.info("testDTO:{}",testServices.getTestDTO());
     }
 
 }

@@ -1,7 +1,9 @@
 package com.example.springbootredis.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
@@ -27,6 +29,9 @@ import java.time.Duration;
 public class RedisCacheConfig {
 
     /**
+     * TIP: 这样配置会导致springboot 全局的ObjectMapper 被自定义的覆盖，所以不建议这样配置，可以单独创建一个对象去配置RedisTemplate
+     * springboot 默认的objectMapper配置可以参考 org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
+     *
      * 配置自定义的 ObjectMapper Bean
      * 作用：控制 JSON 序列化/反序列化行为，解决以下问题：
      * 1. 类型擦除导致的 LinkedHashMap 转换异常
@@ -38,6 +43,11 @@ public class RedisCacheConfig {
 
         // 配置1：忽略未知字段（避免新增/删除字段导致反序列化失败）
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        // 配置：允许访问所有字段，
+        // PropertyAccessor.ALL：表示该配置应用于所有类型的属性访问器（包括字段、getter、setter 等），
+        // JsonAutoDetect.Visibility.ANY：允许 Jackson 检测并处理 任何修饰符的字段（包括 private、protected、public 等）。
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
 
         // 配置2：启用类型信息嵌入（解决 LinkedHashMap 问题）
         // 使用 BasicPolymorphicTypeValidator 允许所有 Object 子类
@@ -54,6 +64,7 @@ public class RedisCacheConfig {
         // 配置3：处理类名/包名变更（通过 MixIn 注解映射旧类名）
         // 示例：将旧类名 com.oldpackage.User 映射到新类 com.newpackage.User
         //mapper.addMixIn(User.class, OldUserMixIn.class);  // 关键行
+
 
         return mapper;
     }

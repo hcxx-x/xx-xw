@@ -9,13 +9,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
@@ -26,10 +23,10 @@ import java.time.Duration;
 
 //@Configuration
 //@EnableCaching  // 启用 Spring 缓存功能
-public class RedisCacheConfig {
+public class RedisConfigPlanB {
 
     /**
-     * TIP: 这样配置会导致springboot 全局的ObjectMapper 被自定义的覆盖，所以不建议这样配置，可以单独创建一个对象去配置RedisTemplate
+     * TIP: 不建议配置成Bean, 一旦配置成Bean会导致springboot 全局的ObjectMapper 被自定义的覆盖，所以不建议这样配置，可以单独创建一个对象去配置RedisTemplate
      * springboot 默认的objectMapper配置可以参考 org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
      *
      * 配置自定义的 ObjectMapper Bean
@@ -37,7 +34,6 @@ public class RedisCacheConfig {
      * 1. 类型擦除导致的 LinkedHashMap 转换异常
      * 2. 类名或包名变更后的反序列化兼容性
      */
-    @Bean
     public ObjectMapper redisObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
 
@@ -71,7 +67,7 @@ public class RedisCacheConfig {
 
     /**
      * 定义旧类名的 MixIn 抽象类
-     * 作用：当反序列化遇到 JSON 中的旧类名时，自动映射到新类
+     * 作用：当反序列化遇到 JSON 中的旧类名时，自动映射到新类,用于解决类重命名或者包名变更后的兼容性
      */
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@class")
     @JsonTypeName("com.oldpackage.User")  // 指定旧类全限定名
@@ -86,8 +82,7 @@ public class RedisCacheConfig {
     @Bean
     @Primary  // 标记为主 Bean，覆盖 Spring Boot 默认配置
     public RedisTemplate<String, Object> redisTemplate(
-            RedisConnectionFactory factory,  // 自动注入 Redis 连接工厂
-            ObjectMapper redisObjectMapper   // 使用自定义的 ObjectMapper
+            RedisConnectionFactory factory // 自动注入 Redis 连接工厂
     ) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
@@ -99,7 +94,7 @@ public class RedisCacheConfig {
 
         // 关键配置2：Value 序列化器（使用带类型信息的 JSON 序列化）
         GenericJackson2JsonRedisSerializer jsonSerializer =
-                new GenericJackson2JsonRedisSerializer(redisObjectMapper);
+                new GenericJackson2JsonRedisSerializer(redisObjectMapper());
         template.setValueSerializer(jsonSerializer);           // 值序列化
         template.setHashValueSerializer(jsonSerializer);       // Hash类型内部 值序列化
         // 应用配置，检查 RedisTemplate 的必需属性是否已正确配置。 必须调用！确保配置生效
@@ -113,12 +108,11 @@ public class RedisCacheConfig {
      */
     @Bean
     public CacheManager cacheManager(
-            RedisConnectionFactory factory,    // 自动注入 Redis 连接工厂
-            ObjectMapper redisObjectMapper     // 使用自定义的 ObjectMapper
+            RedisConnectionFactory factory    // 自动注入 Redis 连接工厂
     ) {
         // 创建 JSON 序列化器（与 RedisTemplate 配置一致）
         GenericJackson2JsonRedisSerializer jsonSerializer =
-                new GenericJackson2JsonRedisSerializer(redisObjectMapper);
+                new GenericJackson2JsonRedisSerializer(redisObjectMapper());
 
         // 定义缓存通用配置
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()

@@ -1,6 +1,5 @@
 package com.example.springbootredis.aop;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -8,9 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.connection.SortParameters;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -30,6 +27,10 @@ public class CacheResultFixAspect {
 
     private final ObjectMapper objectMapper;
 
+    /**
+     * 构造方法注入，spring5 以后可以不添加@Autowire完成构造注入，如果类有多个构造方法，你需要显式地使用 @Autowired 注解来标注哪个构造方法应该用于注入。
+     * @param objectMapper
+     */
     public CacheResultFixAspect(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }

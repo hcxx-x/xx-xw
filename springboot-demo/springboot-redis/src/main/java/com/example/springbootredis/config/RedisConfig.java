@@ -20,8 +20,8 @@ import java.time.Duration;
  * Redis 缓存配置类，配置通用 RedisTemplate 与 CacheManager。
  * 使用 Jackson2JsonRedisSerializer<Object> 序列化，无类型标记字段。
  */
-@Configuration
-@EnableCaching
+/*@Configuration
+@EnableCaching*/
 public class RedisConfig {
     /**
      * 自定义 RedisTemplate，设置键值序列化方式

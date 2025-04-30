@@ -18,11 +18,16 @@ import java.util.List;
  * AOP 切面：拦截缓存方法，在命中缓存后进行类型还原处理。
  * 用于解决使用通用 Jackson 序列化时对象被还原为 LinkedHashMap 的问题。
  * 使用此切面可以将不包含@class属性的对象反序列化为目标类型。目标类型从aop拦截的方法返回值中获取
+ *
+ *
+ * 另外一种可以考虑的方案：
+ * 通过切面是否对性能有影响？
+ * 可以通过项目启动时扫描所有被Cacheable注解的方法，获取返回类型，然后注册对应的序列化器
  */
 @Slf4j
-@Aspect
+/*@Aspect
 @Component
-@Order(-1)
+@Order(-1)*/
 public class CacheResultFixAspect {
 
     private final ObjectMapper objectMapper;

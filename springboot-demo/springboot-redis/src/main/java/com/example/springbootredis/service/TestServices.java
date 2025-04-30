@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestServices {
 
-    @Cacheable(cacheNames = "test:testDTO")
+    @Cacheable(value = "test")
     public TestDTO getTestDTO() {
         TestDTO testDTO = new TestDTO();
         testDTO.setId(1L);

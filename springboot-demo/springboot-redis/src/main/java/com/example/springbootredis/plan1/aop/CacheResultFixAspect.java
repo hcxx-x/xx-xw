@@ -1,4 +1,4 @@
-package com.example.springbootredis.aop;
+package com.example.springbootredis.plan1.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

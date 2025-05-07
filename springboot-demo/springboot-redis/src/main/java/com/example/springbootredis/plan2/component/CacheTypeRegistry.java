@@ -1,4 +1,4 @@
-package com.example.springbootredis.component;
+package com.example.springbootredis.plan2.component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

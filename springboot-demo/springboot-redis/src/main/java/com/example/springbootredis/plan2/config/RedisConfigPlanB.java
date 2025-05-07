@@ -1,4 +1,4 @@
-package com.example.springbootredis.config;
+package com.example.springbootredis.plan2.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

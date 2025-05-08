@@ -69,11 +69,11 @@ public class RedisConfigPlanB {
                 .allowIfSubType(Object.class)  // 允许所有 Object 子类
                 .build();
         // 激活默认类型信息，序列化时添加 @class 字段
-        mapper.activateDefaultTyping(
+        /*mapper.activateDefaultTyping(
                 ptv,
                 ObjectMapper.DefaultTyping.NON_FINAL,  // 对非 final 类记录类型
                 JsonTypeInfo.As.EXISTING_PROPERTY               // 类型信息作为独立字段（默认 "@class"）
-        );
+        );*/
 
         // 配置3：处理类名/包名变更（通过 MixIn 注解映射旧类名）
         // 示例：将旧类名 com.oldpackage.User 映射到新类 com.newpackage.User
@@ -95,6 +95,7 @@ public class RedisConfigPlanB {
         // 创建 JSON 序列化器（与 RedisTemplate 配置一致）
         ObjectMapper objectMapper = redisObjectMapper();
         Jackson2JsonRedisSerializer<Object> testDTOJackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
+        testDTOJackson2JsonRedisSerializer.setObjectMapper(objectMapper);
 
         // 定义缓存通用配置
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
@@ -136,6 +137,7 @@ public class RedisConfigPlanB {
 
                     JavaType javaType = convertResolvableTypeToJavaType(returnType);
                     Jackson2JsonRedisSerializer<?> serializer = new Jackson2JsonRedisSerializer<>(javaType);
+                    serializer.setObjectMapper(objectMapper);
 
                     for (String cacheName : cacheable.value()) {
                         RedisCacheConfiguration otherConfig = RedisCacheConfiguration.defaultCacheConfig()

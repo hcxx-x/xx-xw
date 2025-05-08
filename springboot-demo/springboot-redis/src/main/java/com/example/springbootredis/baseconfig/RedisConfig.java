@@ -1,47 +1,34 @@
-package com.example.springbootredis.plan2.config;
+package com.example.springbootredis.baseconfig;
 
-import com.example.springbootredis.dto.TestDTO;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import org.aspectj.weaver.ast.Test;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
-import org.reflections.util.ConfigurationBuilder;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.ResolvableType;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.lang.reflect.Method;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
- * @author hanyangyang
- * @date 2025/5/8
+ * 基础版配置
  */
-@Configuration
-@EnableCaching
-public class RedisConfigPlanB {
+/*@Configuration
+@EnableCaching  // 启用 Spring 缓存功能*/
+public class RedisConfig {
 
     /**
      * TIP: 不建议配置成Bean, 一旦配置成Bean会导致springboot 全局的ObjectMapper 被自定义的覆盖，所以不建议这样配置，可以单独创建一个对象去配置RedisTemplate
@@ -72,7 +59,7 @@ public class RedisConfigPlanB {
         mapper.activateDefaultTyping(
                 ptv,
                 ObjectMapper.DefaultTyping.NON_FINAL,  // 对非 final 类记录类型
-                JsonTypeInfo.As.EXISTING_PROPERTY               // 类型信息作为独立字段（默认 "@class"）
+                JsonTypeInfo.As.PROPERTY               // 类型信息作为独立字段（默认 "@class"）
         );
 
         // 配置3：处理类名/包名变更（通过 MixIn 注解映射旧类名）
@@ -84,21 +71,57 @@ public class RedisConfigPlanB {
     }
 
     /**
+     * 定义旧类名的 MixIn 抽象类
+     * 作用：当反序列化遇到 JSON 中的旧类名时，自动映射到新类,用于解决类重命名或者包名变更后的兼容性
+     */
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+    @JsonTypeName("com.oldpackage.User")  // 指定旧类全限定名
+    private abstract static class OldUserMixIn {
+        // 此抽象类无需实现，仅用于通过注解声明类型映射
+    }
+
+    /**
+     * 配置 RedisTemplate Bean
+     * 作用：定义 Redis 数据操作模板的序列化策略
+     */
+    @Bean
+    @Primary  // 标记为主 Bean，覆盖 Spring Boot 默认配置
+    public RedisTemplate<String, Object> redisTemplate(
+            RedisConnectionFactory factory // 自动注入 Redis 连接工厂
+    ) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory);
+
+        // 关键配置1：Key 序列化器（统一使用字符串序列化）
+        StringRedisSerializer stringSerializer = new StringRedisSerializer();
+        template.setKeySerializer(stringSerializer);          // 字符串键序列化
+        template.setHashKeySerializer(stringSerializer);       // Hash类型内部 键序列化
+
+        // 关键配置2：Value 序列化器（使用带类型信息的 JSON 序列化）
+        GenericJackson2JsonRedisSerializer jsonSerializer =
+                new GenericJackson2JsonRedisSerializer(redisObjectMapper());
+        template.setValueSerializer(jsonSerializer);           // 值序列化
+        template.setHashValueSerializer(jsonSerializer);       // Hash类型内部 值序列化
+        // 应用配置，检查 RedisTemplate 的必需属性是否已正确配置。 必须调用！确保配置生效
+        template.afterPropertiesSet();
+        return template;
+    }
+
+    /**
      * 配置 Spring Cache 管理器
      * 作用：整合 Redis 作为缓存存储，统一缓存序列化策略
      */
     @Bean
-    @Primary
     public CacheManager cacheManager(
             RedisConnectionFactory factory    // 自动注入 Redis 连接工厂
     ) {
         // 创建 JSON 序列化器（与 RedisTemplate 配置一致）
-        ObjectMapper objectMapper = redisObjectMapper();
-        Jackson2JsonRedisSerializer<Object> testDTOJackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
+        GenericJackson2JsonRedisSerializer jsonSerializer =
+                new GenericJackson2JsonRedisSerializer(redisObjectMapper());
 
         // 定义缓存通用配置
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(2))    // 默认缓存过期时间：1 小时
+                .entryTtl(Duration.ofHours(1))    // 默认缓存过期时间：1 小时
                 .disableCachingNullValues()       // 禁止缓存 null 值（防御性配置）
                 .serializeKeysWith(  // Key 序列化策略
                         RedisSerializationContext.SerializationPair.fromSerializer(
@@ -107,69 +130,15 @@ public class RedisConfigPlanB {
                 )
                 .serializeValuesWith(  // Value 序列化策略
                         RedisSerializationContext.SerializationPair.fromSerializer(
-                                testDTOJackson2JsonRedisSerializer
+                                jsonSerializer
                         )
                 );
 
-
-        // 扫描
-        Reflections reflections = new Reflections(
-                new ConfigurationBuilder()
-                        .forPackages("com.example")
-                        .setScanners(Scanners.MethodsAnnotated)
-        );
-
-
-         //动态注册每个缓存的序列化器
-        Map<String, RedisCacheConfiguration> configMap = new HashMap<>();
-
-
-        Set<Method> methods = reflections.getMethodsAnnotatedWith(Cacheable.class);
-        if (methods.isEmpty()) {
-            System.out.println("No methods found with @Cacheable!");
-        } else {
-            methods.forEach(method -> {System.out.println("Found: " + method);
-                Cacheable cacheable = method.getAnnotation(Cacheable.class);
-                if (cacheable != null) {
-                    // 获取方法的返回类型
-                    ResolvableType returnType = ResolvableType.forMethodReturnType(method);
-
-                    JavaType javaType = convertResolvableTypeToJavaType(returnType);
-                    Jackson2JsonRedisSerializer<?> serializer = new Jackson2JsonRedisSerializer<>(javaType);
-
-                    for (String cacheName : cacheable.value()) {
-                        RedisCacheConfiguration otherConfig = RedisCacheConfiguration.defaultCacheConfig()
-                                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
-                                .entryTtl(Duration.ofHours(1));
-                        configMap.put(cacheName, otherConfig);
-                    }
-                }
-            });
-        }
 
         // 构建缓存管理器
         return RedisCacheManager.builder(factory)
                 .cacheDefaults(config)     // 应用通用配置
                 .transactionAware()        // 支持缓存事务
-                .initialCacheNames(configMap.keySet())
-                .withInitialCacheConfigurations(configMap)
                 .build();
-    }
-
-
-    private JavaType convertResolvableTypeToJavaType(ResolvableType resolvableType) {
-        if (resolvableType.getGenerics().length == 0) {
-            return TypeFactory.defaultInstance().constructType(resolvableType.resolve());
-        }
-
-        JavaType[] generics = new JavaType[resolvableType.getGenerics().length];
-        for (int i = 0; i < resolvableType.getGenerics().length; i++) {
-            generics[i] = convertResolvableTypeToJavaType(resolvableType.getGeneric(i));
-        }
-
-        return TypeFactory.defaultInstance().constructParametricType(
-                resolvableType.resolve(),
-                generics
-        );
     }
 }

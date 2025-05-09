@@ -1,5 +1,6 @@
 package com.example.springbootredis.plan2.config;
 
+import com.example.springbootredis.baseconfig.MyCacheKeyPrefix;
 import com.example.springbootredis.dto.TestDTO;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -88,6 +89,7 @@ public class RedisConfigPlanB {
 
         // 定义缓存通用配置
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .computePrefixWith(new MyCacheKeyPrefix())
                 .entryTtl(Duration.ofHours(2))    // 默认缓存过期时间：1 小时
                 .disableCachingNullValues()       // 禁止缓存 null 值（防御性配置）
                 .serializeKeysWith(  // Key 序列化策略
@@ -127,6 +129,7 @@ public class RedisConfigPlanB {
                     serializer.setObjectMapper(defaultObjectMapper);
                     for (String cacheName : cacheable.value()) {
                         RedisCacheConfiguration otherConfig = RedisCacheConfiguration.defaultCacheConfig()
+                                .computePrefixWith(new MyCacheKeyPrefix())
                                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
                                 .entryTtl(Duration.ofHours(1));
                         configMap.put(cacheName, otherConfig);

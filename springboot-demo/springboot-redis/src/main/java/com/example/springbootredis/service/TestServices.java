@@ -16,11 +16,4 @@ public class TestServices {
         return testDTO;
     }
 
-    @Cacheable(value = "test",key = "#id")
-    public OtherDTO getOther(Long num) {
-        OtherDTO testDTO = new OtherDTO();
-        testDTO.setNum(1L);
-        testDTO.setName("test");
-        return testDTO;
-    }
 }

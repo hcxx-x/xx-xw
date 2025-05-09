@@ -121,6 +121,7 @@ public class RedisConfig {
 
         // 定义缓存通用配置
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .computePrefixWith(new MyCacheKeyPrefix())  // 替换redis Key 的生成策略
                 .entryTtl(Duration.ofHours(1))    // 默认缓存过期时间：1 小时
                 .disableCachingNullValues()       // 禁止缓存 null 值（防御性配置）
                 .serializeKeysWith(  // Key 序列化策略

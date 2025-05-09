@@ -17,7 +17,8 @@ class SpringbootRedisApplicationTests {
 
     @Test
     void contextLoads() {
-       log.info("testDTO:{}",testServices.getTestDTO());
+       log.info("testDTO:{}",testServices.getTestDTO(1L));
+       log.info("testDTO:{}",testServices.getOther(1L));
     }
 
 }

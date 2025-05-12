@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xx.log.mapper.UserInfoMapper">
+
+    <select id="queryAllUserConditionIdIn" resultType="com.xx.log.entity.UserInfo" parameterType="list">
+        select id from user_info
+        <where>
+            <if test="ids !=null and ids.size>0">
+                and id in (#{ids,jdbcType=VARCHAR, javaType=string, typeHandler=com.xx.log.config.mybatis.th.ListIntegerTypeHandler})
+            </if>
+        </where>
+    </select>
+
+
+    <select id="testIntLong" resultType="java.lang.Integer">
+        select id from user_info
+    </select>
+
+</mapper>

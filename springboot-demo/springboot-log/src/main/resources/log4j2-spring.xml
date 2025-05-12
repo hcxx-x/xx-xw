@@ -13,7 +13,7 @@
         <!--<property name="LOG_PATTERN" value="%date{HH:mm:ss.SSS} %highlight{[%thread]} %-5level %logger{36} - %msg%n" />-->
         <!--可以通过%style, %highlight,%clr 对日志的输出格式进行个性化 具体配置方式可以查看官方文档，如果官方文档中没有找到，可以参考这个链接（有可能会被删除）https://www.jianshu.com/p/b6409b3042e2-->
         <!--不在springboot环境中使用log4j时 发现 highlight好像只能以%highlight{内容}{FATAL=red, ERROR=red.....} 指定在什么级别日志下输出什么颜色的日志，而%style则可以直接指定样式，不需要联合日志级别配置-->
-        <property name="LOG_PATTERN" value="%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
+        <property name="LOG_PATTERN" value="log4j-%style{%clr{%date{yyyy-MM-dd HH:mm:ss}}{red}}{bright} %clr{%5p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} %clr{[%thread]}{red} %style{%clr{%logger{50}}{magenta}}{bright} %clr{%msg%n}{cyan}" />
 
         <!--读取maven提供的变量，如果继承了springboot parent可以使用 @变量key@,如果没有继承parent 可以使用${变量key}-->
         <property name="defaultServiceName" value="@project.name@"/>

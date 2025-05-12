@@ -12,6 +12,7 @@
     <modules>
         <module>springboot-mybatisplus</module>
         <module>springboot-redis</module>
+        <module>springboot-log</module>
     </modules>
 
 </project>

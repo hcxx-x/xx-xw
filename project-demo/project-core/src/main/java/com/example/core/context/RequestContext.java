@@ -1,4 +1,4 @@
-package com.example.projectweb.core.context;
+package com.example.core.context;
 
 import cn.hutool.core.collection.CollUtil;
 import com.example.projectweb.core.RequestConstant;

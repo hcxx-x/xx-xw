@@ -1,4 +1,4 @@
-package com.example.projectweb.core;
+package com.example.core.constant;
 
 /**
  * @author hanyangyang

@@ -1,18 +1,12 @@
-package com.example.projectweb.core.pool;
+package com.example.core.pool;
+
 
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.*;
 
-/**
- * Copyright © 2020
- *
- * @author : liuzhao
- * @Project: 药企平台项目
- * <p>线程池工厂类</p>
- * @date : 2020-12-08 11:13
- **/
+
 @Component
 public class ThreadPoolFactory {
 

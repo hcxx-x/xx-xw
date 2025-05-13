@@ -2,10 +2,11 @@ package com.example.projectweb.core.aspect;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.ynby.common.context.RequestContext;
-import com.ynby.common.exception.BusinessException;
+
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSON;
+import com.example.core.context.RequestContext;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -60,7 +61,7 @@ public class LoggerAspect {
         MDC.put("requestId",requestId);
         RequestContext.setRequestId(requestId);
         logger.info("开始{}请求", request.getRequestURI());
-        JSONObject params = JSON.parseObject(JSON.toJSONString(request.getParameterMap()));
+        JSONObject params = JSONUtil.parseObj(request.getParameterMap());
         if (request.getMethod().equalsIgnoreCase("post")) {
             Object[] args = joinPoint.getArgs();
             // 过滤出不能被序列化的参数
@@ -101,7 +102,7 @@ public class LoggerAspect {
             return;
         }
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-        if (ex instanceof BusinessException){
+        if (ex instanceof Exception){
             logger.warn("请求{}出现业务异常,异常原因：{}", request.getRequestURI(), ex.getMessage());
         }else{
             logger.error("请求{}出现异常", request.getRequestURI(), ex);

@@ -22,7 +22,8 @@
 	<modules>
 		<module>project-gateway</module>
 		<module>project-web</module>
-	</modules>
+        <module>project-core</module>
+    </modules>
 
 	<!--版本统一控制-->
 	<dependencyManagement>

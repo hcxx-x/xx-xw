@@ -1,4 +1,4 @@
-package com.example.projectweb.core.pool;
+package com.example.core.pool;
 
 import org.slf4j.MDC;
 

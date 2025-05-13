@@ -1,8 +1,9 @@
-package com.example.projectweb.core;
+package com.example.core;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.example.projectweb.core.context.RequestContext;
+
+import com.example.core.context.RequestContext;
 import feign.Logger;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

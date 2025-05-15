@@ -1,0 +1,12 @@
+if filename 包含 a and filename 包含b
+true
+else false
+
+
+
+if a  condition b and b condition c
+    true
+else
+    false
+
+[{"condition":"eq","field":"bizType","fieldName":"业务类型","resultValue":"保证金"}]

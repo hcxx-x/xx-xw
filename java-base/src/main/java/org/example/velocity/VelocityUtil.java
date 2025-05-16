@@ -21,7 +21,7 @@ public class VelocityUtil {
         // 设置ValueExtractor的属性，指定类路径资源加载器
         ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         // 设置Velocity的日志实例属性为NullLogChute，以禁用日志输出
-        ve.setProperty(RuntimeConstants.RUNTIME_LOG_INSTANCE, "org.apache.velocity.runtime.log.NullLogChute");
+        //ve.setProperty(RuntimeConstants.RUNTIME_LOG_INSTANCE, "org.apache.velocity.runtime.log.NullLogChute");
         ve.init();
     }
 

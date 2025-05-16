@@ -1,12 +1,9 @@
-if filename 包含 a and filename 包含b
+#if (($patternModel.eq($oppEntityCode,"费用")) or   ($patternModel.eq($oppEntityCode,"交易")) and ($patternModel.eq($tradeSubject,"天猫保证金"))) true #else false #end
+
+
+
+#if (  (   $patternModel.eq($oppEntityCode,"费用") or   $patternModel.eq($oppEntityCode,"交易")  )
+and (   $patternModel.eq($tradeSubject,"天猫保证金") or   $patternModel.eq($tradeSubject,"2")))
 true
-else false
-
-
-
-if a  condition b and b condition c
-    true
-else
-    false
-
-[{"condition":"eq","field":"bizType","fieldName":"业务类型","resultValue":"保证金"}]
+#else
+false #end   $patternModel.eq($tradeSubject,"天猫保证金") or   $patternModel.eq($tradeSubject,"2") ) a) true #else false #end

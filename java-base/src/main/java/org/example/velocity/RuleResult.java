@@ -3,6 +3,8 @@ package org.example.velocity;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.List;
+
 /**
  * @author hanyangyang
  * @date 2025/5/15
@@ -29,7 +31,9 @@ public class RuleResult {
     /**
      * 结果值：可以是返回值，也可以是表达式ID
      */
-    private String resultValue;
+    //private String resultValue;
+
+    private List<String> resultValue;
 }
 
 

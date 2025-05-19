@@ -45,7 +45,7 @@ public class Learn2 {
                             "condition": "eq",
                             "field": "oppEntityCode",
                             "fieldName": "交易对手方结算主体",
-                            "resultValue": ["费用","交易"]
+                            "resultValue": ["费用,abc"]
                         },
                         {
                             "condition": "eq",

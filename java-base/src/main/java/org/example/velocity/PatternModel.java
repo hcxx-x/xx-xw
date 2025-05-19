@@ -26,23 +26,18 @@ public class PatternModel {
 
     public static final String modelStr2 = """
             #foreach ($parentResult in $ruleEntity) 
-            #foreach ($result in $parentResult.resultValue)
-             #if ($foreach.index == 0) ( #end
-             #if ($foreach.index != 0 && $foreach.index != $parentResult.size) or #end
-            #if($parentResult.condition == "eq")  $${patternModel}.eq($${parentResult.field},"$result")
-               
-             #elseif($parentResult.condition == "gt") $${parentResult.field}> $result
-             
-             #elseif($parentResult.condition == "lt") $${parentResult.field}< $result
-    
-             #elseif($parentResult.condition == "ne") $${patternModel}.ne($${parentResult.field},"$result")
-
-             #elseif($parentResult.condition == "contains") $${parentResult.field}.contains("$result")
-        
-             #elseif($parentResult.condition == "startsWith") $${parentResult.field}.startsWith("$result") 
-            #end
-            #end)
-            and
+                #foreach ($result in $parentResult.resultValue)
+                     #if ($foreach.index == 0) ( #end
+                     #if ($foreach.index != 0 && $foreach.index != $parentResult.size) or #end
+                     
+                     #if($parentResult.condition == "eq")  $${patternModel}.eq($${parentResult.field},"$result") 
+                     #elseif($parentResult.condition == "gt") $${parentResult.field}> $result
+                     #elseif($parentResult.condition == "lt") $${parentResult.field}< $result
+                     #elseif($parentResult.condition == "ne") $${patternModel}.ne($${parentResult.field},"$result")
+                     #elseif($parentResult.condition == "contains") $${parentResult.field}.contains("$result")
+                     #elseif($parentResult.condition == "exclusive") !$${parentResult.field}.contains("$result")
+                     #elseif($parentResult.condition == "startsWith") $${parentResult.field}.startsWith("$result")  #end
+                #end ) and 
             #end
             """;
 

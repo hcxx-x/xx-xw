@@ -1,18 +1,11 @@
 package org.example.velocity;
 
 import com.alibaba.fastjson.JSONObject;
-import lombok.Data;
-import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
-import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author hanyangyang

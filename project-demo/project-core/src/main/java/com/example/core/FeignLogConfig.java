@@ -3,6 +3,7 @@ package com.example.core;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 
+import com.example.core.constant.RequestConstant;
 import com.example.core.context.RequestContext;
 import feign.Logger;
 import feign.RequestInterceptor;

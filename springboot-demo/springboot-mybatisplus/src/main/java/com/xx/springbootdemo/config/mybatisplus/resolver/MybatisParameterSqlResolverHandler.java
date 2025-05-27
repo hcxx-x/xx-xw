@@ -2,6 +2,7 @@ package com.xx.springbootdemo.config.mybatisplus.resolver;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.MybatisParameterHandler;
+import com.xx.springbootdemo.util.SqlParamerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;

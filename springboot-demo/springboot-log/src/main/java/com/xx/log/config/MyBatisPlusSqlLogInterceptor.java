@@ -30,7 +30,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
-/*
+/**
  *描述: 用于输出格式化好的SQL
  * 存在的问题：
  *  如果没有使用mybatis-plus的自动填充功能的话，可以在beforeQuery、beforeUpdate中完成sql的拼接以及组装来获取完整的sql

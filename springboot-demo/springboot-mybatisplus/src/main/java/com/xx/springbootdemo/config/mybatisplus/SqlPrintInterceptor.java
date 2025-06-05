@@ -28,7 +28,7 @@ import java.util.*;
  */
 @Slf4j
 @Intercepts({@Signature(type = StatementHandler.class, method = "parameterize", args = {Statement.class})})
-public class SqlPrintInterceptor implements Interceptor {
+public class  SqlPrintInterceptor implements Interceptor {
 
     private Method peekCurrDataSource;
     private static final String DEFAULT_DATASOURCE = "default";
@@ -72,7 +72,7 @@ public class SqlPrintInterceptor implements Interceptor {
             long start = System.currentTimeMillis();
             String sql = sqlResolverHandler.resolve();
             if (log.isInfoEnabled()) {
-                log.debug("==>[DS:{} {}]: [{}] [拼接耗时:{}ms]", dataSourceName, sqlSource, sql, System.currentTimeMillis() - start);
+                log.info("==>[DS:{} {}]: [{}] [拼接耗时:{}ms]", dataSourceName, sqlSource, sql, System.currentTimeMillis() - start);
             }
         } catch (Throwable e) {
             log.warn("==>[{}]: 尝试获取完整 sql 失败:{}, 注：此报错不影响sql执行", sqlSource, e.getMessage(), e);
@@ -105,6 +105,12 @@ public class SqlPrintInterceptor implements Interceptor {
                !classMethodsMap.containsKey(mapperClassName) && CollUtil.isEmpty(classMethodsMap.getOrDefault(mapperClassName, new ArrayList<>()));
     }
 
+    /**
+     * 获取sql解析器
+     * 注意：mybatisplus 默认使用 MybatisParameterHandler（参见com.baomidou.mybatisplus.core.MybatisConfiguration#MybatisConfiguration()）
+     * @param invocation
+     * @return
+     */
     private ISqlResolverHandler sqlResolverHandler(Invocation invocation) {
         StatementHandler stateMentHandler = (StatementHandler) invocation.getTarget();
         if (stateMentHandler.getParameterHandler() instanceof MybatisParameterHandler){

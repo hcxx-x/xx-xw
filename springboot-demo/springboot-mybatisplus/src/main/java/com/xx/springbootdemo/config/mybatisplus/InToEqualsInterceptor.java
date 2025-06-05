@@ -8,6 +8,9 @@ import org.apache.ibatis.plugin.*;
 import java.sql.Connection;
 import java.util.Properties;
 
+/**
+ * 如果是IN后面的查询只有一个参数时，将IN替换为=
+ */
 @Intercepts({
         @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})
 })

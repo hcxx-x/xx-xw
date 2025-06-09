@@ -13,6 +13,7 @@
         <module>springboot-mybatisplus</module>
         <module>springboot-redis</module>
         <module>springboot-log</module>
+        <module>springboot-dubbo</module>
     </modules>
 
 </project>

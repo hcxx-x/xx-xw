@@ -52,8 +52,7 @@ public class Learn2 {
         List<RuleResult> resultExt = JSONObject.parseArray(a, RuleResult.class);
 
         PatternModel pattern = new PatternModel();
-        String result = pattern.getPattern(resultExt);
-        System.out.println(result);
+        String result = pattern.getPattern(resultExt);System.out.println(result);
 
         // 解析出最终的表达式之后根据这个表达式去匹配当前实体
 

@@ -135,6 +135,7 @@ public class TransactionWithLockLearn {
       // 设置之前可以先获取之前的数据，然后在使用完成之后恢复，
       // 因为时bean注入进来的，这里设置了会影响其他的地方，所以其实不太建议这个弄，可以定义多个不同类型的事物隔离级别的bean
       // 需要用到什么事务隔离级别就是用哪个bean
+      // 还有就是可以通过PlatformTransactionManager 每次根据不同的事务传播特性去创建DefaultTransactionDefinition，然后根据这个definition去开启事务
       int isolationLevel = transactionTemplate.getIsolationLevel();
       int propagationBehavior = transactionTemplate.getPropagationBehavior();
       transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);

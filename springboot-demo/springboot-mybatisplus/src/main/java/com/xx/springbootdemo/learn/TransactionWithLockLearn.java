@@ -131,6 +131,15 @@ public class TransactionWithLockLearn {
     user.setPhone(phone);
     user.setGender("MAN");
     userService.save(user);
+    // 可选：在使用之前设置事务的隔离级别和传播行为
+      // 设置之前可以先获取之前的数据，然后在使用完成之后恢复，
+      // 因为时bean注入进来的，这里设置了会影响其他的地方，所以其实不太建议这个弄，可以定义多个不同类型的事物隔离级别的bean
+      // 需要用到什么事务隔离级别就是用哪个bean
+      int isolationLevel = transactionTemplate.getIsolationLevel();
+      int propagationBehavior = transactionTemplate.getPropagationBehavior();
+      transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
+    transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+
     try {
       transactionTemplate.execute(new TransactionCallback<Object>() {
         @Override
@@ -145,6 +154,7 @@ public class TransactionWithLockLearn {
             System.out.println("最内层方法调用出现错误");
             e.printStackTrace();
           }
+
           return null;
         }
       });

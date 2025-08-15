@@ -1,4 +1,6 @@
-package org.example.proxy;
+package org.example.designmode.proxy;
+
+import org.example.proxy.ISubjectInterface;
 
 /**
  * @author hanyangyang

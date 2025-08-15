@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
  **/
 @Configuration
 public class BeanLifeCycleConfig {
-    @Bean(initMethod = "initMethod",destroyMethod = "customDestroyMethod")
-    public BeanLifeCicirle beanLifeCicirle(){
-        return new BeanLifeCicirle();
-    }
+//    @Bean(initMethod = "initMethod",destroyMethod = "customDestroyMethod")
+//    public BeanLifeCicirle beanLifeCicirle(){
+//        return new BeanLifeCicirle();
+//    }
 }

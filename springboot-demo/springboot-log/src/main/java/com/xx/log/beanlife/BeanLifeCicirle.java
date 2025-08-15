@@ -38,7 +38,7 @@ import javax.annotation.PostConstruct;
  * @author hanyangyang
  * @since 2025/8/7
  **/
-//@Component
+@Component
 @Slf4j
 @ToString
 @Getter

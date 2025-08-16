@@ -1,6 +1,6 @@
 package org.example.designmode.proxy;
 
-import org.example.proxy.ISubjectInterface;
+
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

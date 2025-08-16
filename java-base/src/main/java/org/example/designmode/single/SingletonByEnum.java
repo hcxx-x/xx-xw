@@ -1,4 +1,4 @@
-package org.example.designmode;
+package org.example.designmode.single;
 
 /**
  * 绝对线程安全，防止  反射攻击，防止序列化破坏

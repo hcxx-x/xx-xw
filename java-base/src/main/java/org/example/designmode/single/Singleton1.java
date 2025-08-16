@@ -1,4 +1,4 @@
-package org.example.designmode;
+package org.example.designmode.single;
 
 /**
  * 懒汉式，需要通过锁来保证多线程的单例性

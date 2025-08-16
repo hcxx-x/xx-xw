@@ -1,4 +1,4 @@
-package org.example.designmode;
+package org.example.designmode.single;
 
 /**
  * 内部类方式，访问方法的时候才加载之类，加载之类的时候初始化常量，jvm 保证线程安全

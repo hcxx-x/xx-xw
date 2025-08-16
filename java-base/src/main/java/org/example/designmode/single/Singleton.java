@@ -1,4 +1,4 @@
-package org.example.designmode;
+package org.example.designmode.single;
 
 /**
  * 饿汉式，线程安全通过JVM类加载机制保证
